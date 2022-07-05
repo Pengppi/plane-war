@@ -77,7 +77,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 //		return 0;
 //	}
     @Override
-    public void move() {
+    public void move(long gameTime) {
         this.setX(tx);
         this.setY(ty);
     }

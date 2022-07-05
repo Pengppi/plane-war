@@ -67,7 +67,7 @@ public abstract class ElementObj {
     /**
      * @说明 移动方法; 需要移动的子类，请 重写这个方法
      */
-    protected void move() {
+    protected void move(long gameTime) {
     }
 
     /**
@@ -78,7 +78,7 @@ public abstract class ElementObj {
 //		先换装
         updateImage(gameTime);
 //		在移动
-        move();
+        move(gameTime);
 //		在发射子弹
         add(gameTime);
     }
