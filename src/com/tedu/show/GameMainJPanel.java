@@ -75,7 +75,7 @@ public class GameMainJPanel extends JPanel implements Runnable {
             this.repaint();
 //			一般情况下，多线程都会使用一个休眠,控制速度
             try {
-                Thread.sleep(10); //休眠10毫秒 1秒刷新20次
+                Thread.sleep(1); //休眠10毫秒 1秒刷新20次
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
