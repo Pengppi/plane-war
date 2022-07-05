@@ -6,25 +6,26 @@ import com.tedu.show.GameJFrame;
 import com.tedu.show.GameMainJPanel;
 
 public class GameStart {
-	/**
-	 * 程序的唯一入口
-	 */
-	public static void main(String[] args) {
-		GameJFrame gj=new GameJFrame();
-		/**实例化面板，注入到jframe中*/
-		GameMainJPanel jp=new GameMainJPanel();	
+    /**
+     * 程序的唯一入口
+     */
+    public static void main(String[] args) {
+        GameJFrame gj = new GameJFrame();
+        /**实例化面板，注入到jframe中*/
+        GameMainJPanel jp = new GameMainJPanel();
 //		实例化监听
-		GameListener listener=new GameListener();
+        GameListener listener = new GameListener();
 //		实例化主线程
-		GameThread th=new GameThread();
+        GameThread th = new GameThread();
 //		注入
-		gj.setjPanel(jp);
-		gj.setKeyListener(listener);
-		gj.setThead(th);
-		
-		gj.start();
-		
-	}
+        gj.setjPanel(jp);
+        gj.setKeyListener(listener);
+        gj.setMouseMotionListener(listener);
+        gj.setThead(th);
+
+        gj.start();
+
+    }
 
 }
 
@@ -35,7 +36,7 @@ public class GameStart {
  * 4.需要的方法就在父类中重写(如果父类不支持，可以采用修改父类)
  * 5.检查配置，完成对象的 load和add到Manage.
  * 6.碰撞等等细节代码。
- * 
+ * <p>
  * web网页游戏
  */
 
