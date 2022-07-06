@@ -15,6 +15,7 @@ public class Enemy extends ElementObj{
 	private int shoot_interval=200;//射击间隔ֵ
 	private int moveXNum=0;//水平移动距离
 	private int moveYNum=1;//垂直移动距离
+	private int bulletKind=1;//子弹种类(1 普通子弹,2 导弹,3 激光, 4 等离子球)
 	
 	public Enemy() { }
 	
@@ -32,8 +33,8 @@ public class Enemy extends ElementObj{
 		this.setKind(kind_str);//飞机种类
 		this.setX(x);
 		this.setY(y);
-		this.setW(40);
-		this.setH(40);
+		this.setW(60);
+		this.setH(60);
 			this.setIcon(new ImageIcon("image/enemy/"+this.getKind()+".png"));
 		//this.setCamp(2);
 		return this;
@@ -92,6 +93,6 @@ public class Enemy extends ElementObj{
 		
 		//向下射
 		x+=this.getW()/2-5;y+=this.getH();//位置偏移
-		return "x:"+x+",y:"+y+",hv:0,vv:3,c:2";
+		return "x:"+x+",y:"+y+",hv:0,vv:3,c:2,k:"+bulletKind;
 	}
 }

@@ -10,7 +10,7 @@ public class PlayFile extends ElementObj{
 	private int attack=1;//攻击力
 	private int moveXNum=0;//水平移动距离
 	private int moveYNum=3;//垂直移动距离
-	
+	private int bulletKind=1;//子弹种类(1 普通子弹,2 导弹,3 激光,4 等离子球)
 	 
 	@Override
 	public void showElement(Graphics g) {	
@@ -30,6 +30,7 @@ public class PlayFile extends ElementObj{
 			case "hv":this.moveXNum=Integer.parseInt(split2[1]);break;
 			case "vv":this.moveYNum=Integer.parseInt(split2[1]);break;
 			case "c":this.setCamp(Integer.parseInt(split2[1]));break;
+			case "k":this.bulletKind=Integer.parseInt(split2[1]);break;
 			}
 		}
 		//设置大小
