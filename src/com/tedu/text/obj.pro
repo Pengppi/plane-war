@@ -1,3 +1,3 @@
-play=com.sedu.element.Play
-file=com.sedu.element.PlayFile
-enemy=com.sedu.element.Enemy
+play=com.tedu.element.Play
+file=com.tedu.element.PlayFile
+enemy=com.tedu.element.Enemy

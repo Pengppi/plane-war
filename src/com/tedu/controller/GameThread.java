@@ -49,7 +49,10 @@ public class GameThread extends Thread {
         /**
          * wpp为了测试飞机移动暂时而加的loadPlay不属于最终的生成方式
          */
-        wpploadPlay();
+    	GameLoad.loadImg();//加载图片
+    	GameLoad.loadObj();//加载对象
+        GameLoad.wpploadPlay();//加载玩家飞机
+        GameLoad.hzfloadEnemey();//加载敌军飞机
 
 
 //		GameLoad.loadImg(); //加载图片
@@ -61,16 +64,7 @@ public class GameThread extends Thread {
 //		全部加载完成，游戏启动
     }
 
-    /**
-     * 测试用的加载方法
-     */
-    private void wpploadPlay() {
-        ImageIcon icon = new ImageIcon("image/play/16.png");
-        ElementObj obj = new Play(200, 200, icon.getIconWidth(), icon.getIconHeight(), icon);//实例化对象
-//		讲对象放入到 元素管理器中
-//		em.getElementsByKey(GameElement.PLAY).add(obj);
-        em.addElement(obj, GameElement.PLAY);//直接添加
-    }
+
 
     /**
      * @说明 游戏进行时
@@ -99,6 +93,7 @@ public class GameThread extends Thread {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+            gameTime++;
         }
     }
 

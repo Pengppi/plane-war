@@ -13,6 +13,8 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 
 import com.tedu.element.ElementObj;
+import com.tedu.element.Enemy;
+import com.tedu.element.Play;
 
 /**
  * @author renjj
@@ -97,18 +99,27 @@ public class GameLoad {
 
     /**
      * 加载玩家
+     */    
+    /**
+     * 测试用的加载方法
+     * 加载玩家飞机
      */
-    public static void loadPlay() {
-        loadObj();
-        String playStr = "200,200,paopao";//没有放到配置文件中
-        ElementObj obj = getObj("play");  //因为我们是依靠的字符串来读取和创建对象
-//		这个字符串是key  也是 唯一 id 相当于为 每个类起啦一个唯一的id名称
-//		这个字符串名称一定要和 obj.pro中的key相同
-        ElementObj play = obj.createElement(playStr);
-//		ElementObj play = new Play().createElement(playStr);
-//		解耦,降低代码和代码之间的耦合度 可以直接通过 接口或者是抽象父类就可以获取到实体对象
-//		通过配置文件的耦合，降低代码的耦合度
-        em.addElement(play, GameElement.PLAY);
+    public static void wpploadPlay() {
+        ElementObj obj=new Play().createElement("200,200,1");//实例化对象（x,y,玩家飞机种类）
+//		讲对象放入到 元素管理器中
+//		em.getElementsByKey(GameElement.PLAY).add(obj);
+        em.addElement(obj, GameElement.PLAY);//直接添加
+    }
+    
+    /**
+     * 测试用的加载方法
+     * 加载敌军飞机
+     * @param str
+     * @return
+     */
+    public static void hzfloadEnemey() {
+    	ElementObj obj=new Enemy().createElement("1");
+    	em.addElement(obj, GameElement.ENEMY);
     }
 
     public static ElementObj getObj(String str) {
@@ -146,6 +157,7 @@ public class GameLoad {
             Set<Object> set = pro.keySet();//是一个set集合
             for (Object o : set) {
                 String classUrl = pro.getProperty(o.toString());
+               //System.out.println(o.toString());
 //				使用反射的方式直接将 类进行获取
                 Class<?> forName = Class.forName(classUrl);
                 objMap.put(o.toString(), forName);
@@ -161,27 +173,27 @@ public class GameLoad {
     }
 
 
-    //	用于测试
-    public static void main(String[] args) {
-        MapLoad(5);
-
-
-        try {
-//			通过类路径名称， com.tedu.Play
-            Class<?> forName = Class.forName("");
-//			通过类名  可以直接访问到这个类
-            Class<?> forName1 = GameLoad.class;
-//			通过实体对象 获取 反射对象
-            GameLoad gameLoad = new GameLoad();
-            Class<? extends GameLoad> class1 = gameLoad.getClass();
-
-
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
+//    //	用于测试
+//    public static void main(String[] args) {
+//        MapLoad(5);
+//
+//
+//        try {
+////			通过类路径名称， com.tedu.Play
+//            Class<?> forName = Class.forName("");
+////			通过类名  可以直接访问到这个类
+//            Class<?> forName1 = GameLoad.class;
+////			通过实体对象 获取 反射对象
+//            GameLoad gameLoad = new GameLoad();
+//            Class<? extends GameLoad> class1 = gameLoad.getClass();
+//
+//
+//        } catch (ClassNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//
+//    }
 
 
 }
