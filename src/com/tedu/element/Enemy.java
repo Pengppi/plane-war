@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
+import com.tedu.show.GameJFrame;
 
 public class Enemy extends ElementObj{
 	
@@ -28,19 +29,39 @@ public class Enemy extends ElementObj{
 	@Override
 	public ElementObj createElement(String kind_str) {
 		
-		int x=ran.nextInt(600);//横坐标
+		int x=ran.nextInt(GameJFrame.GameX-40)+20;//横坐标
 		int y=ran.nextInt(20);//纵坐标
-		this.setKind(kind_str);//飞机种类
 		this.setX(x);
 		this.setY(y);
-		this.setW(60);
-		this.setH(60);
-			this.setIcon(new ImageIcon("image/enemy/"+this.getKind()+".png"));
-		//this.setCamp(2);
+		this.setKind(kind_str);//飞机种类
+		this.setCamp(2);//设置为敌方的阵营
+		
+		//敌机种类不同属性初始化
+		switch(this.getKind())
+		{
+		case "1"://普通敌机(单发)
+		this.kindToEnemy(60, 60, 2, 0, 1);
+		case "2"://双发敌机(双发)
+		}
+		this.setIcon(GameLoad.imgMap.get("enemy"+this.getKind()));
 		return this;
 	}
 
-	
+	//敌机种类初始化敌机属性函数(敌机大小,血量，运动方式(水平速度，垂直速度))
+		public void kindToEnemy(int width,int height,int density,int moveXNum,int moveYNum)
+		{
+			this.setW(width);
+			this.setH(height);
+			this.setDensity(density);
+			this.moveXNum=moveXNum;
+			this.moveYNum=moveYNum;
+		}
+		
+		//敌机攻击函数(攻击子弹种类,
+//		public String enemyAttack(int shoot_interval)
+//		{
+//			
+//		}
 	
       @Override
       protected void move(long gameTime) {
@@ -71,10 +92,9 @@ public class Enemy extends ElementObj{
 	    this.setIcon(GameLoad.imgMap.get("enemy"+this.getKind()));
 	}
 	
-//		@Override   //发射子弹函数
+		@Override   //发射子弹函数
 	public void add(long gameTime) {
 		//一定间隔发射子弹
-		//System.out.println("time:"+gameTime);
 		if((gameTime+4)%this.shoot_interval==0)
 		{
 			//System.out.println("attack");
@@ -91,8 +111,8 @@ public class Enemy extends ElementObj{
 		int x=this.getX();
 		int y=this.getY();
 		
-		//向下射
-		x+=this.getW()/2-5;y+=this.getH();//位置偏移
+		//向下射位置
+		x+=this.getW()/2;y+=this.getH();
 		return "x:"+x+",y:"+y+",hv:0,vv:3,c:2,k:"+bulletKind;
 	}
 }

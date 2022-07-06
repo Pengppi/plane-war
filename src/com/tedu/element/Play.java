@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
+import com.tedu.manager.ElementManager;
+import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
 import com.tedu.show.GameJFrame;
 
@@ -28,6 +30,8 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
      */
     private int tx;
     private int ty;
+    private int bulletKind=1;//子弹种类(1 普通子弹,2 导弹,3 激光, 4 等离子球)
+    private int shoot_interval=100;//射击间隔
 
     public Play() { }
     public Play(int x, int y, int w, int h, ImageIcon icon) {
@@ -42,10 +46,13 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
    	this.setX(new Integer(split[0]));
    	this.setY(new Integer(split[1]));
    	this.setKind(split[2]);
+   	this.setCamp(1);//设置为我方的阵营
    	ImageIcon icon2=GameLoad.imgMap.get("play"+this.getKind());
    	this.setW(icon2.getIconWidth());
    	this.setH(icon2.getIconHeight());
    	this.setIcon(icon2);
+   	//设置防御力
+   	this.setDensity(3);
    	return this;
    }
     /**
@@ -96,7 +103,29 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
        this.setIcon(GameLoad.imgMap.get("play"+this.getKind()));
     }
     
+	@Override   //发射子弹函数
+public void add(long gameTime) {
+	//一定间隔发射子弹
+	if((gameTime+2)%this.shoot_interval==0)
+	{
+		//System.out.println("attack");
+		ElementObj obj=GameLoad.getObj("file");  		
+		ElementObj element = obj.createElement(this.toString());
+		ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
+	}
+}
 
+//子弹json数据生成
+@Override
+public String toString() {
+//生成子弹数据(位置，速度，阵营)(x:水平位置,y:垂直位置,hv:水平速度,vv:垂直速度,c:[1|2]:1 is play,2 is enemy)
+	int x=this.getX();
+	int y=this.getY();
+	
+	//向上射位置
+	x+=this.getW()/2-5;
+	return "x:"+x+",y:"+y+",hv:0,vv:-3,c:1,k:"+bulletKind;
+}
     
 }
 
