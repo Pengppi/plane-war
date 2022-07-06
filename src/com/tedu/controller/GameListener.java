@@ -53,8 +53,8 @@ public class GameListener implements KeyListener, MouseMotionListener {
 	}
 
 	@Override
-	public void mouseMoved(MouseEvent e) {
-		System.out.println(e.getX() + " " + e.getY());
+	public void mouseMoved(MouseEvent e) {//控制器鼠标控制
+		//System.out.println(e.getX() + " " + e.getY());
 		List<ElementObj> play = em.getElementsByKey(GameElement.PLAY);
 		for (ElementObj obj : play) {
 			obj.mouseMove(e.getX(), e.getY());

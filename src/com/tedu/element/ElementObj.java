@@ -18,6 +18,8 @@ public abstract class ElementObj {
     private ImageIcon icon;
     //	还有。。。。 各种必要的状态值，例如：是否生存.
     private boolean live = true; //生存状态 true 代表存在，false代表死亡
+    private String kind="";//种类
+    private int camp=0;//阵营(1 is play,2 is enemy)
 
     // 可以采用枚举值来定义这个(生存，死亡，隐身，无敌)
 //	注明：当重新定义一个用于判定状态的变量，需要思考：1.初始化 2.值的改变 3.值的判定
@@ -67,7 +69,7 @@ public abstract class ElementObj {
     /**
      * @说明 移动方法; 需要移动的子类，请 重写这个方法
      */
-    protected void move() {
+    protected void move(long gameTime) {
     }
 
     /**
@@ -78,7 +80,7 @@ public abstract class ElementObj {
 //		先换装
         updateImage(gameTime);
 //		在移动
-        move();
+        move(gameTime);
 //		在发射子弹
         add(gameTime);
     }
@@ -170,7 +172,18 @@ public abstract class ElementObj {
     public void setLive(boolean live) {
         this.live = live;
     }
-
+    public String getKind() {
+		return kind;
+	}
+    public void setKind(String kind) {
+		this.kind = kind;
+	}
+    public int getCamp() {
+		return camp;
+	}
+    public void setCamp(int camp) {
+		this.camp = camp;
+	}
 
 }
 

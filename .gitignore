@@ -37,3 +37,4 @@ log/
 *.pid
 *.orig
 temp/
+/bin/

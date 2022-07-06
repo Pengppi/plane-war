@@ -1,0 +1,13 @@
+play1=image/play/16.png
+play2=image/play/17.png
+enemy1=image/enemy/3.png
+enemy2=image/enemy/4.png
+enemy3=image/enemy/5.png
+enemy4=image/enemy/6.png
+enemy5=image/enemy/7.png
+enemy6=image/enemy/8.png
+enemy7=image/enemy/9.png
+enemy8=image/enemy/10.png
+enemy9=image/enemy/11.png
+enemy10=image/enemy/12.png
+enemy11=image/enemy/13.png

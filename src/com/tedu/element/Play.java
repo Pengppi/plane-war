@@ -29,11 +29,25 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     private int tx;
     private int ty;
 
-
+    public Play() { }
     public Play(int x, int y, int w, int h, ImageIcon icon) {
         super(x, y, w, h, icon);
     }
-
+    
+    
+    @Override
+   public ElementObj createElement(String str) {
+    	//玩家飞机信息格式解析：（水平位置，垂直位置，飞机种类）
+   	String[] split=str.split(",");
+   	this.setX(new Integer(split[0]));
+   	this.setY(new Integer(split[1]));
+   	this.setKind(split[2]);
+   	ImageIcon icon2=GameLoad.imgMap.get("play"+this.getKind());
+   	this.setW(icon2.getIconWidth());
+   	this.setH(icon2.getIconHeight());
+   	this.setIcon(icon2);
+   	return this;
+   }
     /**
      * 面向对象中第1个思想： 对象自己的事情自己做
      */
@@ -71,23 +85,19 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     }
 
 
-    //	@Override
-//	public int compareTo(Play o) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
+
     @Override
-    public void move() {
+    public void move(long gameTime) {
         this.setX(tx);
         this.setY(ty);
     }
 
     protected void updateImage() {
-//		ImageIcon icon=GameLoad.imgMap.get(fx);
-//		System.out.println(icon.getIconHeight());//得到图片的高度
-//		如果高度是小于等于0 就说明你的这个图片路径有问题
-//		this.setIcon(GameLoad.imgMap.get(fx));
+       this.setIcon(GameLoad.imgMap.get("play"+this.getKind()));
     }
+    
+
+    
 }
 
 
