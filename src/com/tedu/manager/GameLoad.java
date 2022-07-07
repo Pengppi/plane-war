@@ -114,12 +114,31 @@ public class GameLoad {
     /**
      * 测试用的加载方法
      * 加载敌军飞机
-     * @param str
+     * @param 飞机种类编号(kind:String,count:int,kind2:String,count2:int...)
      * @return
      */
-    public static void hzfloadEnemey() {
-    	ElementObj obj=new Enemy().createElement("1");
-    	em.addElement(obj, GameElement.ENEMY);
+    public static void hzfloadEnemey(String []kind) {
+    	new Thread(()->{
+    		for(int i=0;i<kind.length;i+=2)
+	    	{
+	    	 try {
+				Thread.sleep(2000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	    	 int count=Integer.parseInt(kind[i+1]);
+	    	 for(int j=0;j<count;j++)
+	    	 {
+	    		 try {
+					Thread.sleep(2000);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	    	    ElementObj obj=new Enemy().createElement(kind[i]);
+	    	    em.addElement(obj, GameElement.ENEMY);
+	    	 }
+	    	}
+    	}).start();
     }
 
     public static ElementObj getObj(String str) {
@@ -140,6 +159,11 @@ public class GameLoad {
         return null;
     }
 
+        //子弹字符串函数(x:水平位置,y:垂直位置,hv:水平速度,vv:垂直速度,c:[1|2]:1 is play,2 is enemy)
+  		public static String getFileString(int x,int y,int hv,int vv,int camp,int bulletKind)
+  		{
+  			return "x:"+x+",y:"+y+",hv:"+hv+",vv:"+vv+",c:"+camp+",k:"+bulletKind;
+  		}
     /**
      * 扩展： 使用配置文件，来实例化对象 通过固定的key(字符串来实例化)
      *

@@ -31,7 +31,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     private int tx;
     private int ty;
     private int bulletKind=1;//子弹种类(1 普通子弹,2 导弹,3 激光, 4 等离子球)
-    private int shoot_interval=100;//射击间隔
+    private int shoot_interval=40;//射击间隔,单发为100
 
     public Play() { }
     public Play(int x, int y, int w, int h, ImageIcon icon) {
@@ -103,29 +103,37 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
        this.setIcon(GameLoad.imgMap.get("play"+this.getKind()));
     }
     
+	//发射函数(子弹种类,子弹发射的位置)
+	public void shoot(int bulletKind,int[]pos,int[]speed)
+	{
+		this.bulletKind=bulletKind;
+		for(int i=0;i<pos.length;i+=2)//pos[i]为横坐标,pos[i+1]为纵坐标,speed[i]为水平速度,speed[i+1]为垂直速度
+		{
+			ElementObj obj=GameLoad.getObj("file");  		
+			ElementObj element = obj.createElement(//子弹json数据生成
+            GameLoad.getFileString(pos[i],pos[i+1], 
+            		speed[i],speed[i+1],this.getCamp(),bulletKind));
+			ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
+		}
+	}
+	
+	//设置发射间隔
+	public void setInterval(int shoot_interval)
+	{
+		this.shoot_interval=shoot_interval;
+	}
+    
 	@Override   //发射子弹函数
 public void add(long gameTime) {
 	//一定间隔发射子弹
 	if((gameTime+2)%this.shoot_interval==0)
 	{
-		//System.out.println("attack");
-		ElementObj obj=GameLoad.getObj("file");  		
-		ElementObj element = obj.createElement(this.toString());
-		ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
+		shoot(bulletKind, new int[] {this.getX()+this.getW()/2,this.getY()},
+				new int[] {0,-3});
 	}
 }
 
-//子弹json数据生成
-@Override
-public String toString() {
-//生成子弹数据(位置，速度，阵营)(x:水平位置,y:垂直位置,hv:水平速度,vv:垂直速度,c:[1|2]:1 is play,2 is enemy)
-	int x=this.getX();
-	int y=this.getY();
-	
-	//向上射位置
-	x+=this.getW()/2-5;
-	return "x:"+x+",y:"+y+",hv:0,vv:-3,c:1,k:"+bulletKind;
-}
+
     
 }
 

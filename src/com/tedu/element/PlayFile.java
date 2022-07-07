@@ -44,7 +44,7 @@ public class PlayFile extends ElementObj{
 		{
 		//子弹
 		case "1":
-		this.kindToFile(10,10,-this.getW()/2,-this.getH()/2,1);
+		this.kindToFile(10,10,-5,-5,1);
 		break;
 		//导弹
 		case "2":

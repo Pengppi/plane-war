@@ -3,7 +3,6 @@ package com.tedu.element;
 import java.awt.Graphics;
 import java.util.Random;
 
-import javax.swing.ImageIcon;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -29,7 +28,7 @@ public class Enemy extends ElementObj{
 	@Override
 	public ElementObj createElement(String kind_str) {
 		
-		int x=ran.nextInt(GameJFrame.GameX-40)+20;//横坐标
+		int x=ran.nextInt(GameJFrame.GameX-80)+40;//横坐标
 		int y=ran.nextInt(20);//纵坐标
 		this.setX(x);
 		this.setY(y);
@@ -41,7 +40,10 @@ public class Enemy extends ElementObj{
 		{
 		case "1"://普通敌机(单发)
 		this.kindToEnemy(60, 60, 2, 0, 1);
+		break;
 		case "2"://双发敌机(双发)
+		this.kindToEnemy(60, 60, 3, 0, 1);
+		break;
 		}
 		this.setIcon(GameLoad.imgMap.get("enemy"+this.getKind()));
 		return this;
@@ -55,13 +57,7 @@ public class Enemy extends ElementObj{
 			this.setDensity(density);
 			this.moveXNum=moveXNum;
 			this.moveYNum=moveYNum;
-		}
-		
-		//敌机攻击函数(攻击子弹种类,
-//		public String enemyAttack(int shoot_interval)
-//		{
-//			
-//		}
+		}		
 	
       @Override
       protected void move(long gameTime) {
@@ -69,6 +65,7 @@ public class Enemy extends ElementObj{
 			this.setX(this.getX()+this.moveXNum);
 			this.setY(this.getY()+this.moveYNum);
       }
+      
 	@Override
 	public void setLive(boolean live) {
 		super.setLive(live);
@@ -92,27 +89,47 @@ public class Enemy extends ElementObj{
 	    this.setIcon(GameLoad.imgMap.get("enemy"+this.getKind()));
 	}
 	
-		@Override   //发射子弹函数
-	public void add(long gameTime) {
-		//一定间隔发射子弹
-		if((gameTime+4)%this.shoot_interval==0)
+	//发射函数(子弹种类,子弹发射的位置)
+	public void shoot(int bulletKind,int[]pos,int[]speed)
+	{
+		this.bulletKind=bulletKind;
+		for(int i=0;i<pos.length;i+=2)//pos[i]为横坐标,pos[i+1]为纵坐标,speed[i]为水平速度,speed[i+1]为垂直速度
 		{
-			//System.out.println("attack");
 			ElementObj obj=GameLoad.getObj("file");  		
-			ElementObj element = obj.createElement(this.toString());
+			ElementObj element = obj.createElement(//子弹json数据生成
+            GameLoad.getFileString(pos[i],pos[i+1], 
+            		speed[i],speed[i+1],this.getCamp(),bulletKind));
 			ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
 		}
 	}
 	
-	//子弹json数据生成
-	@Override
-	public String toString() {
-	//生成子弹数据(位置，速度，阵营)(x:水平位置,y:垂直位置,hv:水平速度,vv:垂直速度,c:[1|2]:1 is play,2 is enemy)
-		int x=this.getX();
-		int y=this.getY();
-		
-		//向下射位置
-		x+=this.getW()/2;y+=this.getH();
-		return "x:"+x+",y:"+y+",hv:0,vv:3,c:2,k:"+bulletKind;
+	//设置发射间隔
+	public void setInterval(int shoot_interval)
+	{
+		this.shoot_interval=shoot_interval;
 	}
+	
+		@Override   //发射子弹函数
+	public void add(long gameTime) {
+		//一定间隔发射子弹
+		if((gameTime+4)%this.shoot_interval==0)
+		{	
+			switch(this.getKind())
+			{
+			case "1":
+				this.shoot(bulletKind,new int[]{this.getX()+this.getW()/2,this.getY()+this.getH()}, 
+				new int[] {0,3});
+				break;
+			case "2":
+				this.shoot(bulletKind,
+				new int[]{this.getX()+this.getW()/2-10,this.getY()+this.getH(),
+				this.getX()+this.getW()/2+10,this.getY()+this.getH()}, 
+				new int[] {0,3,0,3});
+				break;
+			}
+			
+		}
+	}
+		
+		
 }

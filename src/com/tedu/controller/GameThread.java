@@ -58,7 +58,7 @@ public class GameThread extends Thread {
     	GameLoad.loadImg();//加载图片
     	GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机
-        GameLoad.hzfloadEnemey();//加载敌军飞机
+        GameLoad.hzfloadEnemey(new String[] {"1","4","2","4"});//加载敌军飞机
 
 
 //		GameLoad.loadImg(); //加载图片
