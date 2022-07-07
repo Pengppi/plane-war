@@ -15,7 +15,7 @@ public class Enemy extends ElementObj{
 	private int shoot_interval=200;//射击间隔ֵ
 	private int moveXNum=0;//水平移动距离
 	private int moveYNum=1;//垂直移动距离
-	private int bulletKind=1;//子弹种类(1 普通子弹,2 导弹,3 激光, 4 等离子球)
+	//子弹种类(1 普通子弹,2 散弹,3 导弹,4 激光, 5 等离子球)
 	
 	public Enemy() { }
 	
@@ -39,10 +39,19 @@ public class Enemy extends ElementObj{
 		switch(this.getKind())
 		{
 		case "1"://普通敌机(单发)
-		this.kindToEnemy(60, 60, 2, 0, 1);
+		this.kindToEnemy(60, 60, 3, 0, 1);
 		break;
 		case "2"://双发敌机(双发)
-		this.kindToEnemy(60, 60, 3, 0, 1);
+		this.kindToEnemy(60, 60, 5, 0, 1);
+		break;
+		case "3"://巨型敌机(散射)
+		this.kindToEnemy(100, 100, 15, 0, 1);
+		break;
+		case "4"://疾速敌机(单发)
+		this.kindToEnemy(60, 60, 4, 0, 2);
+		break;
+		case "5"://小型敌机(向左，向右随机)
+		this.kindToEnemy(40, 40, 2, new Random().nextBoolean()?1:-1, 1);
 		break;
 		}
 		this.setIcon(GameLoad.imgMap.get("enemy"+this.getKind()));
@@ -92,7 +101,6 @@ public class Enemy extends ElementObj{
 	//发射函数(子弹种类,子弹发射的位置)
 	public void shoot(int bulletKind,int[]pos,int[]speed)
 	{
-		this.bulletKind=bulletKind;
 		for(int i=0;i<pos.length;i+=2)//pos[i]为横坐标,pos[i+1]为纵坐标,speed[i]为水平速度,speed[i+1]为垂直速度
 		{
 			ElementObj obj=GameLoad.getObj("file");  		
@@ -116,15 +124,22 @@ public class Enemy extends ElementObj{
 		{	
 			switch(this.getKind())
 			{
-			case "1":
-				this.shoot(bulletKind,new int[]{this.getX()+this.getW()/2,this.getY()+this.getH()}, 
+			case "1":case "4":case "5"://普通敌机,疾速敌机,小型敌机
+				this.shoot(1,new int[]{this.getX()+this.getW()/2,this.getY()+this.getH()}, 
 				new int[] {0,3});
 				break;
-			case "2":
-				this.shoot(bulletKind,
+			case "2"://敌机队长
+				this.shoot(1,
 				new int[]{this.getX()+this.getW()/2-10,this.getY()+this.getH(),
 				this.getX()+this.getW()/2+10,this.getY()+this.getH()}, 
 				new int[] {0,3,0,3});
+				break;
+			case "3"://巨型敌机
+				this.shoot(2,
+				new int[]{this.getX()+this.getW()/2-5,this.getY()+this.getH(),
+				this.getX()+this.getW()/2,this.getY()+this.getH(),
+				this.getX()+this.getW()/2+5,this.getY()+this.getH()},
+				new int[] {-1,3,0,3,1,3});
 				break;
 			}
 			

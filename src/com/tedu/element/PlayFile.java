@@ -3,18 +3,28 @@ package com.tedu.element;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import com.tedu.manager.GameLoad;
 import com.tedu.show.GameJFrame;
 
 public class PlayFile extends ElementObj{
 
 	private int moveXNum=0;//水平移动距离
 	private int moveYNum=3;//垂直移动距离
-	
+	private int deleteTime=0;//消失的时间(只有deleteTime==0与isLive==false时才会消失)
 	 
 	@Override
 	public void showElement(Graphics g) {	
-		g.setColor(Color.red);// new Color(255,255,255)
-		g.fillOval(this.getX(), this.getY(), this.getW(), this.getH());		
+//		绘画图片
+		if(this.getIcon().getImage()!=null)
+        g.drawImage(this.getIcon().getImage(),
+                this.getX(), this.getY(),
+                this.getW(), this.getH(), null);
+	}
+	
+	@Override
+	protected void updateImage(long time) {
+		this.setIcon(GameLoad.imgMap.get("bullet"+this.getKind()+this.getCamp()));
+		if(deleteTime>0)deleteTime--;
 	}
 	
 	public PlayFile() {}
@@ -38,23 +48,30 @@ public class PlayFile extends ElementObj{
 			case "k":this.setKind(split2[1]);break;
 			}
 		}
-		
+		this.setIcon(GameLoad.imgMap.get("bullet"+this.getKind()+this.getCamp()));
 		//设置大小,攻击力,子弹偏移(让图片显示为发射点的中心)
 		switch(this.getKind())
 		{
 		//子弹
 		case "1":
-		this.kindToFile(10,10,-5,-5,1);
+		this.kindToFile(10,16,-5,-8,1);
+		break;
+		//散弹
+		case "2":
+		this.kindToFile(10,10,-5,-5,2);
 		break;
 		//导弹
-		case "2":
+		case "3":
 		this.setW(15);
 		this.setH(25);
 		break;
 		//激光
-		case "3":break;
+		case "4":
+		this.deleteTime=3;//激光需要一定时间消失
+		this.kindToFile(10,1000, -5,-1005,1);	
+		break;
 		//等离子
-		case "4":break;
+		case "5":break;
 		}
 		return this;
 	}
@@ -80,4 +97,12 @@ public class PlayFile extends ElementObj{
 		this.setX(this.getX()+this.moveXNum);
 		this.setY(this.getY()+this.moveYNum);
 	}
+	
+	@Override
+	public void setLive(boolean live) {
+		if(this.deleteTime>0)
+	    return ;
+		super.setLive(live);
+	}
+	
 }

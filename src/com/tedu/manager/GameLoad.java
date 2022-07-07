@@ -88,6 +88,7 @@ public class GameLoad {
             Set<Object> set = pro.keySet();//是一个set集合
             for (Object o : set) {
                 String url = pro.getProperty(o.toString());
+                //System.out.println(o.toString());
                 imgMap.put(o.toString(), new ImageIcon(url));
             }
 
@@ -107,7 +108,6 @@ public class GameLoad {
     public static void wpploadPlay() {
         ElementObj obj=new Play().createElement("200,200,1");//实例化对象（x,y,玩家飞机种类）
 //		讲对象放入到 元素管理器中
-//		em.getElementsByKey(GameElement.PLAY).add(obj);
         em.addElement(obj, GameElement.PLAY);//直接添加
     }
     

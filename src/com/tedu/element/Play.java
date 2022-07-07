@@ -30,7 +30,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
      */
     private int tx;
     private int ty;
-    private int bulletKind=1;//子弹种类(1 普通子弹,2 导弹,3 激光, 4 等离子球)
+    //子弹种类(1 普通子弹,2 散弹,3 导弹,4 激光,5 等离子球)
     private int shoot_interval=40;//射击间隔,单发为100
 
     public Play() { }
@@ -106,7 +106,6 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 	//发射函数(子弹种类,子弹发射的位置)
 	public void shoot(int bulletKind,int[]pos,int[]speed)
 	{
-		this.bulletKind=bulletKind;
 		for(int i=0;i<pos.length;i+=2)//pos[i]为横坐标,pos[i+1]为纵坐标,speed[i]为水平速度,speed[i+1]为垂直速度
 		{
 			ElementObj obj=GameLoad.getObj("file");  		
@@ -128,8 +127,18 @@ public void add(long gameTime) {
 	//一定间隔发射子弹
 	if((gameTime+2)%this.shoot_interval==0)
 	{
-		shoot(bulletKind, new int[] {this.getX()+this.getW()/2,this.getY()},
-				new int[] {0,-3});
+		//发射普通子弹
+//		shoot(1, new int[] {this.getX()+this.getW()/2,this.getY()},
+//				new int[] {0,-3});
+		//发射双发子弹
+		this.shoot(1,
+		new int[]{this.getX()+this.getW()/2-10,this.getY(),
+		this.getX()+this.getW()/2+10,this.getY()}, 
+		new int[] {0,-3,0,-3});
+		
+		//发射激光
+		//shoot(4,new int[] {this.getX()+this.getW()/2,this.getY()},
+				//new int[] {0,0});
 	}
 }
 
