@@ -200,6 +200,7 @@ public abstract class ElementObj {
    
     //扣血函数
     public void deductLive(int attack) {
+    	//System.out.println("deduct:"+attack);
     	this.blood=this.blood-attack<=0?0:this.blood-attack;
     	if(this.blood==0)this.setLive(false);
     }
@@ -232,6 +233,11 @@ public abstract class ElementObj {
 		return density;
 	}
     
+    //设置爆炸信息
+	//爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）)默认为(20,8)
+	public void setExplodeMsg(int explodeOriginRange,int explodeExpandRange) {
+		
+	}
     
 }
 

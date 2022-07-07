@@ -58,7 +58,7 @@ public class GameThread extends Thread {
     	GameLoad.loadImg();//加载图片
     	GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机
-        GameLoad.hzfloadEnemey(new String[] {"1","3","2","3","3","3","4","3","5","3"});//加载敌军飞机
+        GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
 
 
 //		GameLoad.loadImg(); //加载图片
@@ -101,7 +101,9 @@ public class GameThread extends Thread {
             	{a.deductLive(b.getAttack()); b.setLive(false);}
             	});
             
-//            gameTime++;//唯一的时间控制
+            ElementPK(plays, enemys, (a,b)->{//判断敌机与我方碰撞(双方直接死亡)
+            	a.setLive(false); b.setLive(false);
+            	});
             try {
                 sleep(10);//默认理解为 1秒刷新100次
             } catch (InterruptedException e) {

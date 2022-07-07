@@ -3,6 +3,8 @@ package com.tedu.element;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import com.tedu.manager.ElementManager;
+import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
 import com.tedu.show.GameJFrame;
 
@@ -11,7 +13,13 @@ public class PlayFile extends ElementObj{
 	private int moveXNum=0;//水平移动距离
 	private int moveYNum=3;//垂直移动距离
 	private int deleteTime=0;//消失的时间(只有deleteTime==0与isLive==false时才会消失)
-	 
+	
+	//爆炸参数
+	private int explodeOriginRange=20;//爆炸原始范围
+	private int explodeExpandRange=8;//爆炸增加范围
+	private int explodeTime=7;//爆炸时间
+	//kind子弹种类(1 子弹,2 散弹, 3 导弹， 4 激光, 5 爆炸) 
+	
 	@Override
 	public void showElement(Graphics g) {	
 //		绘画图片
@@ -23,8 +31,25 @@ public class PlayFile extends ElementObj{
 	
 	@Override
 	protected void updateImage(long time) {
-		this.setIcon(GameLoad.imgMap.get("bullet"+this.getKind()+this.getCamp()));
+		
+		//System.out.println(deleteTime);
 		if(deleteTime>0)deleteTime--;
+		if(this.getKind().equals("5"))//爆炸膨胀
+		{
+			if(deleteTime==0)
+			{
+				this.setLive(false);
+				return;
+			}
+			else {
+			int range=explodeOriginRange+(explodeTime-deleteTime)*explodeExpandRange;
+			this.kindToFile(range,range ,-explodeExpandRange/2,
+					-explodeExpandRange/2,1);
+			this.setIcon(GameLoad.imgMap.get("bullet"+this.getKind()+(9-deleteTime)));
+			}
+		}
+		else  this.setIcon(GameLoad.imgMap.get("bullet"+this.getKind()+this.getCamp()));
+		
 	}
 	
 	public PlayFile() {}
@@ -48,6 +73,7 @@ public class PlayFile extends ElementObj{
 			case "k":this.setKind(split2[1]);break;
 			}
 		}
+
 		this.setIcon(GameLoad.imgMap.get("bullet"+this.getKind()+this.getCamp()));
 		//设置大小,攻击力,子弹偏移(让图片显示为发射点的中心)
 		switch(this.getKind())
@@ -62,16 +88,20 @@ public class PlayFile extends ElementObj{
 		break;
 		//导弹
 		case "3":
-		this.setW(15);
-		this.setH(25);
+		this.kindToFile(12,28,-6,-14,0);
 		break;
 		//激光
 		case "4":
 		this.deleteTime=3;//激光需要一定时间消失
-		this.kindToFile(10,1000, -5,-1005,1);	
+		if(this.getCamp()==1)kindToFile(10,1000, -5,-1005,1);//主机的激光
+		else this.kindToFile(10,1000, -5,5,1);	//敌机的激光
 		break;
-		//等离子
-		case "5":break;
+		//爆炸
+		case "5"://当getCamp()为3时，表示飞机坠毁爆炸
+		this.deleteTime=7;//爆炸需要一定时间消失
+		this.kindToFile(explodeOriginRange,explodeOriginRange,
+		-explodeOriginRange/2, -explodeOriginRange/2,this.getCamp()==3?0:1);
+		break;
 		}
 		return this;
 	}
@@ -89,8 +119,10 @@ public class PlayFile extends ElementObj{
     //子弹移动
 	@Override
 	protected void move(long gameTime) {
-		if(this.getX()<0 || this.getX() >GameJFrame.GameX || 
-				this.getY() <0 || this.getY()>GameJFrame.GameY) {
+		
+		//边界检测
+		if(this.getX()<0 || this.getX()+this.getW()>GameJFrame.GameX || 
+				this.getY() <0 || this.getY()+this.getH()>GameJFrame.GameY) {
 			this.setLive(false);
 			return;
 		}
@@ -98,11 +130,28 @@ public class PlayFile extends ElementObj{
 		this.setY(this.getY()+this.moveYNum);
 	}
 	
+	//子弹消失函数
 	@Override
 	public void setLive(boolean live) {
 		if(this.deleteTime>0)
 	    return ;
-		super.setLive(live);
+		
+		if(!live&&this.getKind().equals("3"))//导弹爆炸
+		{
+			ElementObj obj=GameLoad.getObj("file");  		
+			ElementObj element = obj.createElement(//子弹json数据生成
+            GameLoad.getFileString(this.getX(),this.getY(), 
+            		0,0,this.getCamp(),5));//生成爆炸
+			ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
+		}
+		super.setLive(live);	
+	}
+	
+	//爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）)默认为(20,8)
+	@Override
+	public void setExplodeMsg(int explodeOriginRange,int explodeExpandRange) {
+		this.explodeOriginRange=explodeOriginRange;
+		this.explodeExpandRange = explodeExpandRange;
 	}
 	
 }

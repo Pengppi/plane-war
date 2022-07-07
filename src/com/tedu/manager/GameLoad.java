@@ -164,6 +164,7 @@ public class GameLoad {
   		{
   			return "x:"+x+",y:"+y+",hv:"+hv+",vv:"+vv+",c:"+camp+",k:"+bulletKind;
   		}
+  		
     /**
      * 扩展： 使用配置文件，来实例化对象 通过固定的key(字符串来实例化)
      *

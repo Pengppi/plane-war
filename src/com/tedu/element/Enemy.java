@@ -15,7 +15,8 @@ public class Enemy extends ElementObj{
 	private int shoot_interval=200;//射击间隔ֵ
 	private int moveXNum=0;//水平移动距离
 	private int moveYNum=1;//垂直移动距离
-	//子弹种类(1 普通子弹,2 散弹,3 导弹,4 激光, 5 等离子球)
+	//bulletKind子弹种类(1 普通子弹,2 散弹,3 导弹,4 激光, 5 等离子球)
+	private int divideBulletTime=0;//分裂者分裂子弹的间隔
 	
 	public Enemy() { }
 	
@@ -28,7 +29,7 @@ public class Enemy extends ElementObj{
 	@Override
 	public ElementObj createElement(String kind_str) {
 		
-		int x=ran.nextInt(GameJFrame.GameX-80)+40;//横坐标
+		int x=ran.nextInt(GameJFrame.GameX-80)+41;//横坐标
 		int y=ran.nextInt(20);//纵坐标
 		this.setX(x);
 		this.setY(y);
@@ -45,13 +46,29 @@ public class Enemy extends ElementObj{
 		this.kindToEnemy(60, 60, 5, 0, 1);
 		break;
 		case "3"://巨型敌机(散射)
-		this.kindToEnemy(100, 100, 15, 0, 1);
+		this.kindToEnemy(90, 90, 12, 0, 1);
 		break;
 		case "4"://疾速敌机(单发)
-		this.kindToEnemy(60, 60, 4, 0, 2);
+		this.kindToEnemy(60, 60, 3, 0, 2);
 		break;
 		case "5"://小型敌机(向左，向右随机)
 		this.kindToEnemy(40, 40, 2, new Random().nextBoolean()?1:-1, 1);
+		break;
+		case "6"://分裂者(中间停下，向四个方向发射)
+		this.kindToEnemy(60, 60, 4, 0, 1);
+		//设置分裂的时间间隔
+		this.divideBulletTime=ran.nextInt(2)+4;//[4-5]
+		break;
+		case "7"://机枪敌机（连射）
+		setInterval(50);
+		case "8"://激光敌机（发射激光）
+		this.kindToEnemy(60, 60, 6, 0, 1);
+		break;
+		case "9"://自爆敌机（一定几率自爆）
+		this.kindToEnemy(60, 60, 5, 0, 2);
+		break;
+		case "0"://导弹敌机（发射导弹）
+		this.kindToEnemy(70, 70, 8, 0, 1);
 		break;
 		}
 		this.setIcon(GameLoad.imgMap.get("enemy"+this.getKind()));
@@ -88,6 +105,12 @@ public class Enemy extends ElementObj{
 	public void die() {
 		if(!this.addStar)//增加积分
 		{
+		//爆炸
+		ElementObj obj=GameLoad.getObj("file");  		
+		ElementObj element = obj.createElement(//子弹json数据生成
+        GameLoad.getFileString(this.getX()+this.getW()/2,this.getY()+this.getH()/2, 
+           0,0,3,5));//生成爆炸
+		ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
 		//在此位置增加分数
 		this.addStar=true;
 		}
@@ -124,7 +147,7 @@ public class Enemy extends ElementObj{
 		{	
 			switch(this.getKind())
 			{
-			case "1":case "4":case "5"://普通敌机,疾速敌机,小型敌机
+			case "1":case "4":case "5":case "7"://普通敌机,疾速敌机,小型敌机,机枪敌机
 				this.shoot(1,new int[]{this.getX()+this.getW()/2,this.getY()+this.getH()}, 
 				new int[] {0,3});
 				break;
@@ -141,6 +164,29 @@ public class Enemy extends ElementObj{
 				this.getX()+this.getW()/2+5,this.getY()+this.getH()},
 				new int[] {-1,3,0,3,1,3});
 				break;
+			case "6"://分裂者
+				//随机分裂子弹
+				if((gameTime+4)%(this.shoot_interval*(this.divideBulletTime-1))==0)//飞机停止飞行
+					this.moveYNum=0;
+				else if((gameTime+4)%(this.shoot_interval*this.divideBulletTime)==0)//分裂子弹
+				{
+					this.shoot(1,
+					new int[]{this.getX()+this.getW()/2,this.getY(),
+					this.getX()+this.getW(),this.getY()+this.getH()/2,
+					this.getX()+this.getW()/2,this.getY()+this.getH(),
+					this.getX(),this.getY()+getH()/2},
+					new int[] {0,-3,3,0,0,3,-3,0});
+				}
+				else if((gameTime+4)%(this.shoot_interval*(this.divideBulletTime+1))==0)//飞机继续飞行
+					this.moveYNum=1;
+				else //飞机射击
+					this.shoot(1,new int[]{this.getX()+this.getW()/2,this.getY()+this.getH()}, 
+					new int[] {0,3});
+				break;
+			case "8"://激光敌机
+				    shoot(4,new int[] {this.getX()+this.getW()/2,this.getY()+this.getH()},
+				    new int[] {0,0});
+				  break;
 			}
 			
 		}
