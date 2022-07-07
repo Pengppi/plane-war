@@ -69,7 +69,7 @@ public abstract class ElementObj {
      * @扩展 本方法是否可以分为2个方法？1个接收按下，1个接收松开(给同学扩展使用)
      */
     public void keyClick(boolean bl, int key) {  //这个方法不是强制必须重写的。
-        System.out.println("测试使用");
+       
     }
 
     public void mouseMove(int tx, int ty) {

@@ -30,17 +30,29 @@ public class GameListener implements KeyListener, MouseMotionListener {
 	public void keyTyped(KeyEvent e) {
 	}
 	/**
-	 * 按下: 左37 上38 右39 下40    按tab没有反应
-	 * 实现主角的移动
+	 *键盘事件，按f可以切换武器
 	 */
+	private Set<Integer>set=new HashSet<Integer>();
 	@Override
 	public void keyPressed(KeyEvent e) {
-
+		int key=e.getKeyCode();
+		if(set.contains(key))return ;
+		set.add(key);
+		
+		List<ElementObj>play=em.getElementsByKey(GameElement.PLAY);
+		for(ElementObj obj:play)
+			obj.keyClick(true,e.getKeyCode());
 	}
 	/**松开*/
 	@Override
 	public void keyReleased(KeyEvent e) {
-
+		if(!set.contains(e.getKeyCode())) {
+			return;
+		}
+		set.remove(e.getKeyCode());//�Ƴ�����
+		List<ElementObj>play=em.getElementsByKey(GameElement.PLAY);
+		for(ElementObj obj:play)
+			obj.keyClick(false,e.getKeyCode());
 	}
 
 	@Override

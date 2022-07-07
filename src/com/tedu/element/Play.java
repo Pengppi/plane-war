@@ -32,6 +32,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     private int ty;
     //子弹种类(1 普通子弹,2 散弹,3 导弹,4 激光,5 等离子球)
     private int shoot_interval=40;//射击间隔,单发为100
+    private int weapon_kind=1;//武器种类
 
     public Play() { }
     public Play(int x, int y, int w, int h, ImageIcon icon) {
@@ -91,7 +92,18 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.ty = y;
     }
 
-
+    //键盘事件，按f切换武器
+    @Override
+    public void keyClick(boolean bl, int key) {
+    	if(bl) {
+			switch(key)
+			{
+			case 70://切换武器
+			  this.weapon_kind=this.weapon_kind==3?1:this.weapon_kind+1;
+			  break;
+			}
+		}
+    }
 
     @Override
     public void move(long gameTime) {
@@ -123,22 +135,34 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 	}
     
 	@Override   //发射子弹函数
-public void add(long gameTime) {
+   public void add(long gameTime) {
 	//一定间隔发射子弹
 	if((gameTime+2)%this.shoot_interval==0)
 	{
-		//发射普通子弹
-//		shoot(1, new int[] {this.getX()+this.getW()/2,this.getY()},
-//				new int[] {0,-3});
-		//发射双发子弹
-		this.shoot(1,
-		new int[]{this.getX()+this.getW()/2-10,this.getY(),
-		this.getX()+this.getW()/2+10,this.getY()}, 
-		new int[] {0,-3,0,-3});
+		switch(this.weapon_kind)
+		{
+		case 1:
+			//发射普通子弹
+			shoot(1, new int[] {this.getX()+this.getW()/2,this.getY()},
+					new int[] {0,-3});
+			break;
+		case 2:
+			//发射双发子弹
+			this.shoot(1,
+			new int[]{this.getX()+this.getW()/2-10,this.getY(),
+			this.getX()+this.getW()/2+10,this.getY()}, 
+			new int[] {0,-3,0,-3});
+			break;
+		case 3:
+			//发射激光
+			shoot(4,new int[] {this.getX()+this.getW()/2,this.getY()},
+					new int[] {0,0});
+			break;
+		}
 		
-		//发射激光
-		//shoot(4,new int[] {this.getX()+this.getW()/2,this.getY()},
-				//new int[] {0,0});
+		
+		
+		
 	}
 }
 
