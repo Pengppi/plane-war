@@ -38,3 +38,7 @@ flash2=image/flash/flash3.png
 flash3=image/flash/flash4.png
 
 bg1=image/bg/bg1.png
+bg2=image/bg/bg2.png
+bg3=image/bg/bg3.png
+bg4=image/bg/bg4.png
+bg5=image/bg/bg5.png

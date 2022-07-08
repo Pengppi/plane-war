@@ -75,8 +75,8 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
      */
     @Override   // 注解 通过反射机制，为类或者方法或者属性 添加的注释(相当于身份证判定)
     public void mouseMove(int tx, int ty) {
-        int x = +tx - this.getW()+45;
-        int y = ty - this.getH();
+        int x = tx - this.getW()/2;
+        int y = ty - this.getH()/2;
         if (x < 0) {
             x = 0;
         }
