@@ -34,13 +34,13 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     private int shoot_interval=80;//射击间隔,单发为100
     private int weapon_kind=7;//武器种类
     private int weapon_count=7;//武器种类总数
-
+	private int rank=1;//等级，玩家等级会因吃到升级道具而改变
     public Play() { }
     public Play(int x, int y, int w, int h, ImageIcon icon) {
         super(x, y, w, h, icon);
     }
-    
-    
+
+
     @Override
    public ElementObj createElement(String str) {
     	//玩家飞机信息格式解析：（水平位置，垂直位置，飞机种类）
@@ -55,6 +55,10 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
    	this.setIcon(icon2);
    	//设置防御力
    	this.setDensity(3);
+   	//设置玩家初始血量为10
+   	this.setBlood(10);
+   	//设置玩家初始等级为1
+   	this.setRank(1);
    	return this;
    }
     /**
@@ -93,6 +97,13 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.ty = y;
     }
 
+	//玩家等级会因吃到升级道具而升级,而因等级改变至一定程度又会改变武器种类
+	public void changeKind(){
+    	if(rank%5==0)
+		//因等级上张，而子弹种类会变得更加高级，直到达到最高级的子弹种类后不变
+		this.weapon_kind=this.weapon_kind==this.weapon_count?this.weapon_kind:this.weapon_kind+1;
+	}
+
     //键盘事件，按f切换武器
     @Override
     public void keyClick(boolean bl, int key) {
@@ -115,27 +126,27 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     protected void updateImage() {
        this.setIcon(GameLoad.imgMap.get("play"+this.getKind()));
     }
-    
+
 	//发射函数(子弹种类,子弹发射的位置,子弹速度,发射间隔)
 	public void shoot(int bulletKind,int[]pos,int[]speed,int shoot_interval)
 	{
 		this.setInterval(shoot_interval);
 		for(int i=0;i<pos.length;i+=2)//pos[i]为横坐标,pos[i+1]为纵坐标,speed[i]为水平速度,speed[i+1]为垂直速度
 		{
-			ElementObj obj=GameLoad.getObj("file");  		
+			ElementObj obj=GameLoad.getObj("file");
 			ElementObj element = obj.createElement(//子弹json数据生成
-            GameLoad.getFileString(pos[i],pos[i+1], 
+            GameLoad.getFileString(pos[i],pos[i+1],
             		speed[i],speed[i+1],this.getCamp(),bulletKind));
 			ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
 		}
 	}
-	
+
 	//设置发射间隔
 	public void setInterval(int shoot_interval)
 	{
 		this.shoot_interval=shoot_interval;
 	}
-    
+
 	@Override   //发射子弹函数
    public void add(long gameTime) {
 	//一定间隔发射子弹
@@ -143,7 +154,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 	{
 		switch(this.weapon_kind)
 		{
-		
+
 		case 1:
 			//发射普通子弹
 			shoot(1, new int[] {this.getX()+this.getW()/2,this.getY()},
@@ -153,7 +164,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 			//发射双发子弹
 			this.shoot(1,
 			new int[]{this.getX()+this.getW()/2-10,this.getY(),
-			this.getX()+this.getW()/2+10,this.getY()}, 
+			this.getX()+this.getW()/2+10,this.getY()},
 			new int[] {0,-3,0,-3},80);
 			break;
 		case 3:
@@ -171,7 +182,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 		case 5://双重机枪
 			this.shoot(1,
 			new int[]{this.getX()+this.getW()/2-10,this.getY(),
-			this.getX()+this.getW()/2+10,this.getY()}, 
+			this.getX()+this.getW()/2+10,this.getY()},
 			new int[] {0,-3,0,-3},20);
 			break;
 		case 6:
@@ -185,7 +196,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 			new int[] {0,-7},80);
 			break;
 		}
-		
+
 	}
 }
 
@@ -197,18 +208,23 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 			this.die();//调用死亡函数(如爆炸)
 		}
 	}
-	
+
 	@Override
 	public void die() {
 		//爆炸
-		ElementObj obj=GameLoad.getObj("file");  		
+		ElementObj obj=GameLoad.getObj("file");
 		ElementObj element = obj.createElement(//子弹json数据生成
-        GameLoad.getFileString(this.getX()+this.getW()/2,this.getY()+this.getH()/2, 
+        GameLoad.getFileString(this.getX()+this.getW()/2,this.getY()+this.getH()/2,
            0,0,3,5));//生成爆炸
 		element.setExplodeMsg(30,12);
 		ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
 	}
-    
+
+
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+
 }
 
 

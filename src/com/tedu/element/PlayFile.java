@@ -13,25 +13,24 @@ public class PlayFile extends ElementObj{
 	private int moveXNum=0;//水平移动距离
 	private int moveYNum=3;//垂直移动距离
 	private int deleteTime=0;//消失的时间(只有deleteTime==0与isLive==false时才会消失)
-	
+
 	//爆炸参数
 	private int explodeOriginRange=20;//爆炸原始范围
 	private int explodeExpandRange=8;//爆炸增加范围
 	private int explodeTime=7;//爆炸时间
-	//kind子弹种类(1 子弹,2 散弹, 3 导弹， 4 激光, 5 爆炸) 
-	
+	//kind子弹种类(1 子弹,2 散弹, 3 导弹， 4 激光, 5 爆炸)
 	@Override
-	public void showElement(Graphics g) {	
+	public void showElement(Graphics g) {
 //		绘画图片
 		if(this.getIcon().getImage()!=null)
         g.drawImage(this.getIcon().getImage(),
                 this.getX(), this.getY(),
                 this.getW(), this.getH(), null);
 	}
-	
+
 	@Override
 	protected void updateImage(long time) {
-		
+
 		//System.out.println(deleteTime);
 		if(deleteTime>0)deleteTime--;
 		if(this.getKind().equals("5"))//爆炸膨胀
@@ -49,13 +48,13 @@ public class PlayFile extends ElementObj{
 			}
 		}
 		else  this.setIcon(GameLoad.imgMap.get("bullet"+this.getKind()+this.getCamp()));
-		
+
 	}
-	
+
 	public PlayFile() {}
 	@Override   //{X:3,y:5,f:up}
 	public  ElementObj createElement(String str) {//子弹的初始化
-		
+
 		//子弹配置信息的初始化，字符串信息解析
 		String[] split = str.split(",");
 		for(String str1 : split) {//X:3
@@ -105,7 +104,7 @@ public class PlayFile extends ElementObj{
 		}
 		return this;
 	}
-     
+
 	//子弹种类初始化子弹属性函数
 	public void kindToFile(int width,int height,int offsetX,int offsetY,int attack)
 	{
@@ -115,13 +114,13 @@ public class PlayFile extends ElementObj{
 		this.setY(this.getY()+offsetY);
 		this.setAttack(attack);
 	}
-	
+
     //子弹移动
 	@Override
 	protected void move(long gameTime) {
-		
+
 		//边界检测
-		if(this.getX()<0 || this.getX()+this.getW()>GameJFrame.GameX || 
+		if(this.getX()<0 || this.getX()+this.getW()>GameJFrame.GameX ||
 				this.getY() <0 || this.getY()+this.getH()>GameJFrame.GameY) {
 			this.setLive(false);
 			return;
@@ -129,29 +128,29 @@ public class PlayFile extends ElementObj{
 		this.setX(this.getX()+this.moveXNum);
 		this.setY(this.getY()+this.moveYNum);
 	}
-	
+
 	//子弹消失函数
 	@Override
 	public void setLive(boolean live) {
 		if(this.deleteTime>0)
 	    return ;
-		
+
 		if(!live&&this.getKind().equals("3"))//导弹爆炸
 		{
-			ElementObj obj=GameLoad.getObj("file");  		
+			ElementObj obj=GameLoad.getObj("file");
 			ElementObj element = obj.createElement(//子弹json数据生成
-            GameLoad.getFileString(this.getX(),this.getY(), 
+            GameLoad.getFileString(this.getX(),this.getY(),
             		0,0,this.getCamp(),5));//生成爆炸
 			ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
 		}
-		super.setLive(live);	
+		super.setLive(live);
 	}
-	
+
 	//爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）)默认为(20,8)
 	@Override
 	public void setExplodeMsg(int explodeOriginRange,int explodeExpandRange) {
 		this.explodeOriginRange=explodeOriginRange;
 		this.explodeExpandRange = explodeExpandRange;
 	}
-	
+
 }

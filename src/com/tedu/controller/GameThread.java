@@ -2,11 +2,9 @@ package com.tedu.controller;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.ImageIcon;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.tedu.element.ElementObj;
-import com.tedu.element.Play;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -59,6 +57,7 @@ public class GameThread extends Thread {
     	GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机
         GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
+        GameLoad.zzrloadTrap(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载陷阱
 
 
 //		GameLoad.loadImg(); //加载图片
@@ -82,28 +81,37 @@ public class GameThread extends Thread {
 
     private void gameRun() {
         long gameTime = 0L;//给int类型就可以啦
+        AtomicLong nowStar = new AtomicLong(0L);//当前总得分
         while (true) {// 预留扩展   true可以变为变量，用于控制管关卡结束等
             Map<GameElement, List<ElementObj>> all = em.getGameElements();
             List<ElementObj> enemys = em.getElementsByKey(GameElement.ENEMY);
             List<ElementObj> files = em.getElementsByKey(GameElement.PLAYFILE);
             //List<ElementObj> maps = em.getElementsByKey(GameElement.MAPS);
             List<ElementObj> plays = em.getElementsByKey(GameElement.PLAY);
+            List<ElementObj> traps = em.getElementsByKey(GameElement.TRAP);
             moveAndUpdate(all, gameTime);//	游戏元素自动化方法
-
+            reduceTrapTime(traps);//减少陷阱警告时间
             ElementPK(enemys, files, (a,b)->{//判断我方的子弹与敌人碰撞
-            	if(a.getCamp()+b.getCamp()==3) 
-                 {a.deductLive(b.getAttack()); b.setLive(false);}
+            	if(a.getCamp()+b.getCamp()==3)
+                 {
+                     a.deductLive(b.getAttack());
+                     nowStar.addAndGet(a.dieStar());
+                     b.setLive(false);
+                 }
             	});
             //ElementPK(files, maps, (a,b)->{a.setLive(false); b.setLive(false);});
-            
+
             ElementPK(plays, files, (a,b)->{//判断敌人的子弹与我方碰撞
             	if(a.getCamp()+b.getCamp()==3)
             	{a.deductLive(b.getAttack()); b.setLive(false);}
             	});
-            
+
             ElementPK(plays, enemys, (a,b)->{//判断敌机与我方碰撞(双方直接死亡)
-            	a.setLive(false); b.setLive(false);
+            	a.setLive(false);
+            	b.setLive(false);
+                nowStar.addAndGet(b.dieStar());
             	});
+
             try {
                 sleep(10);//默认理解为 1秒刷新100次
             } catch (InterruptedException e) {
@@ -148,6 +156,7 @@ public class GameThread extends Thread {
                 if (!obj.isLive()) {//如果死亡
 //					list.remove(i--);  //可以使用这样的方式
 //					启动一个死亡方法(方法中可以做事情例如:死亡动画 ,掉装备)
+                    //若这是陷阱警告死亡，即会产生对应的效果子弹出来
                     obj.die();//需要大家自己补充
                     list.remove(i);
                     continue;
@@ -157,6 +166,19 @@ public class GameThread extends Thread {
         }
     }
 
+    public void reduceTrapTime(List<ElementObj> traps){
+        for (int i = 0; i < traps.size(); i++) {
+            ElementObj trap = traps.get(i);
+            trap.reduceTime();
+            if(trap.getRestTime()==0) trap.setLive(false);
+            if (!trap.isLive()) {//如果警告时间已到
+                //若这是陷阱警告死亡，即会产生对应的效果子弹出来
+                trap.die();//需要大家自己补充
+                traps.remove(i);
+                continue;
+            }
+        }
+    }
 
     /**
      * 游戏切换关卡
