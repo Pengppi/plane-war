@@ -43,6 +43,7 @@ bullet57=image/cartridge/bang6.png
 bullet58=image/cartridge/bang7.png
 bullet59=image/cartridge/bang8.png
 
+<<<<<<< HEAD
 bullet61=image/cartridge/plasma1.png
 bullet62=image/cartridge/plasma2.png
 bullet63=image/cartridge/plasma3.png
@@ -51,4 +52,16 @@ bullet65=image/cartridge/plasma5.png
 bullet66=image/cartridge/plasma6.png
 bullet67=image/cartridge/plasma7.png
 bullet68=image/cartridge/plasma8.png
+
+
+flash0=image/flash/flash1.png 
+flash1=image/flash/flash2.png
+flash2=image/flash/flash3.png
+flash3=image/flash/flash4.png
+
+bg1=image/bg/bg1.png
+bg2=image/bg/bg2.png
+bg3=image/bg/bg3.png
+bg4=image/bg/bg4.png
+bg5=image/bg/bg5.png
 

@@ -2,11 +2,7 @@ package com.tedu.controller;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.ImageIcon;
-
 import com.tedu.element.ElementObj;
-import com.tedu.element.Play;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -55,17 +51,16 @@ public class GameThread extends Thread {
         /**
          * wpp为了测试飞机移动暂时而加的loadPlay不属于最终的生成方式
          */
+    	
     	GameLoad.loadImg();//加载图片
     	GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机
         //GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
         //GameLoad.hzfloadEnemey(new String[] {"e","3"});
-        GameLoad.hzfloadBoss("1");
-
-
-//		GameLoad.loadImg(); //加载图片
-//		GameLoad.MapLoad(5);//可以变为 变量，每一关重新加载  加载地图
-//		加载主角
+        //GameLoad.hzfloadBoss("1");
+        GameLoad.loadMap(2);
+        GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
+       
 //		GameLoad.loadPlay();//也可以带参数，单机还是2人
 //		加载敌人NPC等
 
@@ -108,7 +103,7 @@ public class GameThread extends Thread {
             ElementPK(plays, files, (a,b)->{//判断敌人的子弹与我方碰撞
             	if(a.getCamp()+b.getCamp()==3)
             	{a.deductLive(b.getAttack()); b.setLive(false);}
-            	});
+            	});         
             
             ElementPK(plays, enemys, (a,b)->{//判断敌机与我方碰撞(双方直接死亡)
             	a.setLive(false); b.setLive(false);
@@ -128,6 +123,20 @@ public class GameThread extends Thread {
         }
     }
 
+    // 我方子弹与敌方子弹碰撞都设为死亡
+    public void ElementPK(List<ElementObj> listA, List<ElementObj> listB) {
+        for (int i = 0; i < listA.size(); i++) {
+            ElementObj enemy = listA.get(i);
+            for (int j = i + 1; j < listB.size(); j++) {
+                ElementObj file = listB.get(j);
+                if (enemy.pk(file) && enemy.getCamp() + file.getCamp() == 3) {
+                    enemy.setLive(false);
+                    file.setLive(false);
+                }
+            }
+        }
+    }
+    
     public void ElementPK(List<ElementObj> listA, List<ElementObj> listB,Collide collide) {
 //		请大家在这里使用循环，做一对一判定，如果为真，就设置2个对象的死亡状态
         for (int i = 0; i < listA.size(); i++) {

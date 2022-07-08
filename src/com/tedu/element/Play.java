@@ -1,11 +1,7 @@
 package com.tedu.element;
 
 import java.awt.Graphics;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.swing.ImageIcon;
-
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -45,8 +41,8 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
    public ElementObj createElement(String str) {
     	//玩家飞机信息格式解析：（水平位置，垂直位置，飞机种类）
    	String[] split=str.split(",");
-   	this.setX(new Integer(split[0]));
-   	this.setY(new Integer(split[1]));
+   	this.setX(Integer.parseInt(split[0]));
+   	this.setY(Integer.parseInt(split[1]));
    	this.setKind(split[2]);
    	this.setCamp(1);//设置为我方的阵营
    	ImageIcon icon2=GameLoad.imgMap.get("play"+this.getKind());
@@ -75,8 +71,8 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
      */
     @Override   // 注解 通过反射机制，为类或者方法或者属性 添加的注释(相当于身份证判定)
     public void mouseMove(int tx, int ty) {
-        int x = +tx - this.getW()+45;
-        int y = ty - this.getH();
+        int x = tx - this.getW()/2;
+        int y = ty - this.getH()/2;
         if (x < 0) {
             x = 0;
         }
@@ -92,16 +88,21 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.tx = x;
         this.ty = y;
     }
-
+    //private int test;
     //键盘事件，按f切换武器
     @Override
     public void keyClick(boolean bl, int key) {
     	if(bl) {
 			switch(key)
 			{
-			case 70://切换武器
+			case 70://切换武器f键
 			  this.weapon_kind=this.weapon_kind==this.weapon_count?1:this.weapon_kind+1;
 			  break;
+			case 90: //闪光道具的使用z键
+				ElementObj obj=GameLoad.getObj("flash");  		
+				ElementObj element = obj.createElement("1");
+				ElementManager.getManager().addElement(element, GameElement.DIE);
+				break;
 			}
 		}
     }
@@ -143,7 +144,6 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 	{
 		switch(this.weapon_kind)
 		{
-		
 		case 1:
 			//发射普通子弹
 			shoot(1, new int[] {this.getX()+this.getW()/2,this.getY()},
@@ -212,7 +212,6 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 		element.setExplodeMsg(30,12,2);
 		ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
 	}
-    
 }
 
 

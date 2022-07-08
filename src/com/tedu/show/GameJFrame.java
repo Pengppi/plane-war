@@ -18,8 +18,10 @@ import javax.swing.JPanel;
  * 4.显示窗体
  */
 public class GameJFrame extends JFrame {
-    public static int GameX = 1000;//GAMEX
-    public static int GameY = 800;
+    //    public static int GameX = 1000;//GAMEX
+    //    public static int GameY = 800;
+    public static int GameX = 1920;//GAMEX
+    public static int GameY = 1080;
     private JPanel jPanel = null; //正在现实的面板
     private KeyListener keyListener = null;//键盘监听
     private MouseMotionListener mouseMotionListener = null; //鼠标监听
@@ -36,6 +38,7 @@ public class GameJFrame extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//设置退出并且关闭
         this.setResizable(false);
         this.setLocationRelativeTo(null);//屏幕居中显示
+        this.setUndecorated(true);
 //		。。。。
     }
 
