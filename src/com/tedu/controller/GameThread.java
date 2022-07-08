@@ -58,7 +58,8 @@ public class GameThread extends Thread {
     	GameLoad.loadImg();//加载图片
     	GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机
-        GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
+        //GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
+        GameLoad.hzfloadEnemey(new String[] {"e","3"});
 
 
 //		GameLoad.loadImg(); //加载图片
@@ -121,15 +122,9 @@ public class GameThread extends Thread {
             for (int j = 0; j < listB.size(); j++) {
                 ElementObj file = listB.get(j);
                 if (enemy.pk(file)) {
-//					问题： 如果是boos，那么也一枪一个吗？？？？
-//					将 setLive(false) 变为一个受攻击方法，还可以传入另外一个对象的攻击力
-//					当收攻击方法里执行时，如果血量减为0 再进行设置生存为 false
-//					扩展 留给大家
-//                    System.out.println(listB);
-//                    enemy.setLive(false);
-//                    file.setLive(false);
+ 
                 	collide.collide(enemy,file);
-                    //break;
+ 
                 }
             }
         }
@@ -141,14 +136,9 @@ public class GameThread extends Thread {
 //		GameElement.values();//隐藏方法  返回值是一个数组,数组的顺序就是定义枚举的顺序
         for (GameElement ge : GameElement.values()) {
             List<ElementObj> list = all.get(ge);
-//			编写这样直接操作集合数据的代码建议不要使用迭代器。
-//			for(int i=0;i<list.size();i++) {
             for (int i = list.size() - 1; i >= 0; i--) {
                 ElementObj obj = list.get(i);//读取为基类
-                if (!obj.isLive()) {//如果死亡
-//					list.remove(i--);  //可以使用这样的方式
-//					启动一个死亡方法(方法中可以做事情例如:死亡动画 ,掉装备)
-                    obj.die();//需要大家自己补充
+                if (!obj.isLive()) {//死亡
                     list.remove(i);
                     continue;
                 }

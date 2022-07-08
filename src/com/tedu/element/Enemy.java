@@ -60,15 +60,29 @@ public class Enemy extends ElementObj{
 		this.divideBulletTime=ran.nextInt(2)+4;//[4-5]
 		break;
 		case "7"://机枪敌机（连射）
-		setInterval(50);
+		setInterval(80);
 		case "8"://激光敌机（发射激光）
 		this.kindToEnemy(60, 60, 6, 0, 1);
 		break;
 		case "9"://自爆敌机（一定几率自爆）
-		this.kindToEnemy(60, 60, 5, 0, 2);
+		this.kindToEnemy(60, 60, 4, 0, 4);
 		break;
 		case "0"://导弹敌机（发射导弹）
 		this.kindToEnemy(70, 70, 8, 0, 1);
+		break;
+		case "a":
+		setInterval(80);
+		case "c"://双重机枪精英敌机,双重激光精英敌机
+		this.kindToEnemy(80, 80, 10, 0, 1);
+		break;
+		case "b"://三重重机枪敌机
+		setInterval(100);
+		this.kindToEnemy(80, 80, 12, 0, 1);
+		break;
+		case "e"://等离子敌机
+		setInterval(300);
+		case "d"://双重导弹敌机
+		this.kindToEnemy(80, 80, 15, 0, 1);
 		break;
 		}
 		this.setIcon(GameLoad.imgMap.get("enemy"+this.getKind()));
@@ -109,7 +123,8 @@ public class Enemy extends ElementObj{
 		ElementObj obj=GameLoad.getObj("file");  		
 		ElementObj element = obj.createElement(//子弹json数据生成
         GameLoad.getFileString(this.getX()+this.getW()/2,this.getY()+this.getH()/2, 
-           0,0,3,5));//生成爆炸
+           0,0,this.getKind().equals("9")?this.getCamp():3,5));//生成爆炸
+		element.setExplodeMsg(30, 12,2);
 		ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
 		//在此位置增加分数
 		this.addStar=true;
@@ -119,6 +134,8 @@ public class Enemy extends ElementObj{
 	@Override
 	protected void updateImage(long time) {
 	    this.setIcon(GameLoad.imgMap.get("enemy"+this.getKind()));
+	    if(this.getKind().equals("9")&&(time)%(shoot_interval*2)==0)//自爆战机随机自爆
+	    	this.setLive(false);
 	}
 	
 	//发射函数(子弹种类,子弹发射的位置)
@@ -151,7 +168,7 @@ public class Enemy extends ElementObj{
 				this.shoot(1,new int[]{this.getX()+this.getW()/2,this.getY()+this.getH()}, 
 				new int[] {0,3});
 				break;
-			case "2"://敌机队长
+			case "2":case "a"://敌机队长,双重机枪精英敌机
 				this.shoot(1,
 				new int[]{this.getX()+this.getW()/2-10,this.getY()+this.getH(),
 				this.getX()+this.getW()/2+10,this.getY()+this.getH()}, 
@@ -187,6 +204,32 @@ public class Enemy extends ElementObj{
 				    shoot(4,new int[] {this.getX()+this.getW()/2,this.getY()+this.getH()},
 				    new int[] {0,0});
 				  break;
+			case "0"://导弹战机
+				//发射导弹
+				shoot(3, new int[] {this.getX()+this.getW()/2,this.getY()+this.getH()+10},
+				new int[] {0,7});
+				break;
+			case "b"://三重重机枪精英敌机
+				this.shoot(2,
+				new int[]{this.getX()+this.getW()/2-15,this.getY()+this.getH(),
+				this.getX()+this.getW()/2,this.getY()+this.getH(),
+				this.getX()+this.getW()/2+15,this.getY()+this.getH()},
+				new int[] {0,3,0,3,0,3});
+				break;
+			case "c"://双激光敌机
+				shoot(4,new int[] {this.getX()+this.getW()/2-10,this.getY()+this.getH(),
+				this.getX()+this.getW()/2+10,this.getY()+this.getH()},
+				new int[] {0,0,0,0});
+				break;
+			case "d"://双重导弹敌机
+				shoot(3, new int[] {this.getX()+this.getW()/2-10,this.getY()+this.getH()+10,
+				this.getX()+this.getW()/2+10,this.getY()+this.getH()+10},
+				new int[] {0,7,0,7});
+				break;
+			case "e"://等离子敌机
+				shoot(6, new int[] {this.getX()+this.getW()/2,this.getY()+this.getH()+10},
+				new int[] {0,2});
+				break;
 			}
 			
 		}

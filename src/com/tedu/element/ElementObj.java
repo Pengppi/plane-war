@@ -234,8 +234,8 @@ public abstract class ElementObj {
 	}
     
     //设置爆炸信息
-	//爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）)默认为(20,8)
-	public void setExplodeMsg(int explodeOriginRange,int explodeExpandRange) {
+	//爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）,爆炸帧延长时间)默认为(20,8,1)
+	public void setExplodeMsg(int explodeOriginRange,int explodeExpandRange,int explodeRelayTime) {
 		
 	}
     
