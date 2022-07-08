@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
+import com.tedu.manager.ElementManager;
+import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
 import com.tedu.show.GameJFrame;
 
@@ -28,6 +30,10 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
      */
     private int tx;
     private int ty;
+    //子弹种类(1 普通子弹,2 散弹,3 导弹,4 激光,5 等离子球)
+    private int shoot_interval=80;//射击间隔,单发为100
+    private int weapon_kind=7;//武器种类
+    private int weapon_count=7;//武器种类总数
 
     public Play() { }
     public Play(int x, int y, int w, int h, ImageIcon icon) {
@@ -42,10 +48,13 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
    	this.setX(new Integer(split[0]));
    	this.setY(new Integer(split[1]));
    	this.setKind(split[2]);
+   	this.setCamp(1);//设置为我方的阵营
    	ImageIcon icon2=GameLoad.imgMap.get("play"+this.getKind());
    	this.setW(icon2.getIconWidth());
    	this.setH(icon2.getIconHeight());
    	this.setIcon(icon2);
+   	//设置防御力
+   	this.setDensity(3);
    	return this;
    }
     /**
@@ -66,8 +75,8 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
      */
     @Override   // 注解 通过反射机制，为类或者方法或者属性 添加的注释(相当于身份证判定)
     public void mouseMove(int tx, int ty) {
-        int x = +tx - this.getW()+45;
-        int y = ty - this.getH();
+        int x = tx - this.getW()/2;
+        int y = ty - this.getH()/2;
         if (x < 0) {
             x = 0;
         }
@@ -83,8 +92,24 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.tx = x;
         this.ty = y;
     }
-
-
+    private int test;
+    //键盘事件，按f切换武器
+    @Override
+    public void keyClick(boolean bl, int key) {
+    	if(bl) {
+			switch(key)
+			{
+			case 70://切换武器
+			  this.weapon_kind=this.weapon_kind==this.weapon_count?1:this.weapon_kind+1;
+			  break;
+			case 90: //闪光效果
+				ElementObj obj=GameLoad.getObj("flash");  		
+				ElementObj element = obj.createElement("flash0");
+				ElementManager.getManager().addElement(element, GameElement.DIE);
+				break;
+			}
+		}
+    }
 
     @Override
     public void move(long gameTime) {
@@ -96,7 +121,98 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
        this.setIcon(GameLoad.imgMap.get("play"+this.getKind()));
     }
     
+	//发射函数(子弹种类,子弹发射的位置,子弹速度,发射间隔)
+	public void shoot(int bulletKind,int[]pos,int[]speed,int shoot_interval)
+	{
+		this.setInterval(shoot_interval);
+		for(int i=0;i<pos.length;i+=2)//pos[i]为横坐标,pos[i+1]为纵坐标,speed[i]为水平速度,speed[i+1]为垂直速度
+		{
+			ElementObj obj=GameLoad.getObj("file");  		
+			ElementObj element = obj.createElement(//子弹json数据生成
+            GameLoad.getFileString(pos[i],pos[i+1], 
+            		speed[i],speed[i+1],this.getCamp(),bulletKind));
+			ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
+		}
+	}
+	
+	//设置发射间隔
+	public void setInterval(int shoot_interval)
+	{
+		this.shoot_interval=shoot_interval;
+	}
+    
+	@Override   //发射子弹函数
+   public void add(long gameTime) {
+	//一定间隔发射子弹
+	if((gameTime+2)%this.shoot_interval==0)
+	{
+		switch(this.weapon_kind)
+		{
+		
+		case 1:
+			//发射普通子弹
+			shoot(1, new int[] {this.getX()+this.getW()/2,this.getY()},
+			new int[] {0,-3},80);
+			break;
+		case 2:
+			//发射双发子弹
+			this.shoot(1,
+			new int[]{this.getX()+this.getW()/2-10,this.getY(),
+			this.getX()+this.getW()/2+10,this.getY()}, 
+			new int[] {0,-3,0,-3},80);
+			break;
+		case 3:
+			//发射散弹
+			this.shoot(2,
+			new int[]{this.getX()+this.getW()/2-5,this.getY(),
+			this.getX()+this.getW()/2,this.getY(),
+			this.getX()+this.getW()/2+5,this.getY()},
+			new int[] {-1,-3,0,-3,1,-3},80);
+			break;
+		case 4://机枪
+			shoot(1, new int[] {this.getX()+this.getW()/2,this.getY()},
+			new int[] {0,-3},20);
+			break;
+		case 5://双重机枪
+			this.shoot(1,
+			new int[]{this.getX()+this.getW()/2-10,this.getY(),
+			this.getX()+this.getW()/2+10,this.getY()}, 
+			new int[] {0,-3,0,-3},20);
+			break;
+		case 6:
+			//发射激光
+			shoot(4,new int[] {this.getX()+this.getW()/2,this.getY()},
+					new int[] {0,0},80);
+			break;
+		case 7:
+			//发射导弹
+			shoot(3, new int[] {this.getX()+this.getW()/2,this.getY()-10},
+			new int[] {0,-7},80);
+			break;
+		}
+		
+	}
+}
 
+	@Override
+	public void setLive(boolean live) {
+		super.setLive(live);
+		if(!this.isLive())
+		{
+			this.die();//调用死亡函数(如爆炸)
+		}
+	}
+	
+	@Override
+	public void die() {
+		//爆炸
+		ElementObj obj=GameLoad.getObj("file");  		
+		ElementObj element = obj.createElement(//子弹json数据生成
+        GameLoad.getFileString(this.getX()+this.getW()/2,this.getY()+this.getH()/2, 
+           0,0,3,5));//生成爆炸
+		element.setExplodeMsg(30,12);
+		ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
+	}
     
 }
 
