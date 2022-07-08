@@ -92,7 +92,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.tx = x;
         this.ty = y;
     }
-
+    private int test;
     //键盘事件，按f切换武器
     @Override
     public void keyClick(boolean bl, int key) {
@@ -102,6 +102,11 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 			case 70://切换武器
 			  this.weapon_kind=this.weapon_kind==this.weapon_count?1:this.weapon_kind+1;
 			  break;
+			case 90: //闪光效果
+				ElementObj obj=GameLoad.getObj("flash");  		
+				ElementObj element = obj.createElement("flash0");
+				ElementManager.getManager().addElement(element, GameElement.DIE);
+				break;
 			}
 		}
     }

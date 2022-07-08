@@ -55,11 +55,13 @@ public class GameThread extends Thread {
         /**
          * wpp为了测试飞机移动暂时而加的loadPlay不属于最终的生成方式
          */
+    	
     	GameLoad.loadImg();//加载图片
     	GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机
+        GameLoad.loadMap(1);
         GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
-
+       
 
 //		GameLoad.loadImg(); //加载图片
 //		GameLoad.MapLoad(5);//可以变为 变量，每一关重新加载  加载地图

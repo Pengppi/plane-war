@@ -30,3 +30,11 @@ bullet56=image/cartridge/bang5.png
 bullet57=image/cartridge/bang6.png
 bullet58=image/cartridge/bang7.png
 bullet59=image/cartridge/bang8.png
+
+
+flash0=image/flash/flash1.png 
+flash1=image/flash/flash2.png
+flash2=image/flash/flash3.png
+flash3=image/flash/flash4.png
+
+bg1=image/bg/bg1.png

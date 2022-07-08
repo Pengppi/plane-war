@@ -72,6 +72,12 @@ public class GameLoad {
         }
     }
 
+    //加载背景
+    public static void loadMap(int mapId) {
+    	ElementObj obj = new com.tedu.element.Map();
+    	em.addElement(obj, GameElement.MAPS);
+    }
+      
     /**
      * @说明 加载图片代码
      * 加载图片 代码和图片之间差 一个 路径问题
@@ -88,7 +94,7 @@ public class GameLoad {
             Set<Object> set = pro.keySet();//是一个set集合
             for (Object o : set) {
                 String url = pro.getProperty(o.toString());
-                //System.out.println(o.toString());
+                System.out.println(o.toString());
                 imgMap.put(o.toString(), new ImageIcon(url));
             }
 
@@ -201,7 +207,7 @@ public class GameLoad {
 //    //	用于测试
 //    public static void main(String[] args) {
 //        MapLoad(5);
-//
+//    	  loadImg();
 //
 //        try {
 ////			通过类路径名称， com.tedu.Play
