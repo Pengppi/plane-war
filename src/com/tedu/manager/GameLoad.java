@@ -12,6 +12,7 @@ import java.util.Set;
 
 import javax.swing.ImageIcon;
 
+import com.tedu.element.Boss;
 import com.tedu.element.ElementObj;
 import com.tedu.element.Enemy;
 import com.tedu.element.Play;
@@ -139,6 +140,20 @@ public class GameLoad {
 	    	 }
 	    	}
     	}).start();
+    }
+    
+    //加载boss的函数
+    public static void hzfloadBoss(String bossKind)
+    {
+    	new Thread(()->{
+	    		 try {
+					Thread.sleep(50);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	    	    ElementObj obj=new Boss().createElement(bossKind);
+	    	    em.addElement(obj, GameElement.BOSS);
+    	}).start();	
     }
 
     public static ElementObj getObj(String str) {

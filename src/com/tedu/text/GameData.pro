@@ -18,6 +18,12 @@ enemyc=image/elite/double_laser_elite.png
 enemyd=image/elite/double_missile_elite.png
 enemye=image/elite/plasma_elite.png
 
+boss1=image/boss/sea_destroyer.png
+boss2=image/boss/yellow_bull.png
+boss3=image/boss/golden_lizard.png
+boss4=image/boss/purple_sovereign.png
+boss5=image/boss/crazy_machine.png
+
 bullet11=image/cartridge/bullet_up.png
 bullet12=image/cartridge/bullet_down.png
 bullet21=image/cartridge/ball_bullet.png

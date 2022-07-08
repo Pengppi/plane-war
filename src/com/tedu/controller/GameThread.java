@@ -59,7 +59,8 @@ public class GameThread extends Thread {
     	GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机
         //GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
-        GameLoad.hzfloadEnemey(new String[] {"e","3"});
+        //GameLoad.hzfloadEnemey(new String[] {"e","3"});
+        GameLoad.hzfloadBoss("1");
 
 
 //		GameLoad.loadImg(); //加载图片
@@ -89,9 +90,16 @@ public class GameThread extends Thread {
             List<ElementObj> files = em.getElementsByKey(GameElement.PLAYFILE);
             //List<ElementObj> maps = em.getElementsByKey(GameElement.MAPS);
             List<ElementObj> plays = em.getElementsByKey(GameElement.PLAY);
+            List<ElementObj> boss = em.getElementsByKey(GameElement.BOSS);
+            
             moveAndUpdate(all, gameTime);//	游戏元素自动化方法
 
             ElementPK(enemys, files, (a,b)->{//判断我方的子弹与敌人碰撞
+            	if(a.getCamp()+b.getCamp()==3) 
+                 {a.deductLive(b.getAttack()); b.setLive(false);}
+            	});
+            
+            ElementPK(boss, files, (a,b)->{//判断我方的子弹与boss碰撞
             	if(a.getCamp()+b.getCamp()==3) 
                  {a.deductLive(b.getAttack()); b.setLive(false);}
             	});
@@ -105,6 +113,11 @@ public class GameThread extends Thread {
             ElementPK(plays, enemys, (a,b)->{//判断敌机与我方碰撞(双方直接死亡)
             	a.setLive(false); b.setLive(false);
             	});
+            
+            ElementPK(plays, boss, (a,b)->{//判断boss与我方碰撞(我方直接死亡，敌方重创50)
+            	a.setLive(false); b.deductLive(50);
+            	});
+            
             try {
                 sleep(10);//默认理解为 1秒刷新100次
             } catch (InterruptedException e) {
