@@ -102,6 +102,7 @@ public class GameThread extends Thread {
             	if(a.getCamp()+b.getCamp()==3)
             	{a.deductLive(b.getAttack()); b.setLive(false);}
             	});
+            ElementPK(files,files); 
             
             ElementPK(plays, enemys, (a,b)->{//判断敌机与我方碰撞(双方直接死亡)
             	a.setLive(false); b.setLive(false);
@@ -116,6 +117,20 @@ public class GameThread extends Thread {
         }
     }
 
+    // 我方子弹与敌方子弹碰撞都设为死亡
+    public void ElementPK(List<ElementObj> listA, List<ElementObj> listB) {
+        for (int i = 0; i < listA.size(); i++) {
+            ElementObj enemy = listA.get(i);
+            for (int j = i + 1; j < listB.size(); j++) {
+                ElementObj file = listB.get(j);
+                if (enemy.pk(file) && enemy.getCamp() + file.getCamp() == 3) {
+                    enemy.setLive(false);
+                    file.setLive(false);
+                }
+            }
+        }
+    }
+    
     public void ElementPK(List<ElementObj> listA, List<ElementObj> listB,Collide collide) {
 //		请大家在这里使用循环，做一对一判定，如果为真，就设置2个对象的死亡状态
         for (int i = 0; i < listA.size(); i++) {
