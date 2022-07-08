@@ -32,7 +32,7 @@ public abstract class ElementObj {
     /*
     * 陷阱警告时间
     * */
-    private int restTime=500;
+    private int restTime=300;
     // 可以采用枚举值来定义这个(生存，死亡，隐身，无敌)
 //	注明：当重新定义一个用于判定状态的变量，需要思考：1.初始化 2.值的改变 3.值的判定
     public ElementObj() {    //这个构造其实没有作用，只是为继承的时候不报错写的
@@ -237,9 +237,9 @@ public abstract class ElementObj {
 
     //设置爆炸信息
 	//爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）)默认为(20,8)
-	public void setExplodeMsg(int explodeOriginRange,int explodeExpandRange) {
+    public void setExplodeMsg(int explodeOriginRange,int explodeExpandRange,int explodeRelayTime) {
 
-	}
+    }
 
     //敌人死亡后加分
     public int dieStar(){return  0;}

@@ -32,8 +32,9 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     private int ty;
     //子弹种类(1 普通子弹,2 散弹,3 导弹,4 激光,5 等离子球)
     private int shoot_interval=80;//射击间隔,单发为100
-    private int weapon_kind=7;//武器种类
-    private int weapon_count=7;//武器种类总数
+    private int weapon_kind=8;//武器种类
+    private int weapon_count=8;//武器种类总数
+
 	private int rank=1;//等级，玩家等级会因吃到升级道具而改变
     public Play() { }
     public Play(int x, int y, int w, int h, ImageIcon icon) {
@@ -195,6 +196,10 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 			shoot(3, new int[] {this.getX()+this.getW()/2,this.getY()-10},
 			new int[] {0,-7},80);
 			break;
+		case 8://等离子球(发射间隔较长，为120ms)
+			shoot(6, new int[] {this.getX()+this.getW()/2,this.getY()},
+			new int[] {0,-2},120);
+			break;
 		}
 
 	}
@@ -216,7 +221,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 		ElementObj element = obj.createElement(//子弹json数据生成
         GameLoad.getFileString(this.getX()+this.getW()/2,this.getY()+this.getH()/2,
            0,0,3,5));//生成爆炸
-		element.setExplodeMsg(30,12);
+		element.setExplodeMsg(30,12,2);
 		ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
 	}
 

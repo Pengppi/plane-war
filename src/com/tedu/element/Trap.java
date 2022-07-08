@@ -12,11 +12,7 @@ public class Trap extends ElementObj{
 
     private static Random ran=new Random(); //随机生成器
     private boolean haveDie=false;//防止重复警告
-    private int shoot_interval=200;//射击间隔ֵ
-    private int moveXNum=0;//水平移动距离
-    private int moveYNum=1;//垂直移动距离
-    //bulletKind子弹种类(1 普通子弹,2 散弹,3 导弹,4 激光, 5 等离子球)
-    private int divideBulletTime=0;//分裂者分裂子弹的间隔
+    private int type=1;//陷阱种类，2是激光，1是导弹
     public Trap() { }
 
     @Override
@@ -29,66 +25,30 @@ public class Trap extends ElementObj{
     public ElementObj createElement(String kind_str) {
 
         int x=ran.nextInt(GameJFrame.GameX-80)+41;//横坐标
-        int y=ran.nextInt(20);//纵坐标
+        int y=10;//纵坐标
         this.setX(x);
         this.setY(y);
-        this.setKind(kind_str);//飞机种类
         this.setCamp(2);//设置为敌方的阵营
-
+        this.type=ran.nextInt(2)+1;
         //敌机种类不同属性初始化
-        switch(this.getKind())
+        switch(this.getType())
         {
-            case "1"://普通敌机(单发)
-                this.kindToEnemy(60, 60, 3, 0, 0);
+            case 1://导弹
+                this.kindToTrap(90, 90);
                 break;
-            case "2"://双发敌机(双发)
-                this.kindToEnemy(60, 60, 5, 0, 0);
-                break;
-            case "3"://巨型敌机(散射)
-                this.kindToEnemy(90, 90, 12, 0, 0);
-                break;
-            case "4"://疾速敌机(单发)
-                this.kindToEnemy(60, 60, 3, 0, 0);
-                break;
-            case "5"://小型敌机(向左，向右随机)
-                this.kindToEnemy(40, 40, 2, new Random().nextBoolean()?1:-1, 0);
-                break;
-            case "6"://分裂者(中间停下，向四个方向发射)
-                this.kindToEnemy(60, 60, 4, 0, 0);
-                //设置分裂的时间间隔
-                this.divideBulletTime=ran.nextInt(2)+4;//[4-5]
-                break;
-            case "7"://机枪敌机（连射）
-                setInterval(50);
-            case "8"://激光敌机（发射激光）
-                this.kindToEnemy(60, 60, 6, 0, 0);
-                break;
-            case "9"://自爆敌机（一定几率自爆）
-                this.kindToEnemy(60, 60, 5, 0, 0);
-                break;
-            case "0"://导弹敌机（发射导弹）
-                this.kindToEnemy(70, 70, 8, 0, 0);
+            case 2://激光
+                this.kindToTrap(200, 100);
                 break;
         }
-        this.setIcon(GameLoad.imgMap.get("enemy"+this.getKind()));
+        this.setIcon(GameLoad.imgMap.get("trap"+this.getType()));
         return this;
     }
 
-    //敌机种类初始化敌机属性函数(敌机大小,血量，运动方式(水平速度，垂直速度)，得分)
-    public void kindToEnemy(int width,int height,int density,int moveXNum,int moveYNum)
+    //陷阱种类初始化陷阱属性函数(陷阱大小)
+    public void kindToTrap(int width,int height)
     {
         this.setW(width);
         this.setH(height);
-        this.setDensity(density);
-        this.moveXNum=moveXNum;
-        this.moveYNum=moveYNum;
-    }
-
-    @Override
-    protected void move(long gameTime) {
-
-        this.setX(this.getX()+this.moveXNum);
-        this.setY(this.getY()+this.moveYNum);
     }
 
     @Override
@@ -105,15 +65,19 @@ public class Trap extends ElementObj{
         if(!this.haveDie)//增加积分
         {
             //陷阱结束
-            shoot(4,new int[] {this.getX()+this.getW()/2,this.getY()+this.getH()},
-                    new int[] {0,0});
+            if(getType()==1)
+                shoot(3, new int[]{this.getX() + this.getW() / 2, this.getY() + this.getH()},
+                        new int[]{0, 7});
+            else
+                shoot(4,new int[] {this.getX()+this.getW()/2,this.getY()+this.getH()},
+                        new int[] {0,0});
             this.haveDie=true;
         }
     }
 
     @Override
     protected void updateImage(long time) {
-        this.setIcon(GameLoad.imgMap.get("enemy"+this.getKind()));
+        this.setIcon(GameLoad.imgMap.get("trap"+this.getType()));
     }
 
     //发射函数(子弹种类,子弹发射的位置)
@@ -129,10 +93,6 @@ public class Trap extends ElementObj{
         }
     }
 
-    //设置发射间隔
-    public void setInterval(int shoot_interval)
-    {
-        this.shoot_interval=shoot_interval;
-    }
-
+    //返回陷阱类型
+    public int getType(){return  this.type;}
 }

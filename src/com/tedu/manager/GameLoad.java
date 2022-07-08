@@ -160,7 +160,7 @@ public class GameLoad {
                 for(int j=0;j<count;j++)
                 {
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(10000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
