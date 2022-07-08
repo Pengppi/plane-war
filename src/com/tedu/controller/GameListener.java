@@ -36,6 +36,7 @@ public class GameListener implements KeyListener, MouseMotionListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int key=e.getKeyCode();
+//		System.out.println("keypress" + key);
 		if(set.contains(key))return ;
 		set.add(key);
 		

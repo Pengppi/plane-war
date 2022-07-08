@@ -2,7 +2,6 @@ package com.tedu.manager;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.Set;
 
 import javax.swing.ImageIcon;
 
+import com.tedu.element.Boss;
 import com.tedu.element.ElementObj;
 import com.tedu.element.Enemy;
 import com.tedu.element.Play;
@@ -72,6 +72,12 @@ public class GameLoad {
         }
     }
 
+    //加载背景
+    public static void loadMap(int mapId) {
+    	ElementObj obj = new com.tedu.element.Map().createElement(String.valueOf(mapId));
+    	em.addElement(obj, GameElement.MAPS);
+    }
+      
     /**
      * @说明 加载图片代码
      * 加载图片 代码和图片之间差 一个 路径问题
@@ -139,6 +145,20 @@ public class GameLoad {
 	    	 }
 	    	}
     	}).start();
+    }
+    
+    //加载boss的函数
+    public static void hzfloadBoss(String bossKind)
+    {
+    	new Thread(()->{
+	    		 try {
+					Thread.sleep(50);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	    	    ElementObj obj=new Boss().createElement(bossKind);
+	    	    em.addElement(obj, GameElement.BOSS);
+    	}).start();	
     }
 
     /**
@@ -231,7 +251,7 @@ public class GameLoad {
 //    //	用于测试
 //    public static void main(String[] args) {
 //        MapLoad(5);
-//
+//    	  loadImg();
 //
 //        try {
 ////			通过类路径名称， com.tedu.Play

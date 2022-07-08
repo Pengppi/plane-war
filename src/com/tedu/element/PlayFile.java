@@ -1,8 +1,6 @@
 package com.tedu.element;
 
-import java.awt.Color;
 import java.awt.Graphics;
-
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;

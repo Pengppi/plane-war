@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.tedu.element.ElementObj;
-import com.tedu.element.Play;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -54,12 +53,18 @@ public class GameThread extends Thread {
         /**
          * wpp为了测试飞机移动暂时而加的loadPlay不属于最终的生成方式
          */
+
     	GameLoad.loadImg();//加载图片
     	GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机
         //GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
-        GameLoad.hzfloadEnemey(new String[] {"e","3"});
+        //GameLoad.hzfloadEnemey(new String[] {"e","3"});
+        //GameLoad.hzfloadBoss("1");
+        GameLoad.loadMap(2);
         GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
+
+        //GameLoad.hzfloadEnemey(new String[] {"e","3"});
+        //GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
         GameLoad.zzrloadTrap(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载陷阱
 
 
@@ -87,20 +92,27 @@ public class GameThread extends Thread {
         AtomicLong nowStar = new AtomicLong(0L);//当前总得分
         while (true) {// 预留扩展   true可以变为变量，用于控制管关卡结束等
             Map<GameElement, List<ElementObj>> all = em.getGameElements();
-            List<ElementObj> enemys = em.getElementsByKey(GameElement.ENEMY);
+            List<ElementObj> enemies = em.getElementsByKey(GameElement.ENEMY);
             List<ElementObj> files = em.getElementsByKey(GameElement.PLAYFILE);
             //List<ElementObj> maps = em.getElementsByKey(GameElement.MAPS);
             List<ElementObj> plays = em.getElementsByKey(GameElement.PLAY);
+            List<ElementObj> boss = em.getElementsByKey(GameElement.BOSS);
+
             List<ElementObj> traps = em.getElementsByKey(GameElement.TRAP);
             moveAndUpdate(all, gameTime);//	游戏元素自动化方法
             reduceTrapTime(traps);//减少陷阱警告时间
-            ElementPK(enemys, files, (a,b)->{//判断我方的子弹与敌人碰撞
+            ElementPK(enemies, files, (a,b)->{//判断我方的子弹与敌人碰撞
             	if(a.getCamp()+b.getCamp()==3)
                  {
                      a.deductLive(b.getAttack());
                      nowStar.addAndGet(a.dieStar());
                      b.setLive(false);
                  }
+            	});
+
+            ElementPK(boss, files, (a,b)->{//判断我方的子弹与boss碰撞
+            	if(a.getCamp()+b.getCamp()==3)
+                 {a.deductLive(b.getAttack()); b.setLive(false);}
             	});
             //ElementPK(files, maps, (a,b)->{a.setLive(false); b.setLive(false);});
 
@@ -109,10 +121,16 @@ public class GameThread extends Thread {
             	{a.deductLive(b.getAttack()); b.setLive(false);}
             	});
 
-            ElementPK(plays, enemys, (a,b)->{//判断敌机与我方碰撞(双方直接死亡)
+
+            ElementPK(plays, enemies, (a,b)->{//判断敌机与我方碰撞(双方直接死亡)
             	a.setLive(false);
             	b.setLive(false);
                 nowStar.addAndGet(b.dieStar());
+            	});
+
+
+            ElementPK(plays, boss, (a,b)->{//判断boss与我方碰撞(我方直接死亡，敌方重创50)
+            	a.setLive(false); b.deductLive(50);
             	});
 
             try {
@@ -122,6 +140,20 @@ public class GameThread extends Thread {
                 e.printStackTrace();
             }
             gameTime++;
+        }
+    }
+
+    // 我方子弹与敌方子弹碰撞都设为死亡
+    public void ElementPK(List<ElementObj> listA, List<ElementObj> listB) {
+        for (int i = 0; i < listA.size(); i++) {
+            ElementObj enemy = listA.get(i);
+            for (int j = i + 1; j < listB.size(); j++) {
+                ElementObj file = listB.get(j);
+                if (enemy.pk(file) && enemy.getCamp() + file.getCamp() == 3) {
+                    enemy.setLive(false);
+                    file.setLive(false);
+                }
+            }
         }
     }
 
@@ -149,10 +181,7 @@ public class GameThread extends Thread {
             for (int i = list.size() - 1; i >= 0; i--) {
                 ElementObj obj = list.get(i);//读取为基类
                 if (!obj.isLive()) {//如果死亡
-//					list.remove(i--);  //可以使用这样的方式
-//					启动一个死亡方法(方法中可以做事情例如:死亡动画 ,掉装备)
-                    //若这是陷阱警告死亡，即会产生对应的效果子弹出来
-                    obj.die();//需要大家自己补充
+                    obj.die();
                     list.remove(i);
                     continue;
                 }

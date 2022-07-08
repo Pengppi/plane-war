@@ -18,6 +18,12 @@ enemyc=image/elite/double_laser_elite.png
 enemyd=image/elite/double_missile_elite.png
 enemye=image/elite/plasma_elite.png
 
+boss1=image/boss/sea_destroyer.png
+boss2=image/boss/yellow_bull.png
+boss3=image/boss/golden_lizard.png
+boss4=image/boss/purple_sovereign.png
+boss5=image/boss/crazy_machine.png
+
 bullet11=image/cartridge/bullet_up.png
 bullet12=image/cartridge/bullet_down.png
 bullet21=image/cartridge/ball_bullet.png
@@ -37,6 +43,7 @@ bullet57=image/cartridge/bang6.png
 bullet58=image/cartridge/bang7.png
 bullet59=image/cartridge/bang8.png
 
+<<<<<<< HEAD
 bullet61=image/cartridge/plasma1.png
 bullet62=image/cartridge/plasma2.png
 bullet63=image/cartridge/plasma3.png
@@ -48,3 +55,15 @@ bullet68=image/cartridge/plasma8.png
 
 trap1=image/precaution/missile_precaution.png
 trap2=image/precaution/boss_precaution.png
+
+flash0=image/flash/flash1.png
+flash1=image/flash/flash2.png
+flash2=image/flash/flash3.png
+flash3=image/flash/flash4.png
+
+bg1=image/bg/bg1.png
+bg2=image/bg/bg2.png
+bg3=image/bg/bg3.png
+bg4=image/bg/bg4.png
+bg5=image/bg/bg5.png
+

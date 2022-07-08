@@ -16,7 +16,7 @@ public class Enemy extends ElementObj{
 	private int shoot_interval=200;//射击间隔ֵ
 	private int moveXNum=0;//水平移动距离
 	private int moveYNum=1;//垂直移动距离
-	//bulletKind子弹种类(1 普通子弹,2 散弹,3 导弹,4 激光, 5 等离子球)
+	//bulletKind子弹种类(1 普通子弹,2 散弹,3 导弹,4 激光, 5 爆炸, 6等离子球)
 	private int divideBulletTime=0;//分裂者分裂子弹的间隔
 	private int star=0;
 	public Enemy() { }
@@ -86,6 +86,7 @@ public class Enemy extends ElementObj{
 		this.kindToEnemy(80, 80, 15, 0, 1,7);
 		break;
 		}
+		this.setX(this.getX()-this.getW()/2);//使得enemy在正中间出现
 		this.setIcon(GameLoad.imgMap.get("enemy"+this.getKind()));
 		return this;
 	}
