@@ -22,7 +22,6 @@ public class GameStart {
         gj.setKeyListener(listener);
         gj.setMouseMotionListener(listener);
         gj.setThead(th);
-
         gj.start();
 
     }

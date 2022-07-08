@@ -17,6 +17,12 @@ import com.tedu.manager.GameLoad;
  * 游戏判定；游戏地图切换 资源释放和重新读取。。。
  * @继承 使用继承的方式实现多线程(一般建议使用接口实现)
  */
+//碰撞处理接口
+interface Collide
+{
+	public void collide(ElementObj obj1,ElementObj obj2);
+}
+
 public class GameThread extends Thread {
     private ElementManager em;
 
@@ -49,11 +55,13 @@ public class GameThread extends Thread {
         /**
          * wpp为了测试飞机移动暂时而加的loadPlay不属于最终的生成方式
          */
+    	
     	GameLoad.loadImg();//加载图片
     	GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机
-        GameLoad.hzfloadEnemey();//加载敌军飞机
-
+        GameLoad.loadMap(1);
+        GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
+       
 
 //		GameLoad.loadImg(); //加载图片
 //		GameLoad.MapLoad(5);//可以变为 变量，每一关重新加载  加载地图
@@ -80,13 +88,25 @@ public class GameThread extends Thread {
             Map<GameElement, List<ElementObj>> all = em.getGameElements();
             List<ElementObj> enemys = em.getElementsByKey(GameElement.ENEMY);
             List<ElementObj> files = em.getElementsByKey(GameElement.PLAYFILE);
-            List<ElementObj> maps = em.getElementsByKey(GameElement.MAPS);
+            //List<ElementObj> maps = em.getElementsByKey(GameElement.MAPS);
+            List<ElementObj> plays = em.getElementsByKey(GameElement.PLAY);
             moveAndUpdate(all, gameTime);//	游戏元素自动化方法
 
-            ElementPK(enemys, files);
-            ElementPK(files, maps);
-
-//            gameTime++;//唯一的时间控制
+            ElementPK(enemys, files, (a,b)->{//判断我方的子弹与敌人碰撞
+            	if(a.getCamp()+b.getCamp()==3) 
+                 {a.deductLive(b.getAttack()); b.setLive(false);}
+            	});
+            //ElementPK(files, maps, (a,b)->{a.setLive(false); b.setLive(false);});
+            
+            ElementPK(plays, files, (a,b)->{//判断敌人的子弹与我方碰撞
+            	if(a.getCamp()+b.getCamp()==3)
+            	{a.deductLive(b.getAttack()); b.setLive(false);}
+            	});
+            ElementPK(files,files); 
+            
+            ElementPK(plays, enemys, (a,b)->{//判断敌机与我方碰撞(双方直接死亡)
+            	a.setLive(false); b.setLive(false);
+            	});
             try {
                 sleep(10);//默认理解为 1秒刷新100次
             } catch (InterruptedException e) {
@@ -97,7 +117,21 @@ public class GameThread extends Thread {
         }
     }
 
+    // 我方子弹与敌方子弹碰撞都设为死亡
     public void ElementPK(List<ElementObj> listA, List<ElementObj> listB) {
+        for (int i = 0; i < listA.size(); i++) {
+            ElementObj enemy = listA.get(i);
+            for (int j = i + 1; j < listB.size(); j++) {
+                ElementObj file = listB.get(j);
+                if (enemy.pk(file) && enemy.getCamp() + file.getCamp() == 3) {
+                    enemy.setLive(false);
+                    file.setLive(false);
+                }
+            }
+        }
+    }
+    
+    public void ElementPK(List<ElementObj> listA, List<ElementObj> listB,Collide collide) {
 //		请大家在这里使用循环，做一对一判定，如果为真，就设置2个对象的死亡状态
         for (int i = 0; i < listA.size(); i++) {
             ElementObj enemy = listA.get(i);
@@ -108,10 +142,11 @@ public class GameThread extends Thread {
 //					将 setLive(false) 变为一个受攻击方法，还可以传入另外一个对象的攻击力
 //					当收攻击方法里执行时，如果血量减为0 再进行设置生存为 false
 //					扩展 留给大家
-                    System.out.println(listB);
-                    enemy.setLive(false);
-                    file.setLive(false);
-                    break;
+//                    System.out.println(listB);
+//                    enemy.setLive(false);
+//                    file.setLive(false);
+                	collide.collide(enemy,file);
+                    //break;
                 }
             }
         }

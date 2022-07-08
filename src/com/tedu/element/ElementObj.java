@@ -20,6 +20,15 @@ public abstract class ElementObj {
     private boolean live = true; //生存状态 true 代表存在，false代表死亡
     private String kind="";//种类
     private int camp=0;//阵营(1 is play,2 is enemy)
+    /**
+     * 有防御力的对象
+     */
+    private int density=0;//对象的强度
+    private int blood=0;//对象的血量
+    /**
+     * 有攻击力的对象
+     */
+    private int attack=0;//对象的攻击力(一般用于子弹)
 
     // 可以采用枚举值来定义这个(生存，死亡，隐身，无敌)
 //	注明：当重新定义一个用于判定状态的变量，需要思考：1.初始化 2.值的改变 3.值的判定
@@ -60,7 +69,7 @@ public abstract class ElementObj {
      * @扩展 本方法是否可以分为2个方法？1个接收按下，1个接收松开(给同学扩展使用)
      */
     public void keyClick(boolean bl, int key) {  //这个方法不是强制必须重写的。
-        System.out.println("测试使用");
+       
     }
 
     public void mouseMove(int tx, int ty) {
@@ -172,19 +181,64 @@ public abstract class ElementObj {
     public void setLive(boolean live) {
         this.live = live;
     }
+    
+    //设置种类
     public String getKind() {
 		return kind;
 	}
     public void setKind(String kind) {
 		this.kind = kind;
 	}
+    
+    //设置阵营
     public int getCamp() {
 		return camp;
 	}
     public void setCamp(int camp) {
 		this.camp = camp;
 	}
-
+   
+    //扣血函数
+    public void deductLive(int attack) {
+    	//System.out.println("deduct:"+attack);
+    	this.blood=this.blood-attack<=0?0:this.blood-attack;
+    	if(this.blood==0)this.setLive(false);
+    }
+    
+    //设置攻击力
+    public void setAttack(int attack) {
+		this.attack = attack;
+	}
+    
+    public int getAttack() {
+		return attack;
+	}
+    
+    //设置血量
+    public void setBlood(int blood) {
+		this.blood = blood;
+	}
+    
+    public int getBlood() {
+		return blood;
+	}
+    
+    //设置强度
+    public void setDensity(int density) {
+		this.density = density;
+		this.setBlood(this.density);
+	}
+    
+    public int getDensity() {
+		return density;
+	}
+    
+    //设置爆炸信息
+	//爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）)默认为(20,8)
+	public void setExplodeMsg(int explodeOriginRange,int explodeExpandRange) {
+		
+	}
+    
 }
 
 
