@@ -2,6 +2,7 @@ package com.tedu.element;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 
@@ -18,21 +19,25 @@ public abstract class ElementObj {
     private ImageIcon icon;
     //	还有。。。。 各种必要的状态值，例如：是否生存.
     private boolean live = true; //生存状态 true 代表存在，false代表死亡
-    private String kind="";//种类
-    private int camp=0;//阵营(1 is play,2 is enemy)
+    private String kind = "";//种类
+    private int camp = 0;//阵营(1 is play,2 is enemy)
     /**
      * 有防御力的对象
      */
-    private int density=0;//对象的强度
-    private int blood=0;//对象的血量
+    private int density = 0;//对象的强度
+    private int blood = 0;//对象的血量
     /**
      * 有攻击力的对象
      */
-    private int attack=0;//对象的攻击力(一般用于子弹)
+    private int attack = 0;//对象的攻击力(一般用于子弹)
     /*
-    * 陷阱警告时间
-    * */
-    private int restTime=300;
+     * 陷阱警告时间
+     * */
+    private int restTime = 300;
+
+    private int score = 0; //分值
+
+
     // 可以采用枚举值来定义这个(生存，死亡，隐身，无敌)
 //	注明：当重新定义一个用于判定状态的变量，需要思考：1.初始化 2.值的改变 3.值的判定
     public ElementObj() {    //这个构造其实没有作用，只是为继承的时候不报错写的
@@ -186,68 +191,87 @@ public abstract class ElementObj {
 
     //设置种类
     public String getKind() {
-		return kind;
-	}
+        return kind;
+    }
+
     public void setKind(String kind) {
-		this.kind = kind;
-	}
+        this.kind = kind;
+    }
 
     //设置阵营
     public int getCamp() {
-		return camp;
-	}
+        return camp;
+    }
+
     public void setCamp(int camp) {
-		this.camp = camp;
-	}
+        this.camp = camp;
+    }
 
     //扣血函数
     public void deductLive(int attack) {
-    	//System.out.println("deduct:"+attack);
-    	this.blood=this.blood-attack<=0?0:this.blood-attack;
-    	if(this.blood==0)this.setLive(false);
+        //System.out.println("deduct:"+attack);
+        this.blood = this.blood - attack <= 0 ? 0 : this.blood - attack;
+        if (this.blood == 0) this.setLive(false);
     }
 
     //设置攻击力
     public void setAttack(int attack) {
-		this.attack = attack;
-	}
+        this.attack = attack;
+    }
 
     public int getAttack() {
-		return attack;
-	}
+        return attack;
+    }
 
     //设置血量
     public void setBlood(int blood) {
-		this.blood = blood;
-	}
+        this.blood = blood;
+    }
 
     public int getBlood() {
-		return blood;
-	}
+        return blood;
+    }
 
     //设置强度
     public void setDensity(int density) {
-		this.density = density;
-		this.setBlood(this.density);//测试时默认强度为血量
-	}
+        this.density = density;
+        this.setBlood(this.density);//测试时默认强度为血量
+    }
 
     public int getDensity() {
-		return density;
-	}
+        return density;
+    }
 
     //设置爆炸信息
-	//爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）)默认为(20,8)
-    public void setExplodeMsg(int explodeOriginRange,int explodeExpandRange,int explodeRelayTime) {
+    //爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）)默认为(20,8)
+    public void setExplodeMsg(int explodeOriginRange, int explodeExpandRange, int explodeRelayTime) {
 
     }
 
     //敌人死亡后加分
-    public int dieStar(){return  0;}
+    public int dieStar() {
+        return 0;
+    }
 
     //陷阱时间减少
-    public void reduceTime(){ restTime--;return ;}
+    public void reduceTime() {
+        restTime--;
+        return;
+    }
+
     //返回陷阱警告时间
-    public int getRestTime(){ return restTime;}
+    public int getRestTime() {
+        return restTime;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
 }
 
 
