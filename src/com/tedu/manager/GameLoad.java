@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.swing.ImageIcon;
 
+import com.tedu.controller.GameThread;
 import com.tedu.element.Boss;
 import com.tedu.element.ElementObj;
 import com.tedu.element.Enemy;
@@ -74,10 +75,10 @@ public class GameLoad {
 
     //加载背景
     public static void loadMap(int mapId) {
-    	ElementObj obj = new com.tedu.element.Map().createElement(String.valueOf(mapId));
-    	em.addElement(obj, GameElement.MAPS);
+        ElementObj obj = new com.tedu.element.Map().createElement(String.valueOf(mapId));
+        em.addElement(obj, GameElement.MAPS);
     }
-      
+
     /**
      * @说明 加载图片代码
      * 加载图片 代码和图片之间差 一个 路径问题
@@ -112,7 +113,7 @@ public class GameLoad {
      * 加载玩家飞机
      */
     public static void wpploadPlay() {
-        ElementObj obj=new Play().createElement("800,450,1");//实例化对象（x,y,玩家飞机种类）
+        ElementObj obj = new Play().createElement("800,450,1");//实例化对象（x,y,玩家飞机种类）
 //		讲对象放入到 元素管理器中
         em.addElement(obj, GameElement.PLAY);//直接添加
     }
@@ -120,71 +121,68 @@ public class GameLoad {
     /**
      * 测试用的加载方法
      * 加载敌军飞机
-     * @param 飞机种类编号(kind:String,count:int,kind2:String,count2:int...)
+     *
+     * @param kind(飞机种类编号)(kind:String,count:int,kind2:String,count2:int...)
      * @return
      */
-    public static void hzfloadEnemey(String []kind) {
-    	new Thread(()->{
-    		for(int i=0;i<kind.length;i+=2)
-	    	{
-	    	 try {
-				Thread.sleep(2000);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-	    	 int count=Integer.parseInt(kind[i+1]);
-	    	 for(int j=0;j<count;j++)
-	    	 {
-	    		 try {
-					Thread.sleep(2000);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-	    	    ElementObj obj=new Enemy().createElement(kind[i]);
-	    	    em.addElement(obj, GameElement.ENEMY);
-	    	 }
-	    	}
-    	}).start();
-    }
-    
-    //加载boss的函数
-    public static void hzfloadBoss(String bossKind)
-    {
-    	new Thread(()->{
-	    		 try {
-					Thread.sleep(50);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-	    	    ElementObj obj=new Boss().createElement(bossKind);
-	    	    em.addElement(obj, GameElement.BOSS);
-    	}).start();	
-    }
-
-    /**
-     * 测试用的加载方法
-     * 加载陷阱
-     * @param 陷阱编号(kind:String,count:int,kind2:String,count2:int...)
-     * @return
-     */
-    public static void zzrloadTrap(String []kind) {
-        new Thread(()->{
-            for(int i=0;i<kind.length;i+=2)
-            {
+    public static void hzfloadEnemey(String[] kind) {
+        new Thread(() -> {
+            for (int i = 0; i < kind.length; i += 2) {
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                int count=Integer.parseInt(kind[i+1]);
-                for(int j=0;j<count;j++)
-                {
+                int count = Integer.parseInt(kind[i + 1]);
+                for (int j = 0; j < count; j++) {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    ElementObj obj = new Enemy().createElement(kind[i]);
+                    em.addElement(obj, GameElement.ENEMY);
+                }
+            }
+        }).start();
+    }
+
+    //加载boss的函数
+    public static void hzfloadBoss(String bossKind) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(50);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ElementObj obj = new Boss().createElement(bossKind);
+            em.addElement(obj, GameElement.BOSS);
+        }).start();
+    }
+
+    /**
+     * 测试用的加载方法
+     * 加载陷阱
+     *
+     * @param kind(陷阱编号)(kind:String,count:int,kind2:String,count2:int...)
+     * @return
+     */
+    public static void zzrloadTrap(String[] kind) {
+        new Thread(() -> {
+            for (int i = 0; i < kind.length; i += 2) {
+                try {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                int count = Integer.parseInt(kind[i + 1]);
+                for (int j = 0; j < count; j++) {
                     try {
                         Thread.sleep(10000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    ElementObj obj=new Trap().createElement(kind[i]);
+                    ElementObj obj = new Trap().createElement(kind[i]);
                     em.addElement(obj, GameElement.TRAP);
                 }
             }
@@ -209,11 +207,10 @@ public class GameLoad {
         return null;
     }
 
-        //子弹字符串函数(x:水平位置,y:垂直位置,hv:水平速度,vv:垂直速度,c:[1|2]:1 is play,2 is enemy)
-  		public static String getFileString(int x,int y,int hv,int vv,int camp,int bulletKind)
-  		{
-  			return "x:"+x+",y:"+y+",hv:"+hv+",vv:"+vv+",c:"+camp+",k:"+bulletKind;
-  		}
+    //子弹字符串函数(x:水平位置,y:垂直位置,hv:水平速度,vv:垂直速度,c:[1|2]:1 is play,2 is enemy)
+    public static String getFileString(int x, int y, int hv, int vv, int camp, int bulletKind) {
+        return "x:" + x + ",y:" + y + ",hv:" + hv + ",vv:" + vv + ",c:" + camp + ",k:" + bulletKind;
+    }
 
     /**
      * 扩展： 使用配置文件，来实例化对象 通过固定的key(字符串来实例化)
@@ -232,7 +229,7 @@ public class GameLoad {
             Set<Object> set = pro.keySet();//是一个set集合
             for (Object o : set) {
                 String classUrl = pro.getProperty(o.toString());
-               //System.out.println(o.toString());
+                //System.out.println(o.toString());
 //				使用反射的方式直接将 类进行获取
                 Class<?> forName = Class.forName(classUrl);
                 objMap.put(o.toString(), forName);

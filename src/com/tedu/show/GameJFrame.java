@@ -22,11 +22,13 @@ public class GameJFrame extends JFrame {
     //    public static int GameY = 800;
     public static int GameX = 1920;//GAMEX
     public static int GameY = 1080;
+
+    public static String GAMETITLE = "狂暴铁血战机";
     private JPanel jPanel = null; //正在现实的面板
     private KeyListener keyListener = null;//键盘监听
     private MouseMotionListener mouseMotionListener = null; //鼠标监听
     private MouseListener mouseListener = null;
-    private Thread thead = null;  //游戏主线程
+    private GameThread thread = null;  //游戏主线程
 
 
     public GameJFrame() {
@@ -35,7 +37,7 @@ public class GameJFrame extends JFrame {
 
     public void init() {
         this.setSize(GameX, GameY); //设置窗体大小
-        this.setTitle("狂暴铁血战机");
+        this.setTitle(GAMETITLE);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//设置退出并且关闭
         this.setResizable(false);
         this.setLocationRelativeTo(null);//屏幕居中显示
@@ -65,8 +67,8 @@ public class GameJFrame extends JFrame {
         if (mouseListener != null) {
             this.addMouseListener(mouseListener);
         }
-        if (thead != null) {
-            thead.start();//启动线程
+        if (thread != null) {
+//            thread.start();//启动线程
         }
 //		this.show();
         this.setVisible(true);//显示界面
@@ -105,8 +107,8 @@ public class GameJFrame extends JFrame {
         this.mouseListener = mouseListener;
     }
 
-    public void setThead(Thread thead) {
-        this.thead = thead;
+    public void setThread(GameThread thread) {
+        this.thread = thread;
     }
 
     /**
@@ -117,14 +119,14 @@ public class GameJFrame extends JFrame {
      * @author: Neo
      * @date: 2022/7/9/009 14:57:28 下午
      **/
-    public void loadButton(String[] text, JPanel jp) {
+    public void loadButton(String[] text, JPanel jp, int x, int y, int gap) {
         int btnHeight = 90;
-        int btnY = 450;
-        int btnGap = 180;
+        int btnY = 450 + y;
+        int btnGap = gap;
         GameButton[] btn = new GameButton[text.length];
         for (int i = 0; i < text.length; i++) {
             int btnWidth = text[i].length() * btnHeight;
-            int btnX = (GameJFrame.GameX - btnWidth) / 2;
+            int btnX = (GameJFrame.GameX - btnWidth) / 2 + x;
             btn[i] = new GameButton(text[i], btnX, btnY + btnGap * i, btnWidth, btnHeight);
             jp.add(btn[i]);
             btn[i].setFocusable(false);
@@ -162,8 +164,6 @@ public class GameJFrame extends JFrame {
 //                GameListener listener = new GameListener();//实例化监听
 //                this.setKeyListener(listener);
 //                this.setMouseMotionListener(listener);
-                GameThread th = new GameThread();//实例化主线程
-                this.setThead(th);
                 this.start();
                 break;
             case "退出游戏":

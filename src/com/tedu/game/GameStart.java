@@ -12,7 +12,10 @@ public class GameStart {
      */
     public static void main(String[] args) {
 
+        GameThread gh = new GameThread();
+        gh.start();
         GameJFrame gj = new GameJFrame();
+        gj.setThread(gh);
         GameListener listener = new GameListener();//实例化监听
         gj.setKeyListener(listener);
         gj.setMouseMotionListener(listener);

@@ -30,11 +30,11 @@ public class GameButton extends JButton {
 
 
     private void init() {
-        this.setBorder(emptyBorder);
+        setBorder(roverBorder);
+        setForeground(Color.white);
         this.setContentAreaFilled(false);
         this.setFocusPainted(false);
         this.setRolloverEnabled(true);
-        this.setForeground(Color.black);
         this.setHorizontalAlignment(SwingConstants.CENTER);
         this.setVerticalAlignment(SwingConstants.CENTER);
         this.setFont(new Font("仿宋", Font.BOLD + Font.PLAIN, this.height - 8));
@@ -44,16 +44,16 @@ public class GameButton extends JButton {
             @Override
             public void mouseEntered(MouseEvent e) {
                 if (isRolloverEnabled()) {
-                    setBorder(roverBorder);
-                    setForeground(Color.white);
+                    roverBorderColor = Color.pink;
+                    setForeground(Color.PINK);
                 }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 if (isRolloverEnabled()) {
-                    setBorder(emptyBorder);
-                    setForeground(Color.black);
+                    roverBorderColor = Color.white;
+                    setForeground(Color.white);
                 }
             }
         });
@@ -68,7 +68,7 @@ public class GameButton extends JButton {
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(roverBorderColor);
             g2.setStroke(new BasicStroke(3.0f));
-            g2.drawRoundRect(x, y, width - 1, height - 10, 30, 30);
+            g2.drawRoundRect(x, y, width - 1, height - 10, 35, 35);
         }
 
         public Insets getBorderInsets(Component c) {

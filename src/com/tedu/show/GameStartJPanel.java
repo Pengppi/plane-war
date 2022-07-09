@@ -14,7 +14,6 @@ import java.awt.*;
 
 public class GameStartJPanel extends JPanel {
 
-    private ImageIcon bg = new ImageIcon("image/bg/bg4.png");
     private GameJFrame gj = null;
 
     public GameStartJPanel(GameJFrame gj) {
@@ -25,7 +24,7 @@ public class GameStartJPanel extends JPanel {
     private void init() {
         this.setLayout(null);
         String text[] = {"开始游戏", "排行榜", "退出游戏"};
-        gj.loadButton(text, this);
+        gj.loadButton(text, this, 650, 250, 130);
         gj.setjPanel(this);
         gj.start();
     }
@@ -33,7 +32,23 @@ public class GameStartJPanel extends JPanel {
 
     @Override
     public void paintComponent(Graphics g) {
+        ImageIcon bg = new ImageIcon("image/bg/bg6.png");
         g.drawImage(bg.getImage(), 0, 0, bg.getIconWidth(), bg.getIconHeight(), this);
+        showInfo(g, GameJFrame.GAMETITLE, 1325, 600, 90);
+        String txt = "至臻豪华尊享版";
+        showInfo(g, txt, 1440, 655, 45);
+
+    }
+
+    private void showInfo(Graphics g, String txt, int x, int y, int size) {
+        g.setFont(new Font("华为琥珀", Font.BOLD, size));
+        int gap = size / 20;
+        g.setColor(Color.pink);
+        g.drawString(txt, x, y);
+        g.setColor(Color.black);
+        g.drawString(txt, x + gap, y);
+        g.setColor(Color.white);
+        g.drawString(txt, x + gap * 2, y);
     }
 
 

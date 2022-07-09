@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.tedu.element.ElementObj;
+import com.tedu.element.Play;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -22,6 +23,7 @@ interface Collide {
 
 public class GameThread extends Thread {
     private ElementManager em;
+
 
     public GameThread() {
         em = ElementManager.getManager();
@@ -161,9 +163,7 @@ public class GameThread extends Thread {
             for (int j = 0; j < listB.size(); j++) {
                 ElementObj file = listB.get(j);
                 if (enemy.pk(file)) {
-
                     collide.collide(enemy, file);
-
                 }
             }
         }
