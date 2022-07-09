@@ -18,8 +18,6 @@ import javax.swing.*;
  * 4.显示窗体
  */
 public class GameJFrame extends JFrame {
-    //    public static int GameX = 1000;//GAMEX
-    //    public static int GameY = 800;
     public static int GameX = 1920;//GAMEX
     public static int GameY = 1080;
 
@@ -112,12 +110,12 @@ public class GameJFrame extends JFrame {
     }
 
     /**
-     * @description: 向面板中添加按钮
+     * @description:
      * @method: loadButton
-     * @params: [text, jp]
+     * @params: [text, jp, x, y, gap]
      * @return: void
      * @author: Neo
-     * @date: 2022/7/9/009 14:57:28 下午
+     * @date: 2022/7/9/009 19:09:36 下午
      **/
     public void loadButton(String[] text, JPanel jp, int x, int y, int gap) {
         int btnHeight = 90;
@@ -137,10 +135,8 @@ public class GameJFrame extends JFrame {
                         JButton btn = (JButton) e.getSource();
                         String txt = btn.getText();
                         changePanel(txt);
-
                     }
                 }
-
             });
         }
     }
