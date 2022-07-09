@@ -1,43 +1,33 @@
 package com.tedu.element;
 
 import java.awt.Graphics;
-import java.util.List;
 
 import javax.swing.ImageIcon;
-
-import com.tedu.controller.GameThread;
-import com.tedu.manager.ElementManager;
-import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
-import com.tedu.show.GameJFrame;
 
 
 public class Map extends ElementObj {
 
-    public boolean sflash = false; //是否展示闪光
-    public int mapKind = 1;
+    //public boolean sflash = false; //是否展示闪光
+    //kind为地图种类
 
     public Map() {
-
-//			System.out.println(GameLoad.imgMap.get("bg1"));
-        ImageIcon icon2 = GameLoad.imgMap.get("bg2");
-        this.setW(icon2.getIconWidth());
-        this.setH(icon2.getIconHeight());
-        this.setIcon(icon2);
-        this.setX(0);
-        this.setY(-this.getH() / 2);
+//        ImageIcon icon2 = GameLoad.imgMap.get("bg2");
+//        this.setW(icon2.getIconWidth());
+//        this.setH(icon2.getIconHeight());
+//        this.setIcon(icon2);
+//        this.setX(0);
+//        this.setY(-this.getH() / 2);
     }
 
-    public Map(int x, int y, int w, int h, ImageIcon icon) {
-        super(x, y, w, h, icon);
-    }
 
     @Override
-    public ElementObj createElement(String str) {
+    public ElementObj createElement(String mapId) {
         this.setX(0);
-        this.setY(0);
-//		System.out.println(GameLoad.imgMap.get("bg1"));
-        ImageIcon icon2 = GameLoad.imgMap.get(str);
+        //this.setY(0);
+        this.setY(-this.getH() / 2);
+        this.setKind(mapId);
+        ImageIcon icon2 = GameLoad.imgMap.get("bg"+mapId);
         this.setW(icon2.getIconWidth());
         this.setH(icon2.getIconHeight());
         this.setIcon(icon2);
@@ -57,13 +47,6 @@ public class Map extends ElementObj {
     }
 
 
-    public int getMapKind() {
-        return this.mapKind;
-    }
-
-    public void setMapKind(int mapKind) {
-        this.mapKind = mapKind;
-    }
 
     // 展示闪光效果 (由某种所需闪光效果子弹调用)
 //	public static void showflash() {

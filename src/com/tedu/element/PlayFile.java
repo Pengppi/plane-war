@@ -1,8 +1,6 @@
 package com.tedu.element;
 
-import java.awt.Color;
 import java.awt.Graphics;
-
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -18,7 +16,8 @@ public class PlayFile extends ElementObj{
 	private int explodeOriginRange=20;//爆炸原始范围
 	private int explodeExpandRange=8;//爆炸增加范围
 	private int explodeTime=7;//爆炸时间
-	//kind子弹种类(1 子弹,2 散弹, 3 导弹， 4 激光, 5 爆炸) 
+	private int explodeRelayTime=1;//爆炸帧延长时间
+	//kind子弹种类(1 子弹,2 散弹, 3 导弹， 4 激光, 5 爆炸, 6等离子) 
 	
 	@Override
 	public void showElement(Graphics g) {	
@@ -29,12 +28,13 @@ public class PlayFile extends ElementObj{
                 this.getW(), this.getH(), null);
 	}
 	
+	//子弹显示的更新
 	@Override
 	protected void updateImage(long time) {
 		
 		//System.out.println(deleteTime);
 		if(deleteTime>0)deleteTime--;
-		if(this.getKind().equals("5"))//爆炸膨胀
+		if(this.getKind().equals("5"))//爆炸膨胀（一共8张图片轮流切换）
 		{
 			if(deleteTime==0)
 			{
@@ -42,11 +42,15 @@ public class PlayFile extends ElementObj{
 				return;
 			}
 			else {
-			int range=explodeOriginRange+(explodeTime-deleteTime)*explodeExpandRange;
-			this.kindToFile(range,range ,-explodeExpandRange/2,
-					-explodeExpandRange/2,1);
-			this.setIcon(GameLoad.imgMap.get("bullet"+this.getKind()+(9-deleteTime)));
+			int range=explodeOriginRange+(explodeTime-(deleteTime/explodeRelayTime))*explodeExpandRange;
+			if(deleteTime%explodeRelayTime==0)
+			this.kindToFile(range,range ,-explodeExpandRange/2,-explodeExpandRange/2,1);
+			this.setIcon(GameLoad.imgMap.get("bullet"+this.getKind()+(9-(deleteTime/explodeRelayTime))));
 			}
+		}
+		else if(this.getKind().equals("6"))//等离子电弧特效（一共4张图片轮流切换）
+		{
+			this.setIcon(GameLoad.imgMap.get("bullet"+this.getKind()+((time%40)/10+(this.getCamp()==1?1:5))));
 		}
 		else  this.setIcon(GameLoad.imgMap.get("bullet"+this.getKind()+this.getCamp()));
 		
@@ -102,6 +106,10 @@ public class PlayFile extends ElementObj{
 		this.kindToFile(explodeOriginRange,explodeOriginRange,
 		-explodeOriginRange/2, -explodeOriginRange/2,this.getCamp()==3?0:1);
 		break;
+		case "6"://等离子球
+		this.deleteTime=10000;
+		this.kindToFile(30, 30, -15, -15, 2);
+		break;
 		}
 		return this;
 	}
@@ -123,6 +131,7 @@ public class PlayFile extends ElementObj{
 		//边界检测
 		if(this.getX()<0 || this.getX()+this.getW()>GameJFrame.GameX || 
 				this.getY() <0 || this.getY()+this.getH()>GameJFrame.GameY) {
+			if(this.getKind().equals("6"))this.deleteTime=0;
 			this.setLive(false);
 			return;
 		}
@@ -149,9 +158,11 @@ public class PlayFile extends ElementObj{
 	
 	//爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）)默认为(20,8)
 	@Override
-	public void setExplodeMsg(int explodeOriginRange,int explodeExpandRange) {
-		this.explodeOriginRange=explodeOriginRange;
+	public void setExplodeMsg(int explodeOriginRange,int explodeExpandRange,int explodeRelayTime) {
+		this.explodeOriginRange = explodeOriginRange;
 		this.explodeExpandRange = explodeExpandRange;
+		this.explodeRelayTime = explodeRelayTime;
+		deleteTime*=explodeRelayTime;//时间的延长
 	}
 	
 }

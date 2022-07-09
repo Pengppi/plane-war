@@ -2,7 +2,6 @@ package com.tedu.manager;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -12,9 +11,11 @@ import java.util.Set;
 
 import javax.swing.ImageIcon;
 
+import com.tedu.element.Boss;
 import com.tedu.element.ElementObj;
 import com.tedu.element.Enemy;
 import com.tedu.element.Play;
+import com.tedu.element.Trap;
 
 /**
  * @author renjj
@@ -23,7 +24,6 @@ import com.tedu.element.Play;
 public class GameLoad {
     //	得到资源管理器
     private static ElementManager em = ElementManager.getManager();
-
     //	图片集合  使用map来进行存储     枚举类型配合移动(扩展)
     public static Map<String, ImageIcon> imgMap = new HashMap<>();
 
@@ -57,7 +57,7 @@ public class GameLoad {
 //				这样的迭代都有一个问题：一次迭代一个元素。
                 String key = names.nextElement().toString();
                 System.out.println(pro.getProperty(key));
-//				就可以自动的创建和加载 我们的地图啦 
+//				就可以自动的创建和加载 我们的地图啦
                 String[] arrs = pro.getProperty(key).split(";");
                 for (int i = 0; i < arrs.length; i++) {
                     ElementObj obj = getObj("map");
@@ -74,7 +74,7 @@ public class GameLoad {
 
     //加载背景
     public static void loadMap(int mapId) {
-    	ElementObj obj = new com.tedu.element.Map();
+    	ElementObj obj = new com.tedu.element.Map().createElement(String.valueOf(mapId));
     	em.addElement(obj, GameElement.MAPS);
     }
       
@@ -94,7 +94,7 @@ public class GameLoad {
             Set<Object> set = pro.keySet();//是一个set集合
             for (Object o : set) {
                 String url = pro.getProperty(o.toString());
-                System.out.println(o.toString());
+                //System.out.println(o.toString());
                 imgMap.put(o.toString(), new ImageIcon(url));
             }
 
@@ -106,7 +106,7 @@ public class GameLoad {
 
     /**
      * 加载玩家
-     */    
+     */
     /**
      * 测试用的加载方法
      * 加载玩家飞机
@@ -116,7 +116,7 @@ public class GameLoad {
 //		讲对象放入到 元素管理器中
         em.addElement(obj, GameElement.PLAY);//直接添加
     }
-    
+
     /**
      * 测试用的加载方法
      * 加载敌军飞机
@@ -146,6 +146,50 @@ public class GameLoad {
 	    	}
     	}).start();
     }
+    
+    //加载boss的函数
+    public static void hzfloadBoss(String bossKind)
+    {
+    	new Thread(()->{
+	    		 try {
+					Thread.sleep(50);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	    	    ElementObj obj=new Boss().createElement(bossKind);
+	    	    em.addElement(obj, GameElement.BOSS);
+    	}).start();	
+    }
+
+    /**
+     * 测试用的加载方法
+     * 加载陷阱
+     * @param 陷阱编号(kind:String,count:int,kind2:String,count2:int...)
+     * @return
+     */
+    public static void zzrloadTrap(String []kind) {
+        new Thread(()->{
+            for(int i=0;i<kind.length;i+=2)
+            {
+                try {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                int count=Integer.parseInt(kind[i+1]);
+                for(int j=0;j<count;j++)
+                {
+                    try {
+                        Thread.sleep(10000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    ElementObj obj=new Trap().createElement(kind[i]);
+                    em.addElement(obj, GameElement.TRAP);
+                }
+            }
+        }).start();
+    }
 
     public static ElementObj getObj(String str) {
         try {
@@ -170,7 +214,7 @@ public class GameLoad {
   		{
   			return "x:"+x+",y:"+y+",hv:"+hv+",vv:"+vv+",c:"+camp+",k:"+bulletKind;
   		}
-  		
+
     /**
      * 扩展： 使用配置文件，来实例化对象 通过固定的key(字符串来实例化)
      *

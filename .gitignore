@@ -36,5 +36,9 @@ log/
 *.tar.gz
 *.pid
 *.orig
+mywork.txt
 temp/
 /bin/
+id_rsa
+my.txt
+
