@@ -2,10 +2,15 @@ package com.tedu.controller;
 
 import java.util.List;
 import java.util.Map;
+
+import com.tedu.element.Boss;
 import com.tedu.element.ElementObj;
+import com.tedu.element.Play;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
+import com.tedu.show.GameJFrame;
+import com.tedu.show.GameOverJPanel;
 
 /**
  * @author renjj
@@ -20,6 +25,9 @@ interface Collide {
 
 public class GameThread extends Thread {
     private ElementManager em;
+
+    public boolean on = false;//控制gameRun
+    public GameJFrame gj;
 
 
     public GameThread() {
@@ -51,7 +59,7 @@ public class GameThread extends Thread {
         /**
          * wpp为了测试飞机移动暂时而加的loadPlay不属于最终的生成方式
          */
-
+        System.out.println("gameLoad阶段");
         GameLoad.loadImg();//加载图片
         GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机
@@ -87,7 +95,8 @@ public class GameThread extends Thread {
 
     private void gameRun() {
         long gameTime = 0L;//给int类型就可以啦
-        while (true) {// 预留扩展   true可以变为变量，用于控制管关卡结束等
+        while (on) {// 预留扩展   true可以变为变量，用于控制管关卡结束等
+            System.out.println("gameRun阶段");
             Map<GameElement, List<ElementObj>> all = em.getGameElements();
             List<ElementObj> enemies = em.getElementsByKey(GameElement.ENEMY);
             List<ElementObj> files = em.getElementsByKey(GameElement.PLAYFILE);
@@ -171,14 +180,21 @@ public class GameThread extends Thread {
     //	游戏元素自动化方法
     public void moveAndUpdate(Map<GameElement, List<ElementObj>> all, long gameTime) {
 //		GameElement.values();//隐藏方法  返回值是一个数组,数组的顺序就是定义枚举的顺序
-
         for (GameElement ge : GameElement.values()) {
             List<ElementObj> list = all.get(ge);
             for (int i = list.size() - 1; i >= 0; i--) {
                 ElementObj obj = list.get(i);//读取为基类
                 if (!obj.isLive()) {//如果死亡
                     obj.die();
+                    if (obj instanceof Play) {
+                        on = false;
+                        new GameOverJPanel(gj, false, all.get(GameElement.PLAY).get(0).getScore(), all.get(GameElement.MAPS).get(0).getIcon());
+                    }
                     addScore(all, obj);
+                    if (obj instanceof Boss) {
+                        on = false;
+                        new GameOverJPanel(gj, true, all.get(GameElement.PLAY).get(0).getScore(), all.get(GameElement.MAPS).get(0).getIcon());
+                    }
                     list.remove(i);
                     continue;
                 }
@@ -219,6 +235,16 @@ public class GameThread extends Thread {
      * 游戏切换关卡
      */
     private void gameOver() {
+        if (!on) {
+            while (!gj.isReady) {   //阻断线程,直到进入游戏
+                System.out.println("gameOver阶段"); //wpp测试游戏阶段
+                Map<GameElement, List<ElementObj>> all = em.getGameElements();
+                for (GameElement ge : GameElement.values()) {
+                    all.get(ge).clear();
+                }
+            }
+            on = true;//启动gameRun()
+        }
 
     }
 

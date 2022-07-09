@@ -21,6 +21,7 @@ public class GameJFrame extends JFrame {
     public static int GameX = 1920;//GAMEX
     public static int GameY = 1080;
 
+    public boolean isReady = false;
     public static String GAMETITLE = "狂暴铁血战机";
     private JPanel jPanel = null; //正在现实的面板
     private KeyListener keyListener = null;//键盘监听
@@ -131,6 +132,7 @@ public class GameJFrame extends JFrame {
             btn[i].addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+//                    System.out.println("click");
                     if (e.getButton() == 1) {
                         JButton btn = (JButton) e.getSource();
                         String txt = btn.getText();
@@ -156,10 +158,8 @@ public class GameJFrame extends JFrame {
                 GameMainJPanel jp = new GameMainJPanel();//实例化面板，注入到jframe中
                 this.jPanel = null;
                 this.setjPanel(jp);
+                isReady = true;
                 jp.setFocusable(true);
-//                GameListener listener = new GameListener();//实例化监听
-//                this.setKeyListener(listener);
-//                this.setMouseMotionListener(listener);
                 this.start();
                 break;
             case "退出游戏":
@@ -167,11 +167,13 @@ public class GameJFrame extends JFrame {
                 break;
             case "排行榜":
                 break;
-            case "重玩游戏":
+            case "重玩关卡":
                 break;
             case "下一关":
                 break;
             case "返回主菜单":
+                GameStartJPanel sjp = new GameStartJPanel(this);
+                this.jPanel = null;
                 break;
         }
     }

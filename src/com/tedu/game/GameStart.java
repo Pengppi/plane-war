@@ -16,6 +16,7 @@ public class GameStart {
         gh.start();
         GameJFrame gj = new GameJFrame();
         gj.setThread(gh);
+        gh.gj = gj;
         GameListener listener = new GameListener();//实例化监听
         gj.setKeyListener(listener);
         gj.setMouseMotionListener(listener);

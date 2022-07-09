@@ -15,7 +15,6 @@ public class Boss extends ElementObj{
 	//种类：海妖终结者，巨霸魔牛，剧毒金蜥，紫魔君主，爆裂金刚，
 	
 	//private static Random ran=new Random(); //随机生成器
-    private boolean addStar=false;//防止重复加分ֵ
 	private int bossMoveTime=0;//boss移动时间,用于控制boss的移动
 	private int bossMovePeriod=2000;//boss移动，攻击的周期
 	private int bossMoveRemainder;//boss移动时间周期余数
@@ -32,16 +31,16 @@ public class Boss extends ElementObj{
 		switch(this.getKind())
 		{
 		case "1"://海妖终结者
-		this.kindToBoss(320, 320, 200, 0, 1, 2400);
+		this.kindToBoss(320, 320, 200, 0, 1, 2400,80);
 		break;
 		case "2"://巨霸魔牛
-		this.kindToBoss(320, 320, 250, 0, 1, 2000);
+		this.kindToBoss(320, 320, 250, 0, 1, 2000,120);
 		break;
 		case "3"://剧毒金蜥
-		this.kindToBoss(320, 320, 300, 0, 1, 2400);
+		this.kindToBoss(320, 320, 300, 0, 1, 2400,200);
 		break;
 		case "4"://紫魔君主
-		this.kindToBoss(320, 320, 400, 0, 1, 2400);
+		this.kindToBoss(320, 320, 400, 0, 1, 2400,320);
         break;
 		}
 		this.setX(GameJFrame.GameX/2-this.getW()/2);//使得boss在正中间出现
@@ -51,13 +50,14 @@ public class Boss extends ElementObj{
 	}
 
 	//boss种类初始化敌机属性函数(敌机大小,血量，运动方式(水平速度，垂直速度),运动周期设置)
-		public void kindToBoss(int width,int height,int density,int moveXNum,int moveYNum,int period)
+		public void kindToBoss(int width,int height,int density,int moveXNum,int moveYNum,int period,int score)
 		{
 			this.setW(width);
 			this.setH(height);
 			this.setDensity(density);
 			this.setSpeed(moveXNum, moveYNum);
 			this.bossMovePeriod=period;
+			this.setScore(score);
 		}		
 	
       @Override
@@ -118,8 +118,6 @@ public class Boss extends ElementObj{
 	
 	@Override
 	public void die() {
-		if(!this.addStar)//增加积分
-		{
 		//爆炸
 		ElementObj obj=GameLoad.getObj("file");  		
 		ElementObj element = obj.createElement(//子弹json数据生成
@@ -128,8 +126,7 @@ public class Boss extends ElementObj{
 		element.setExplodeMsg(40, 24, 3);
 		ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
 		//在此位置增加分数
-		this.addStar=true;
-		}
+
 	}
 
 	@Override

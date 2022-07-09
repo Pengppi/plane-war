@@ -1,43 +1,52 @@
 /**
  * @Author: Neo
- * @Date: 2022/07/09 星期六 11:59:53
+ * @Date: 2022/07/09 星期六 23:24:30
  * @Project: plane_war
  * @IDE: IntelliJ IDEA
  **/
 package com.tedu.show;
 
-
-import com.tedu.manager.GameLoad;
+import com.tedu.element.ElementObj;
+import com.tedu.manager.ElementManager;
+import com.tedu.manager.GameElement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
-public class GameStartJPanel extends JPanel {
-
+public class GameOverJPanel extends JPanel {
     private GameJFrame gj = null;
+    private ImageIcon bg;
+    private int score = 0;
 
-    public GameStartJPanel(GameJFrame gj) {
+    public GameOverJPanel(GameJFrame gj, boolean isWin, int score, ImageIcon icon) {
         this.gj = gj;
+        this.bg = icon;
+        this.score = score;
+        this.setLayout(null);
         gj.isReady = false;
-        init();
+        init(isWin);
     }
 
-    private void init() {
-        this.setLayout(null);
-        String text[] = {"开始游戏", "排行榜", "退出游戏"};
-        gj.loadButton(text, this, 650, 250, 130);
+
+    private void init(boolean isWin) {
+        String text[];
+        if (isWin) {
+            text = new String[]{"下一关", "返回主菜单"};
+        } else {
+            text = new String[]{"重玩关卡", "返回主菜单"};
+        }
+        gj.loadButton(text, this, 0, 100, 200);
         gj.setjPanel(this);
         gj.start();
     }
 
-
     @Override
     public void paintComponent(Graphics g) {
-        ImageIcon bg = new ImageIcon("image/bg/bg6.png");
         g.drawImage(bg.getImage(), 0, 0, bg.getIconWidth(), bg.getIconHeight(), this);
-        showInfo(g, GameJFrame.GAMETITLE, 1325, 600, 90);
-        String txt = "至臻豪华尊享版";
-        showInfo(g, txt, 1440, 655, 45);
+        showInfo(g, "GameOver!", 460, 260, 200);
+        String txt = "您最终的得分是:" + score;
+        showInfo(g, txt, 620, 420, 90);
 
     }
 
@@ -52,7 +61,6 @@ public class GameStartJPanel extends JPanel {
         g.drawString(txt, x + gap * 2, y);
     }
 
-
     public GameJFrame getGj() {
         return gj;
     }
@@ -60,15 +68,4 @@ public class GameStartJPanel extends JPanel {
     public void setGj(GameJFrame gj) {
         this.gj = gj;
     }
-
-
-//    public static void main(String[] args) {
-//        JFrame jf = new JFrame();
-//        jf.setSize(1920, 1080);
-//        jf.setContentPane(new GameStartJPanel());
-//        jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        jf.setLocationRelativeTo(null);
-//        jf.setUndecorated(true);
-//        jf.setVisible(true);
-//    }
 }
