@@ -36,17 +36,12 @@ public class Map extends ElementObj {
 
     @Override
     public void showElement(Graphics g) {
-        // TODO Auto-generated method stub
-        g.drawImage(this.getIcon().getImage(),
-                this.getX(), this.getY(),
-                this.getW(), this.getH(), null);
+    	super.showElement(g);
         this.setY(this.getY() + 1);
         if (this.getY() >= 0) {
             this.setY(-this.getH() / 2);
         }
     }
-
-
 
     // 展示闪光效果 (由某种所需闪光效果子弹调用)
 //	public static void showflash() {

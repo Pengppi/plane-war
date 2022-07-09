@@ -2,10 +2,7 @@ package com.tedu.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
-
 import com.tedu.element.ElementObj;
-import com.tedu.element.Play;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -62,11 +59,12 @@ public class GameThread extends Thread {
         //GameLoad.hzfloadEnemey(new String[] {"e","3"});
         //GameLoad.hzfloadBoss("1");
         GameLoad.loadMap(2);
-        GameLoad.hzfloadEnemey(new String[]{"1", "4", "2", "4", "3", "4", "4", "4", "5", "4", "6", "4", "7", "4"});//加载敌军飞机
+        GameLoad.hzfloadBoss("4");
+        //GameLoad.hzfloadEnemy(new String[]{"1", "4", "2", "4", "3", "4", "4", "4", "5", "4", "6", "4", "7", "4"});//加载敌军飞机
 
         //GameLoad.hzfloadEnemey(new String[] {"e","3"});
         //GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
-        GameLoad.zzrloadTrap(new String[]{"1", "4", "2", "4", "3", "4", "4", "4", "5", "4", "6", "4", "7", "4"});//加载陷阱
+        GameLoad.zzrloadTrap(new String[]{"1", "20", "2", "20"});//加载陷阱
 
 
 //		GameLoad.loadImg(); //加载图片

@@ -1,10 +1,7 @@
 package com.tedu.element;
 
-import java.awt.Graphics;
 import java.util.List;
-
 import javax.swing.ImageIcon;
-
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -68,13 +65,6 @@ public class Flash extends ElementObj{
 		 this.setIcon(icon2);
 	   	 return this;
 	   }
-	 
-	@Override
-	public void showElement(Graphics g) {
-		g.drawImage(this.getIcon().getImage(),
-             this.getX(), this.getY(),
-             this.getW(), this.getH(), null);
-	}
 	
 	//闪光种类函数
 	@Override

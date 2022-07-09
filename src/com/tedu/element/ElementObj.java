@@ -1,9 +1,6 @@
 package com.tedu.element;
-
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.util.List;
-
 import javax.swing.ImageIcon;
 
 /**
@@ -12,8 +9,8 @@ import javax.swing.ImageIcon;
  */
 public abstract class ElementObj {
 
-    private int x;
-    private int y;
+    private double x;
+    private double y;
     private int w;
     private int h;
     private ImageIcon icon;
@@ -21,6 +18,10 @@ public abstract class ElementObj {
     private boolean live = true; //生存状态 true 代表存在，false代表死亡
     private String kind = "";//种类
     private int camp = 0;//阵营(1 is play,2 is enemy)
+    //水平速度与垂直速度
+  	private double moveXNum=0;//水平移动距离
+  	private double moveYNum=0;//垂直移动距离
+      /*
     /**
      * 有防御力的对象
      */
@@ -64,8 +65,14 @@ public abstract class ElementObj {
      * @param g 画笔 用于进行绘画
      * @说明 抽象方法，显示元素
      */
-    public abstract void showElement(Graphics g);
-
+    public void showElement(Graphics g)
+    {
+    	if(this.getIcon().getImage()!=null)
+    	g.drawImage(this.getIcon().getImage(),
+        (int)this.getX(), (int)this.getY(),
+         this.getW(), this.getH(), null);
+    }
+    
     /**
      * @param bl  点击的类型  true代表按下，false代表松开
      * @param key 代表触发的键盘的code值
@@ -124,7 +131,7 @@ public abstract class ElementObj {
      */
     public Rectangle getRectangle() {
 //		可以将这个数据进行处理
-        return new Rectangle(x, y, w, h);
+        return new Rectangle((int)x, (int)y, w, h);
     }
 
     /**
@@ -141,19 +148,19 @@ public abstract class ElementObj {
     /**
      * 只要是 VO类 POJO 就要为属性生成 get和set方法
      */
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
     }
 
@@ -242,6 +249,23 @@ public abstract class ElementObj {
         return density;
     }
 
+  //设置速度
+    public void setSpeed(double moveXNum,double moveYNum)
+    {
+    	this.moveXNum=moveXNum;
+    	this.moveYNum=moveYNum;
+    }
+    
+    public double getXSpeed()
+    {
+    	return this.moveXNum;
+    }
+    
+    public double getYSpeed()
+    {
+    	return this.moveYNum;
+    }
+    
     //设置爆炸信息
     //爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）)默认为(20,8)
     public void setExplodeMsg(int explodeOriginRange, int explodeExpandRange, int explodeRelayTime) {

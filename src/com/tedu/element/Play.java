@@ -1,11 +1,7 @@
 package com.tedu.element;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.swing.ImageIcon;
-
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -21,7 +17,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     private int ty;
     //子弹种类(1 普通子弹,2 散弹,3 导弹,4 激光,5 等离子球)
     private int shoot_interval = 80;//射击间隔,单发为100
-    private int weapon_kind = 8;//武器种类
+    private int weapon_kind = 5;//武器种类
     private int weapon_count = 8;//武器种类总数
 
     private int full_blood = 10;//满血值
@@ -68,19 +64,17 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     @Override
     public void showElement(Graphics g) {
 //		绘画图片
-        g.drawImage(this.getIcon().getImage(),
-                this.getX(), this.getY(),
-                this.getW(), this.getH(), null);
+        super.showElement(g);
         g.setFont(new Font("微软雅黑",Font.PLAIN+Font.BOLD,60));
         g.drawString("当前得分：" + this.getScore(),0,60);
         int bloodBarWidth = this.getW() / 4 * 3;
         int bloodBarHeight = 10;
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.RED);
-        g2.fillRect(this.getX() + this.getW() / 8, this.getY() + this.getH(), bloodBarWidth * this.getBlood() / this.full_blood, bloodBarHeight);
+        g2.fillRect((int)(this.getX() + this.getW() / 8),(int)(this.getY() + this.getH()), bloodBarWidth * this.getBlood() / this.full_blood, bloodBarHeight);
         g2.setStroke(new BasicStroke(2.0f));
         g2.setColor(Color.BLACK);
-        g2.drawRect(this.getX() + this.getW() / 8, this.getY() + this.getH(), bloodBarWidth, bloodBarHeight);
+        g2.drawRect((int)(this.getX() + this.getW() / 8),(int)(this.getY() + this.getH()), bloodBarWidth, bloodBarHeight);
 
     }
 
@@ -144,17 +138,18 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     }
 
     //发射函数(子弹种类,子弹发射的位置,子弹速度,发射间隔)
-    public void shoot(int bulletKind, int[] pos, int[] speed, int shoot_interval) {
-        this.setInterval(shoot_interval);
-        for (int i = 0; i < pos.length; i += 2)//pos[i]为横坐标,pos[i+1]为纵坐标,speed[i]为水平速度,speed[i+1]为垂直速度
-        {
-            ElementObj obj = GameLoad.getObj("file");
-            ElementObj element = obj.createElement(//子弹json数据生成
-                    GameLoad.getFileString(pos[i], pos[i + 1],
-                            speed[i], speed[i + 1], this.getCamp(), bulletKind));
-            ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
-        }
-    }
+  	public void shoot(int bulletKind,double[]pos,double[]speed,int shoot_interval)
+  	{
+  		this.setInterval(shoot_interval);
+  		for(int i=0;i<pos.length;i+=2)//pos[i]为横坐标,pos[i+1]为纵坐标,speed[i]为水平速度,speed[i+1]为垂直速度
+  		{
+  			ElementObj obj=GameLoad.getObj("file");
+  			ElementObj element = obj.createElement(//子弹json数据生成
+              GameLoad.getFileString(pos[i],pos[i+1],
+              		speed[i],speed[i+1],this.getCamp(),bulletKind));
+  			ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
+  		}
+  	}
 
     //设置发射间隔
     public void setInterval(int shoot_interval) {
@@ -165,53 +160,54 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     public void add(long gameTime) {
         //一定间隔发射子弹
         if ((gameTime + 2) % this.shoot_interval == 0) {
-            switch (this.weapon_kind) {
+        	switch(this.weapon_kind)
+    		{
 
-                case 1:
-                    //发射普通子弹
-                    shoot(1, new int[]{this.getX() + this.getW() / 2, this.getY()},
-                            new int[]{0, -3}, 80);
-                    break;
-                case 2:
-                    //发射双发子弹
-                    this.shoot(1,
-                            new int[]{this.getX() + this.getW() / 2 - 10, this.getY(),
-                                    this.getX() + this.getW() / 2 + 10, this.getY()},
-                            new int[]{0, -3, 0, -3}, 80);
-                    break;
-                case 3:
-                    //发射散弹
-                    this.shoot(2,
-                            new int[]{this.getX() + this.getW() / 2 - 5, this.getY(),
-                                    this.getX() + this.getW() / 2, this.getY(),
-                                    this.getX() + this.getW() / 2 + 5, this.getY()},
-                            new int[]{-1, -3, 0, -3, 1, -3}, 80);
-                    break;
-                case 4://机枪
-                    shoot(1, new int[]{this.getX() + this.getW() / 2, this.getY()},
-                            new int[]{0, -3}, 20);
-                    break;
-                case 5://双重机枪
-                    this.shoot(1,
-                            new int[]{this.getX() + this.getW() / 2 - 10, this.getY(),
-                                    this.getX() + this.getW() / 2 + 10, this.getY()},
-                            new int[]{0, -3, 0, -3}, 20);
-                    break;
-                case 6:
-                    //发射激光
-                    shoot(4, new int[]{this.getX() + this.getW() / 2, this.getY()},
-                            new int[]{0, 0}, 80);
-                    break;
-                case 7:
-                    //发射导弹
-                    shoot(3, new int[]{this.getX() + this.getW() / 2, this.getY() - 10},
-                            new int[]{0, -7}, 80);
-                    break;
-                case 8://等离子球(发射间隔较长，为120ms)
-                    shoot(6, new int[]{this.getX() + this.getW() / 2, this.getY()},
-                            new int[]{0, -2}, 120);
-                    break;
-            }
+    		case 1:
+    			//发射普通子弹
+    			shoot(1, new double[] {this.getX()+this.getW()/2,this.getY()},
+    			new double[] {0,-3},80);
+    			break;
+    		case 2:
+    			//发射双发子弹
+    			this.shoot(1,
+    			new double[]{this.getX()+this.getW()/2-10,this.getY(),
+    			this.getX()+this.getW()/2+10,this.getY()},
+    			new double[] {0,-3,0,-3},80);
+    			break;
+    		case 3:
+    			//发射散弹
+    			this.shoot(2,
+    			new double[]{this.getX()+this.getW()/2-5,this.getY(),
+    			this.getX()+this.getW()/2,this.getY(),
+    			this.getX()+this.getW()/2+5,this.getY()},
+    			new double[] {-0.5,-3,0,-3,0.5,-3},80);
+    			break;
+    		case 4://机枪
+    			shoot(1, new double[] {this.getX()+this.getW()/2,this.getY()},
+    			new double[] {0,-3},20);
+    			break;
+    		case 5://双重机枪
+    			this.shoot(1,
+    			new double[]{this.getX()+this.getW()/2-10,this.getY(),
+    			this.getX()+this.getW()/2+10,this.getY()},
+    			new double[] {0,-3,0,-3},20);
+    			break;
+    		case 6:
+    			//发射激光
+    			shoot(4,new double[] {this.getX()+this.getW()/2,this.getY()},
+    			new double[] {0,0},80);
+    			break;
+    		case 7:
+    			//发射导弹
+    			shoot(3, new double[] {this.getX()+this.getW()/2,this.getY()-10},
+    			new double[] {0,-7},80);
+    			break;
+    		case 8://等离子球(发射间隔较长，为120ms)
+    			shoot(6, new double[] {this.getX()+this.getW()/2,this.getY()},
+    			new double[] {0,-2},120);
+    			break;
+    		}
 
         }
     }

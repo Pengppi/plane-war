@@ -8,10 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 import javax.swing.ImageIcon;
-
-import com.tedu.controller.GameThread;
 import com.tedu.element.Boss;
 import com.tedu.element.ElementObj;
 import com.tedu.element.Enemy;
@@ -125,7 +122,7 @@ public class GameLoad {
      * @param kind(飞机种类编号)(kind:String,count:int,kind2:String,count2:int...)
      * @return
      */
-    public static void hzfloadEnemey(String[] kind) {
+    public static void hzfloadEnemy(String[] kind) {
         new Thread(() -> {
             for (int i = 0; i < kind.length; i += 2) {
                 try {
@@ -148,16 +145,17 @@ public class GameLoad {
     }
 
     //加载boss的函数
-    public static void hzfloadBoss(String bossKind) {
-        new Thread(() -> {
-            try {
-                Thread.sleep(50);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            ElementObj obj = new Boss().createElement(bossKind);
-            em.addElement(obj, GameElement.BOSS);
-        }).start();
+    public static void hzfloadBoss(String bossKind)
+    {
+    	new Thread(()->{
+	    		 try {
+					Thread.sleep(50);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	    	    ElementObj obj=new Boss().createElement(bossKind);
+	    	    em.addElement(obj, GameElement.BOSS);
+    	}).start();	
     }
 
     /**
@@ -208,9 +206,10 @@ public class GameLoad {
     }
 
     //子弹字符串函数(x:水平位置,y:垂直位置,hv:水平速度,vv:垂直速度,c:[1|2]:1 is play,2 is enemy)
-    public static String getFileString(int x, int y, int hv, int vv, int camp, int bulletKind) {
-        return "x:" + x + ",y:" + y + ",hv:" + hv + ",vv:" + vv + ",c:" + camp + ",k:" + bulletKind;
-    }
+    public static String getFileString(double x,double y,double hv,double vv,int camp,int bulletKind)
+	{
+	return "x:"+x+",y:"+y+",hv:"+hv+",vv:"+vv+",c:"+camp+",k:"+bulletKind;
+	}
 
     /**
      * 扩展： 使用配置文件，来实例化对象 通过固定的key(字符串来实例化)
@@ -236,10 +235,9 @@ public class GameLoad {
             }
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
+        } 
+        catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

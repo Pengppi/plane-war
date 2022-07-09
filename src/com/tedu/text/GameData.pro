@@ -43,7 +43,6 @@ bullet57=image/cartridge/bang6.png
 bullet58=image/cartridge/bang7.png
 bullet59=image/cartridge/bang8.png
 
-<<<<<<< HEAD
 bullet61=image/cartridge/plasma1.png
 bullet62=image/cartridge/plasma2.png
 bullet63=image/cartridge/plasma3.png
@@ -53,8 +52,14 @@ bullet66=image/cartridge/plasma6.png
 bullet67=image/cartridge/plasma7.png
 bullet68=image/cartridge/plasma8.png
 
+bullet72=image/cartridge/boss_long_red_bullet.png
+bullet82=image/cartridge/boss_laser1.png
+bullet92=image/cartridge/boss_laser2.png
+bullet02=image/cartridge/ball_bullet.png
+
 trap1=image/precaution/missile_precaution.png
-trap2=image/precaution/boss_precaution.png
+trap2=image/precaution/missile_precaution.png
+trap3=image/precaution/boss_precaution.png
 
 flash0=image/flash/flash1.png
 flash1=image/flash/flash2.png

@@ -41,7 +41,7 @@ public class GameStartJPanel extends JPanel {
     }
 
     private void showInfo(Graphics g, String txt, int x, int y, int size) {
-        g.setFont(new Font("华为琥珀", Font.BOLD, size));
+        g.setFont(new Font("", Font.BOLD, size));
         int gap = size / 20;
         g.setColor(Color.pink);
         g.drawString(txt, x, y);
@@ -72,7 +72,7 @@ public class GameStartJPanel extends JPanel {
         //GameLoad.hzfloadEnemey(new String[] {"e","3"});
         //GameLoad.hzfloadBoss("1");
         GameLoad.loadMap(2);
-        GameLoad.hzfloadEnemey(new String[]{"1", "4", "2", "4", "3", "4", "4", "4", "5", "4", "6", "4", "7", "4"});//加载敌军飞机
+        GameLoad.hzfloadEnemy(new String[]{"1", "4", "2", "4", "3", "4", "4", "4", "5", "4", "6", "4", "7", "4"});//加载敌军飞机
 
         //GameLoad.hzfloadEnemey(new String[] {"e","3"});
         //GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
