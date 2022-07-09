@@ -103,7 +103,6 @@ public class GameThread extends Thread {
                     b.setLive(false);
                 }
             });
-
             ElementPK(boss, files, (a, b) -> {//判断我方的子弹与boss碰撞
                 if (a.getCamp() + b.getCamp() == 3) {
                     a.deductLive(b.getAttack());

@@ -1,11 +1,11 @@
 package com.tedu.show;
 
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import com.tedu.controller.GameListener;
+import com.tedu.controller.GameThread;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.awt.event.*;
+
+import javax.swing.*;
 
 /**
  * @author renjj
@@ -27,6 +27,7 @@ public class GameJFrame extends JFrame {
     private MouseMotionListener mouseMotionListener = null; //鼠标监听
     private MouseListener mouseListener = null;
     private Thread thead = null;  //游戏主线程
+
 
     public GameJFrame() {
         init();
@@ -52,7 +53,8 @@ public class GameJFrame extends JFrame {
      */
     public void start() {
         if (jPanel != null) {
-            this.add(jPanel);
+//            this.add(jPanel);
+            this.setContentPane(jPanel);
         }
         if (keyListener != null) {
             this.addKeyListener(keyListener);
@@ -60,8 +62,8 @@ public class GameJFrame extends JFrame {
         if (mouseMotionListener != null) {
             this.addMouseMotionListener(mouseMotionListener);
         }
-        if (mouseMotionListener != null) {
-            this.addMouseMotionListener(mouseMotionListener);
+        if (mouseListener != null) {
+            this.addMouseListener(mouseListener);
         }
         if (thead != null) {
             thead.start();//启动线程
@@ -107,6 +109,76 @@ public class GameJFrame extends JFrame {
         this.thead = thead;
     }
 
+    /**
+     * @description: 向面板中添加按钮
+     * @method: loadButton
+     * @params: [text, jp]
+     * @return: void
+     * @author: Neo
+     * @date: 2022/7/9/009 14:57:28 下午
+     **/
+    public void loadButton(String[] text, JPanel jp) {
+        int btnHeight = 90;
+        int btnY = 450;
+        int btnGap = 180;
+        GameButton[] btn = new GameButton[text.length];
+        for (int i = 0; i < text.length; i++) {
+            int btnWidth = text[i].length() * btnHeight;
+            int btnX = (GameJFrame.GameX - btnWidth) / 2;
+            btn[i] = new GameButton(text[i], btnX, btnY + btnGap * i, btnWidth, btnHeight);
+            jp.add(btn[i]);
+            btn[i].setFocusable(false);
+            btn[i].addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getButton() == 1) {
+                        JButton btn = (JButton) e.getSource();
+                        String txt = btn.getText();
+                        changePanel(txt);
+
+                    }
+                }
+
+            });
+        }
+    }
+
+
+    /**
+     * @description: 更换窗体面板
+     * @method: changePanel
+     * @params: [txt]
+     * @return: void
+     * @author: Neo
+     * @date: 2022/7/9/009 16:02:05 下午
+     **/
+    public void changePanel(String txt) {
+        switch (txt) {
+            case "开始游戏":
+                GameMainJPanel jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                this.jPanel = null;
+                this.setjPanel(jp);
+                jp.setFocusable(true);
+//                GameListener listener = new GameListener();//实例化监听
+//                this.setKeyListener(listener);
+//                this.setMouseMotionListener(listener);
+                GameThread th = new GameThread();//实例化主线程
+                this.setThead(th);
+                this.start();
+                break;
+            case "退出游戏":
+                System.exit(0);
+                break;
+            case "排行榜":
+                break;
+            case "重玩游戏":
+                break;
+            case "下一关":
+                break;
+            case "返回主菜单":
+                break;
+        }
+    }
 
 }
 

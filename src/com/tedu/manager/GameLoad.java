@@ -112,7 +112,7 @@ public class GameLoad {
      * 加载玩家飞机
      */
     public static void wpploadPlay() {
-        ElementObj obj=new Play().createElement("200,200,1");//实例化对象（x,y,玩家飞机种类）
+        ElementObj obj=new Play().createElement("800,450,1");//实例化对象（x,y,玩家飞机种类）
 //		讲对象放入到 元素管理器中
         em.addElement(obj, GameElement.PLAY);//直接添加
     }
