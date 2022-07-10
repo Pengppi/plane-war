@@ -2,6 +2,7 @@ package com.tedu.game;
 
 import com.tedu.controller.GameListener;
 import com.tedu.controller.GameThread;
+import com.tedu.element.GameRecord;
 import com.tedu.show.GameJFrame;
 import com.tedu.show.GameMainJPanel;
 import com.tedu.show.GameStartJPanel;
@@ -11,7 +12,6 @@ public class GameStart {
      * 程序的唯一入口
      */
     public static void main(String[] args) {
-
         GameThread gh = new GameThread();
         gh.start();
         GameJFrame gj = new GameJFrame();

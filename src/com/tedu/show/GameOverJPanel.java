@@ -6,13 +6,12 @@
  **/
 package com.tedu.show;
 
-import com.tedu.element.ElementObj;
-import com.tedu.manager.ElementManager;
-import com.tedu.manager.GameElement;
+import com.tedu.element.GameRecord;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.StringJoiner;
 
 public class GameOverJPanel extends JPanel {
     private GameJFrame gj = null;
@@ -24,6 +23,7 @@ public class GameOverJPanel extends JPanel {
         this.bg = icon;
         this.score = score;
         this.setLayout(null);
+        GameRecord.updateRecord(new GameRecord("第一关", score));
         gj.isReady = false;
         init(isWin);
     }
@@ -32,9 +32,9 @@ public class GameOverJPanel extends JPanel {
     private void init(boolean isWin) {
         String text[];
         if (isWin) {
-            text = new String[]{"下一关", "返回主菜单"};
+            text = new String[]{"下一关", "返回主界面"};
         } else {
-            text = new String[]{"重玩关卡", "返回主菜单"};
+            text = new String[]{"重玩关卡", "返回主界面"};
         }
         gj.loadButton(text, this, 0, 100, 200);
         gj.setjPanel(this);
@@ -45,7 +45,7 @@ public class GameOverJPanel extends JPanel {
     public void paintComponent(Graphics g) {
         g.drawImage(bg.getImage(), 0, 0, bg.getIconWidth(), bg.getIconHeight(), this);
         showInfo(g, "GameOver!", 460, 260, 200);
-        String txt = "您最终的得分是:" + score;
+        String txt = "您最终的得分是:" + score + "分！";
         showInfo(g, txt, 620, 420, 90);
 
     }
@@ -68,4 +68,5 @@ public class GameOverJPanel extends JPanel {
     public void setGj(GameJFrame gj) {
         this.gj = gj;
     }
+
 }

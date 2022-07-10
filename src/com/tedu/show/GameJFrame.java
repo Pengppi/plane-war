@@ -165,13 +165,14 @@ public class GameJFrame extends JFrame {
             case "退出游戏":
                 System.exit(0);
                 break;
-            case "排行榜":
+            case "游戏记录":
+                new GameRecordJPanel(this);
                 break;
             case "重玩关卡":
                 break;
             case "下一关":
                 break;
-            case "返回主菜单":
+            case "返回主界面":
                 GameStartJPanel sjp = new GameStartJPanel(this);
                 this.jPanel = null;
                 break;
