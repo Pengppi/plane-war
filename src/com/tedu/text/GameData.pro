@@ -72,3 +72,14 @@ bg3=image/bg/bg3.png
 bg4=image/bg/bg4.png
 bg5=image/bg/bg5.png
 
+tool1=image/tool/medicine_tool.png
+tool2=image/tool/shield_tool.png
+tool3=image/tool/bullet_tool.png
+tool4=image/tool/upgrade_tool.png
+tool5=image/tool/heart_tool.png
+tool6=image/tool/diamond_tool.png
+
+shield=image/tool/shield.png
+
+
+

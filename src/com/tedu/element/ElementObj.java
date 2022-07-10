@@ -18,6 +18,7 @@ public abstract class ElementObj {
     private boolean live = true; //生存状态 true 代表存在，false代表死亡
     private String kind = "";//种类
     private int camp = 0;//阵营(1 is play,2 is enemy)
+
     //水平速度与垂直速度
   	private double moveXNum=0;//水平移动距离
   	private double moveYNum=0;//垂直移动距离
@@ -27,10 +28,18 @@ public abstract class ElementObj {
      */
     private int density = 0;//对象的强度
     private int blood = 0;//对象的血量
+    private int shield_time = 3000;//护盾的持续时间为10s
+    private int shield_currentTime = 0;//当前护盾的剩余时间
     /**
      * 有攻击力的对象
      */
     private int attack = 0;//对象的攻击力(一般用于子弹)
+    private int bullet_time = 0;//特殊子弹的时间
+    private int bullet_kind = 1;//玩家的子弹种类(1 is 普通子弹， 2 is 散弹， 3 is 导弹， 4 is 激光， 5 is 等离子球)
+    private int attack_kind = 1;//玩家的攻击方式(1 is 单发，2 is 双发，3 is 机枪,4 is 双重机枪)
+    public static int attack_count = 4;//玩家的攻击方式数目
+    public static int bullet_count = 4;//玩家的攻击种类数目 
+    public static int bullet_liveTime = 3000;//玩家特殊子弹的总时间
     /*
      * 陷阱警告时间
      * */
@@ -188,6 +197,7 @@ public abstract class ElementObj {
         this.icon = icon;
     }
 
+    //设置生死状态
     public boolean isLive() {
         return live;
     }
@@ -214,6 +224,7 @@ public abstract class ElementObj {
         this.camp = camp;
     }
 
+    //************************************设置攻击力******************************************
     //扣血函数
     public void deductLive(int attack) {
         //System.out.println("deduct:"+attack);
@@ -229,7 +240,43 @@ public abstract class ElementObj {
     public int getAttack() {
         return attack;
     }
-
+    
+    //设置玩家子弹类型
+    public void setBulletKind(int bullet_kind) {
+		this.bullet_kind = bullet_kind;
+		this.setBulletTime(bullet_liveTime);
+	}
+    
+    //获得玩家子弹类型
+    public int getBulletKind() {
+		return bullet_kind;
+	}
+    
+    //设置玩家特殊子弹时间
+    public void setBulletTime(int bullet_time) {
+		this.bullet_time = bullet_time;
+	}
+    
+    //获得玩家特殊子弹时间
+    public int getBulletTime() {
+		return bullet_time;
+	}
+    
+    //设置玩家攻击方式
+    public void setAttackKind(int attack_kind) {
+		this.attack_kind = attack_kind;
+	}
+    
+    //获得玩家攻击方式
+    public int getAttackKind() {
+		return attack_kind;
+	}
+    
+    
+   //***************************************************************************************
+    
+    
+    //****************************************设置防御力*************************************
     //设置血量
     public void setBlood(int blood) {
         this.blood = blood;
@@ -248,8 +295,26 @@ public abstract class ElementObj {
     public int getDensity() {
         return density;
     }
-
-  //设置速度
+    
+    //获得护盾时间
+    public void setFullShield() {
+		this.shield_currentTime=this.shield_time;
+	}
+    
+    //设置目前护盾剩余时间
+    public void setShieldCurrentTime(int currentTime)
+    {
+    	this.shield_currentTime=currentTime;
+    }
+    
+    //获得当前护盾的时间
+    public int getShieldCurrentTime() {
+		return shield_currentTime;
+	}
+   //***************************************************************************************
+    
+    
+  //****************************************设置速度********************************************
     public void setSpeed(double moveXNum,double moveYNum)
     {
     	this.moveXNum=moveXNum;
@@ -265,7 +330,7 @@ public abstract class ElementObj {
     {
     	return this.moveYNum;
     }
-    
+   //********************************************************************************************
     //设置爆炸信息
     //爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）)默认为(20,8)
     public void setExplodeMsg(int explodeOriginRange, int explodeExpandRange, int explodeRelayTime) {
@@ -288,6 +353,7 @@ public abstract class ElementObj {
         return restTime;
     }
 
+    //分数设置
     public int getScore() {
         return score;
     }
@@ -295,6 +361,8 @@ public abstract class ElementObj {
     public void setScore(int score) {
         this.score = score;
     }
+    
+    
 
 }
 

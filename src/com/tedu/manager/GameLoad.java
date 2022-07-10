@@ -13,6 +13,7 @@ import com.tedu.element.Boss;
 import com.tedu.element.ElementObj;
 import com.tedu.element.Enemy;
 import com.tedu.element.Play;
+import com.tedu.element.Tool;
 import com.tedu.element.Trap;
 
 /**
@@ -122,29 +123,54 @@ public class GameLoad {
      * @param kind(飞机种类编号)(kind:String,count:int,kind2:String,count2:int...)
      * @return
      */
-    public static void hzfloadEnemy(String[] kind) {
+    public static void hzfloadEnemy(String[] kind,int interval) {
         new Thread(() -> {
+        	System.out.println("kind:length:"+kind.length);
             for (int i = 0; i < kind.length; i += 2) {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(interval);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 int count = Integer.parseInt(kind[i + 1]);
                 for (int j = 0; j < count; j++) {
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(interval);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    ElementObj obj = new Enemy().createElement(kind[i]);
+                    ElementObj obj = new Enemy().createElement(kind[0]);
                     em.addElement(obj, GameElement.ENEMY);
                 }
             }
         }).start();
     }
 
-    //加载boss的函数
+    //加载道具的函数
+    public static void hzfloadTool(String[] kind,int interval)
+    {
+    	new Thread(() -> {
+            for (int i = 0; i < kind.length; i += 2) {
+                try {
+                    Thread.sleep(interval);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                int count = Integer.parseInt(kind[i + 1]);
+                for (int j = 0; j < count; j++) {
+                    try {
+                        Thread.sleep(interval);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    ElementObj obj = new Tool().createElement(kind[i]);
+                    em.addElement(obj, GameElement.TOOL);
+                }
+            }
+        }).start();
+    }
+    
+  //加载boss的函数
     public static void hzfloadBoss(String bossKind)
     {
     	new Thread(()->{

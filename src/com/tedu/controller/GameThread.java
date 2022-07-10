@@ -2,6 +2,7 @@ package com.tedu.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.tedu.element.Boss;
 import com.tedu.element.ElementObj;
@@ -25,7 +26,7 @@ interface Collide {
 
 public class GameThread extends Thread {
     private ElementManager em;
-
+    public static Random ran=new Random();//随机生成器
     public boolean on = false;//控制gameRun
     public GameJFrame gj;
 
@@ -59,28 +60,19 @@ public class GameThread extends Thread {
         /**
          * wpp为了测试飞机移动暂时而加的loadPlay不属于最终的生成方式
          */
-        System.out.println("gameLoad阶段");
+    	//System.out.println("gameLoad阶段");
         GameLoad.loadImg();//加载图片
         GameLoad.loadObj();//加载对象
-        GameLoad.wpploadPlay();//加载玩家飞机
-        //GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
-        //GameLoad.hzfloadEnemey(new String[] {"e","3"});
+        GameLoad.wpploadPlay();//加载玩家飞机(种类数量，间隔)
+        GameLoad.hzfloadEnemy(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"},2000);//加载敌军飞机
+        //GameLoad.hzfloadEnemy(new String[] {"e","3"},2000);
         //GameLoad.hzfloadBoss("1");
         GameLoad.loadMap(2);
-        GameLoad.hzfloadBoss("4");
-        //GameLoad.hzfloadEnemy(new String[]{"1", "4", "2", "4", "3", "4", "4", "4", "5", "4", "6", "4", "7", "4"});//加载敌军飞机
-
-        //GameLoad.hzfloadEnemey(new String[] {"e","3"});
-        //GameLoad.hzfloadEnemey(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
-        GameLoad.zzrloadTrap(new String[]{"1", "20", "2", "20"});//加载陷阱
-
-
-//		GameLoad.loadImg(); //加载图片
-//		GameLoad.MapLoad(5);//可以变为 变量，每一关重新加载  加载地图
-//		加载主角
-//		GameLoad.loadPlay();//也可以带参数，单机还是2人
-//		加载敌人NPC等
-
+        //GameLoad.hzfloadBoss("1");
+        GameLoad.hzfloadTool(new String[] {"3","2","4","2"},1000);
+        //GameLoad.hzfloadEnemy(new String[] {"e","3"});
+        //GameLoad.hzfloadEnemy(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
+        //GameLoad.zzrloadTrap(new String[]{"1", "20", "2", "20"});//加载陷阱
 //		全部加载完成，游戏启动
     }
 
@@ -96,7 +88,7 @@ public class GameThread extends Thread {
     private void gameRun() {
         long gameTime = 0L;//给int类型就可以啦
         while (on) {// 预留扩展   true可以变为变量，用于控制管关卡结束等
-            System.out.println("gameRun阶段");
+            //System.out.println("gameRun阶段");
             Map<GameElement, List<ElementObj>> all = em.getGameElements();
             List<ElementObj> enemies = em.getElementsByKey(GameElement.ENEMY);
             List<ElementObj> files = em.getElementsByKey(GameElement.PLAYFILE);
@@ -104,6 +96,8 @@ public class GameThread extends Thread {
             List<ElementObj> plays = em.getElementsByKey(GameElement.PLAY);
             List<ElementObj> boss = em.getElementsByKey(GameElement.BOSS);
             List<ElementObj> traps = em.getElementsByKey(GameElement.TRAP);
+            List<ElementObj> tools = em.getElementsByKey(GameElement.TOOL);
+            
             moveAndUpdate(all, gameTime);//	游戏元素自动化方法
             reduceTrapTime(traps);//减少陷阱警告时间
             ElementPK(enemies, files, (a, b) -> {//判断我方的子弹与敌人碰撞
@@ -128,8 +122,10 @@ public class GameThread extends Thread {
             });
 
 
-            ElementPK(plays, enemies, (a, b) -> {//判断敌机与我方碰撞(双方直接死亡)
+            ElementPK(plays, enemies, (a, b) -> {//判断敌机与我方碰撞(双方直接死亡,有护盾则护盾失去)
+            	if(a.getShieldCurrentTime()<=0)
                 a.setLive(false);
+            	else a.setShieldCurrentTime(0);
                 b.setLive(false);
             });
 
@@ -139,6 +135,29 @@ public class GameThread extends Thread {
                 b.deductLive(50);
             });
 
+            ElementPK(plays, tools, (a,b) -> {//判断玩家战机与道具的碰撞
+            	//不同类型的道具效果不同
+            	switch(b.getKind())
+            	{
+            	case "1"://医疗包
+            	a.setBlood(a.getDensity());
+            	break;
+            	case "2"://护盾
+            	a.setFullShield();
+            	break;
+            	case "3"://弹药箱(可以获得核弹，脉冲弹)
+            	int kind=ran.nextInt(5)+1;
+            	a.setBulletKind(kind);
+            	break;
+            	case "4"://升级
+                a.setAttackKind(a.getAttackKind()==ElementObj.attack_count?a.getAttackKind():a.getAttackKind()+1);//攻击方式的升级
+                break;
+            	case "5"://复活心
+            	
+            	}
+            	b.setLive(false);
+            });
+            
             try {
                 sleep(10);//默认理解为 1秒刷新100次
             } catch (InterruptedException e) {
@@ -237,7 +256,7 @@ public class GameThread extends Thread {
     private void gameOver() {
         if (!on) {
             while (!gj.isReady) {   //阻断线程,直到进入游戏
-                System.out.println("gameOver阶段"); //wpp测试游戏阶段
+                //System.out.println("gameOver阶段"); //wpp测试游戏阶段
                 Map<GameElement, List<ElementObj>> all = em.getGameElements();
                 for (GameElement ge : GameElement.values()) {
                     all.get(ge).clear();
