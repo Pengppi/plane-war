@@ -40,7 +40,11 @@ public abstract class ElementObj {
     private int attack_kind = 1;//玩家的攻击方式(1 is 单发，2 is 双发，3 is 机枪,4 is 双重机枪)
     public static int attack_count = 4;//玩家的攻击方式数目
     public static int bullet_count = 4;//玩家的攻击种类数目 
-    public static int bullet_liveTime = 3000;//玩家特殊子弹的总时间
+    public static int bullet_liveTime = 2500;//玩家特殊子弹的总时间
+    public static int emp_time = 2000;//飞机脉冲紊乱的时间
+    public int emp_currentTime = 0;//飞机脉冲紊乱的剩余时间
+    private int tower_time = 5000;//浮游炮的持续时间
+    private int tower_currentTime = 0;//当前浮游炮的剩余时间
     /*
      * 陷阱警告时间
      * */
@@ -51,12 +55,12 @@ public abstract class ElementObj {
     public int getRebornNum() {
         return rebornNum;
     }
-
-    public void setRebornNum(int rebornNum) {
-        this.rebornNum = rebornNum;
+ 
+    public void setRebornNum(int reborn) {
+        rebornNum = reborn;
     }
 
-    private int rebornNum = 0; //复活币数量
+    public static int rebornNum = 0; //复活币数量
 
     // 可以采用枚举值来定义这个(生存，死亡，隐身，无敌)
 //	注明：当重新定义一个用于判定状态的变量，需要思考：1.初始化 2.值的改变 3.值的判定
@@ -281,7 +285,23 @@ public abstract class ElementObj {
         return attack_kind;
     }
 
-
+    //受到脉冲攻击
+    public void getEMP()
+    {
+    	this.emp_currentTime=emp_time;
+    }
+    
+    //获得脉冲攻击剩余时间
+    public int getEMPTime()
+    {
+    	return this.emp_currentTime;
+    }
+    
+    //设置当前的脉冲剩余时间
+    public void setEMPTime(int time)
+    {
+    	this.emp_currentTime=time;
+    }
     //***************************************************************************************
 
 
@@ -321,6 +341,21 @@ public abstract class ElementObj {
     }
     //***************************************************************************************
 
+    
+    //获得当前浮游炮的时间
+    public int getTowerCurrentTime() {
+		return tower_currentTime;
+	}
+    
+    //设置当前浮游炮的时间
+    public void setTowerCurrentTime(int tower_currentTime) {
+		this.tower_currentTime = tower_currentTime;
+	}
+    
+    //获得浮游炮
+    public void setTowerTime() {
+		this.setTowerCurrentTime(this.tower_time);
+	}
 
     //****************************************设置速度********************************************
     public void setSpeed(double moveXNum, double moveYNum) {

@@ -90,6 +90,8 @@ public class Enemy extends ElementObj {
 
     @Override
     protected void move(long gameTime) {
+    	if(this.getEMPTime()>0)//脉冲机器紊乱不能移动
+    		return;
     	this.setX(this.getX()+this.getXSpeed());
 		this.setY(this.getY()+this.getYSpeed());
     }
@@ -121,6 +123,9 @@ public class Enemy extends ElementObj {
             this.setLive(false);
             this.setScore(0);
         }
+        
+      //脉冲时间的减少
+        if(this.getEMPTime()>0)this.setEMPTime(this.getEMPTime()-1);
     }
 
   //发射函数(子弹种类,子弹发射的位置)
@@ -142,6 +147,8 @@ public class Enemy extends ElementObj {
     }
 
     public void add(long gameTime) {
+    	//受到脉动攻击机器紊乱
+    	if(this.getEMPTime()>0)return;
 		//一定间隔发射子弹
 		if((gameTime+4)%this.shoot_interval==0)
 		{

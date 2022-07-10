@@ -7,6 +7,7 @@ import java.util.Random;
 import com.tedu.element.Boss;
 import com.tedu.element.ElementObj;
 import com.tedu.element.Play;
+import com.tedu.element.Tool;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -69,7 +70,7 @@ public class GameThread extends Thread {
         //GameLoad.hzfloadBoss("1");
         GameLoad.loadMap(2);
         //GameLoad.hzfloadBoss("1");
-        GameLoad.hzfloadTool(new String[]{"3", "2", "4", "2"}, 1000);
+        GameLoad.hzfloadTool(new String[]{"3", "2", "5", "2"}, 1000);
         //GameLoad.hzfloadEnemy(new String[] {"e","3"});
         //GameLoad.hzfloadEnemy(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
         //GameLoad.zzrloadTrap(new String[]{"1", "20", "2", "20"});//加载陷阱
@@ -136,7 +137,7 @@ public class GameThread extends Thread {
             });
 
             ElementPK(plays, tools, (a, b) -> {//判断玩家战机与道具的碰撞
-                //不同类型的道具效果不同
+            	  //不同类型的道具效果不同
                 switch (b.getKind()) {
                     case "1"://医疗包
                         a.setBlood(a.getDensity());
@@ -145,7 +146,15 @@ public class GameThread extends Thread {
                         a.setFullShield();
                         break;
                     case "3"://弹药箱(可以获得核弹，脉冲弹)
-                        int kind = ran.nextInt(5) + 1;
+                        int kind = ran.nextInt(8) + 1;
+                    	//int kind = 8;
+                        if(kind == 6)//获得核弹
+                        Tool.nuclear_count++;
+                        else if(kind == 7)//获得脉冲弹
+                        Tool.emp_count++;
+                        else if(kind == 8)//获得浮游炮
+                        a.setTowerTime();
+                        else
                         a.setBulletKind(kind);
                         break;
                     case "4"://升级
@@ -154,6 +163,9 @@ public class GameThread extends Thread {
                     case "5"://复活心
                         a.setRebornNum(a.getRebornNum() + 1);
                         break;
+                    case "6"://宝石
+                    	this.diamondToScore(10);
+                    	break;
                 }
                 b.setLive(false);
             });
@@ -198,7 +210,7 @@ public class GameThread extends Thread {
 
     //	游戏元素自动化方法
     public void moveAndUpdate(Map<GameElement, List<ElementObj>> all, long gameTime) {
-//		GameElement.values();//隐藏方法  返回值是一个数组,数组的顺序就是定义枚举的顺序
+      //GameElement.values();//隐藏方法  返回值是一个数组,数组的顺序就是定义枚举的顺序
         for (GameElement ge : GameElement.values()) {
             List<ElementObj> list = all.get(ge);
             for (int i = list.size() - 1; i >= 0; i--) {
@@ -206,8 +218,18 @@ public class GameThread extends Thread {
                 if (!obj.isLive()) {//如果死亡
                     obj.die();
                     if (obj instanceof Play) {
+                    	System.out.println("setReborn1:"+obj.getRebornNum());
+                    	if(obj.getRebornNum()>0)//有复活心可以复活
+                    	{
+                    		obj.setRebornNum(obj.getRebornNum()-1);//消耗复活心
+                    		list.remove(i);
+                    		GameLoad.wpploadPlay();//重新加载玩家飞机
+                    		break;//退出循环，不可能退出界面
+                    	}
+                    	else {//没有复活心
                         on = false;
                         new GameOverJPanel(gj, false, all.get(GameElement.PLAY).get(0).getScore(), all.get(GameElement.MAPS).get(0).getIcon());
+                    	}
                     }
                     addScore(all, obj);
                     if (obj instanceof Boss) {
@@ -233,6 +255,21 @@ public class GameThread extends Thread {
     private void addScore(Map<GameElement, List<ElementObj>> all, ElementObj obj) {
         for (ElementObj play : all.get(GameElement.PLAY)) {
             play.setScore(play.getScore() + obj.getScore());
+        }
+    }
+    
+    /**
+     * @description: 玩家获得宝石加分
+     * @method: diamondToScore
+     * @params: [score]
+     * @return: void
+     * @author: hzf
+     * @date: 2022/7/10
+     **/
+    private void diamondToScore(int score) {
+    	List<ElementObj>plays=ElementManager.getManager().getElementsByKey(GameElement.PLAY);
+        for (ElementObj play : plays) {
+            play.setScore(play.getScore() + score);
         }
     }
 

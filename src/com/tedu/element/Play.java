@@ -21,6 +21,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 
     private int rank = 1;//等级，玩家等级会因吃到升级道具而改变
 
+    public static int useToolInterval = 100;//使用道具的时间间隔,放置重复使用
 
     public Play() {
     }
@@ -41,8 +42,6 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.setDensity(10);// 满血值为10,不需要额外设置setblood
         //设置玩家初始等级为1
         this.setRank(1);
-
-        this.setRebornNum(1);
         return this;
     }
 
@@ -80,6 +79,18 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
             g.drawString("不准确的护盾时间：" + this.getShieldCurrentTime(), 10, 880);
         }
 
+        //显示浮游炮
+        if(this.getTowerCurrentTime()>0)
+        {
+        g.drawImage(GameLoad.imgMap.get("tower1").getImage(),(int)(this.getX()+this.getW()/2-80-30),(int)(this.getY()+this.getH()/2-30),60,60,null);
+        g.drawImage(GameLoad.imgMap.get("tower1").getImage(),(int)(this.getX()+this.getW()/2+80-30),(int)(this.getY()+this.getH()/2-30),60,60,null);
+        }
+        
+        //道具数目的显示
+        drawTools(g, 8, Tool.emp_count, 8, 940);//显示脉冲弹数目
+        drawTools(g, 7, Tool.nuclear_count, 10, 990);//显示核弹数目
+        drawTools(g, 5, this.getRebornNum(), 10, 1040);//显示复活心的数目
+        
         //子弹时间的减少
         if (this.getBulletTime() > 0) {
             this.setBulletTime(this.getBulletTime() - 1);
@@ -87,9 +98,12 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
                 g.drawString("不准确的子弹时间：" + this.getBulletTime()/300, 10, 930);
             }
         }
-        drawTools(g, 8, 10, 8, 940);
-        drawTools(g, 7, 10, 10, 990);
-        drawTools(g, 5, this.getRebornNum(), 10, 1040);
+   
+        //使用道具冷却时间的减少
+        if(useToolInterval>0)useToolInterval--;
+        
+        //浮游炮使用时间的减少
+        if(this.getTowerCurrentTime()>0)this.setTowerCurrentTime(this.getTowerCurrentTime()-1);
     }
 
     /**
@@ -145,19 +159,30 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     //键盘事件，按f切换武器
     @Override
     public void keyClick(boolean bl, int key) {
-        if (bl) {
-            switch (key) {
-                case 70://切换武器f键
-                    //升级玩家主机的攻击方式
-                    this.setAttackKind(this.getAttackKind() == ElementObj.attack_count ? this.getAttackKind() : this.getAttackKind() + 1);
-                    break;
-                case 90: //闪光道具的使用z键
-                    ElementObj obj = GameLoad.getObj("flash");
-                    ElementObj element = obj.createElement("1");
-                    ElementManager.getManager().addElement(element, GameElement.DIE);
-                    break;
-            }
-        }
+    	 if (bl) {
+             switch (key) {
+                 case 70://切换武器f键
+                     //升级玩家主机的攻击方式
+                     this.setAttackKind(this.getAttackKind() == ElementObj.attack_count ? this.getAttackKind() : this.getAttackKind() + 1);
+                     break;
+                 case 88://脉冲弹道具的使用x键
+                 	if(useToolInterval>0||Tool.emp_count<=0) break;
+                 	ElementObj obj = GameLoad.getObj("flash");
+                     ElementObj element = obj.createElement("2");
+                     ElementManager.getManager().addElement(element, GameElement.DIE);
+                     Tool.emp_count--;
+                     useToolInterval = 100;
+                     break;
+                 case 90: //核弹道具的使用z键
+                 	if(useToolInterval>0||Tool.nuclear_count<=0) break;
+                     ElementObj obj2 = GameLoad.getObj("flash");
+                     ElementObj element2 = obj2.createElement("1");
+                     ElementManager.getManager().addElement(element2, GameElement.DIE);
+                     Tool.nuclear_count--;
+                     useToolInterval = 100;
+                     break;
+             }
+         }
     }
 
     @Override

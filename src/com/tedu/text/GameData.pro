@@ -82,6 +82,7 @@ tool7=image/tool/nuclear_icon.png
 tool8=image/tool/emp_icon.png
 
 shield=image/tool/shield.png
-
+tower1=image/tower/red_tower.png
+tower2=image/tower/yellow_tower.png
 
 
