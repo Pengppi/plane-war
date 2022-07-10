@@ -71,12 +71,12 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         g2.drawRect((int) (this.getX() + this.getW() / 8), (int) (this.getY() + this.getH()), bloodBarWidth, bloodBarHeight);
         g.setFont(new Font("", Font.BOLD, 40));
         //护盾显示
-        if (this.getShieldCurrentTime() > 0) {
+
+        if (this.getShield_time() != null && this.getShieldCurrentTime() > 0) {
             g.drawImage(GameLoad.imgMap.get("shield").getImage(),
                     (int) this.getX(), (int) this.getY(),
                     this.getW(), this.getW(), null);
-            this.setShieldCurrentTime(this.getShieldCurrentTime() - 1);
-            g.drawString("不准确的护盾时间：" + this.getShieldCurrentTime(), 10, 880);
+            g.drawString("护盾剩余时间：" + String.format("%.1f", this.getShieldCurrentTime()) + "s", 10, 880);
         }
 
         //显示浮游炮
@@ -91,11 +91,10 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         drawTools(g, 7, Tool.nuclear_count, 10, 990);//显示核弹数目
         drawTools(g, 5, this.getRebornNum(), 10, 1040);//显示复活心的数目
         
-        //子弹时间的减少
-        if (this.getBulletTime() > 0) {
-            this.setBulletTime(this.getBulletTime() - 1);
-            if (this.getBulletKind() > 1) {
-                g.drawString("不准确的子弹时间：" + this.getBulletTime()/300, 10, 930);
+
+        if (this.getBulletKind() > 1) {
+            if (this.getBullet_time() != null && this.getBulletTime() > 0) {
+                g.drawString("特殊子弹剩余时间：" + String.format("%.1f", this.getBulletTime()) + "s", 10, 930);
             }
         }
    
@@ -199,6 +198,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     public void shoot(int bulletKind, double[] pos, double[] speed) {
         if (bulletKind > 1 && this.getBulletTime() <= 0) {
             this.setBulletKind(1);
+            this.setBulletTime(null);
             return;//特殊子弹使用期限结束
         }
         for (int i = 0; i < pos.length; i += 2)//pos[i]为横坐标,pos[i+1]为纵坐标,speed[i]为水平速度,speed[i+1]为垂直速度
@@ -308,7 +308,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 
     @Override//护盾保护
     public void deductLive(int attack) {
-        if (this.getShieldCurrentTime() <= 0)
+        if (this.getShield_time() == null || this.getShieldCurrentTime() <= 0)
             super.deductLive(attack);
     }
 

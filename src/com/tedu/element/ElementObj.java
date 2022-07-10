@@ -1,8 +1,10 @@
 package com.tedu.element;
 
+import com.tedu.controller.Stopwatch;
+
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
 /**
  * @author renjj
@@ -29,18 +31,26 @@ public abstract class ElementObj {
    */
     private int density = 0;//对象的强度
     private int blood = 0;//对象的血量
-    private int shield_time = 3000;//护盾的持续时间为10s
-    private int shield_currentTime = 0;//当前护盾的剩余时间
+    private int shield_liveTime = 10;//护盾的持续时间为10s
+
+
+    private Stopwatch shield_time = null;
+
+    public void setShield_time(Stopwatch sw) {
+        this.shield_time = sw;
+    }
+
+
     /**
      * 有攻击力的对象
      */
     private int attack = 0;//对象的攻击力(一般用于子弹)
-    private int bullet_time = 0;//特殊子弹的时间
+    private Stopwatch bullet_time = null;//特殊子弹的时间
     private int bullet_kind = 1;//玩家的子弹种类(1 is 普通子弹， 2 is 散弹， 3 is 导弹， 4 is 激光， 5 is 等离子球)
     private int attack_kind = 1;//玩家的攻击方式(1 is 单发，2 is 双发，3 is 机枪,4 is 双重机枪)
     public static int attack_count = 4;//玩家的攻击方式数目
     public static int bullet_count = 4;//玩家的攻击种类数目 
-    public static int bullet_liveTime = 2500;//玩家特殊子弹的总时间
+    public static int bullet_liveTime = 10;//玩家特殊子弹的总时间
     public static int emp_time = 2000;//飞机脉冲紊乱的时间
     public int emp_currentTime = 0;//飞机脉冲紊乱的剩余时间
     private int tower_time = 5000;//浮游炮的持续时间
@@ -55,7 +65,7 @@ public abstract class ElementObj {
     public int getRebornNum() {
         return rebornNum;
     }
- 
+
     public void setRebornNum(int reborn) {
         rebornNum = reborn;
     }
@@ -257,7 +267,7 @@ public abstract class ElementObj {
     //设置玩家子弹类型
     public void setBulletKind(int bullet_kind) {
         this.bullet_kind = bullet_kind;
-        this.setBulletTime(bullet_liveTime);
+        this.setBulletTime(new Stopwatch());
     }
 
     //获得玩家子弹类型
@@ -266,13 +276,13 @@ public abstract class ElementObj {
     }
 
     //设置玩家特殊子弹时间
-    public void setBulletTime(int bullet_time) {
-        this.bullet_time = bullet_time;
+    public void setBulletTime(Stopwatch sw) {
+        this.bullet_time = sw;
     }
 
     //获得玩家特殊子弹时间
-    public int getBulletTime() {
-        return bullet_time;
+    public double getBulletTime() {
+        return this.bullet_liveTime - this.bullet_time.currentTime();
     }
 
     //设置玩家攻击方式
@@ -286,21 +296,18 @@ public abstract class ElementObj {
     }
 
     //受到脉冲攻击
-    public void getEMP()
-    {
-    	this.emp_currentTime=emp_time;
+    public void getEMP() {
+        this.emp_currentTime = emp_time;
     }
-    
+
     //获得脉冲攻击剩余时间
-    public int getEMPTime()
-    {
-    	return this.emp_currentTime;
+    public int getEMPTime() {
+        return this.emp_currentTime;
     }
-    
+
     //设置当前的脉冲剩余时间
-    public void setEMPTime(int time)
-    {
-    	this.emp_currentTime=time;
+    public void setEMPTime(int time) {
+        this.emp_currentTime = time;
     }
     //***************************************************************************************
 
@@ -325,37 +332,37 @@ public abstract class ElementObj {
         return density;
     }
 
-    //获得护盾时间
-    public void setFullShield() {
-        this.shield_currentTime = this.shield_time;
+
+    public Stopwatch getShield_time() {
+        return shield_time;
     }
 
-    //设置目前护盾剩余时间
-    public void setShieldCurrentTime(int currentTime) {
-        this.shield_currentTime = currentTime;
+    public Stopwatch getBullet_time() {
+        return bullet_time;
     }
+
 
     //获得当前护盾的时间
-    public int getShieldCurrentTime() {
-        return shield_currentTime;
+    public double getShieldCurrentTime() {
+        return this.shield_liveTime - this.shield_time.currentTime();
     }
     //***************************************************************************************
 
-    
+
     //获得当前浮游炮的时间
     public int getTowerCurrentTime() {
-		return tower_currentTime;
-	}
-    
+        return tower_currentTime;
+    }
+
     //设置当前浮游炮的时间
     public void setTowerCurrentTime(int tower_currentTime) {
-		this.tower_currentTime = tower_currentTime;
-	}
-    
+        this.tower_currentTime = tower_currentTime;
+    }
+
     //获得浮游炮
     public void setTowerTime() {
-		this.setTowerCurrentTime(this.tower_time);
-	}
+        this.setTowerCurrentTime(this.tower_time);
+    }
 
     //****************************************设置速度********************************************
     public void setSpeed(double moveXNum, double moveYNum) {
@@ -378,10 +385,6 @@ public abstract class ElementObj {
 
     }
 
-    //敌人死亡后加分
-    public int dieStar() {
-        return 0;
-    }
 
     //陷阱时间减少
     public void reduceTime() {
@@ -402,8 +405,6 @@ public abstract class ElementObj {
     public void setScore(int score) {
         this.score = score;
     }
-
-
 }
 
 

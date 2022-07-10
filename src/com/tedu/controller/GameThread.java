@@ -124,9 +124,9 @@ public class GameThread extends Thread {
 
 
             ElementPK(plays, enemies, (a, b) -> {//判断敌机与我方碰撞(双方直接死亡,有护盾则护盾失去)
-                if (a.getShieldCurrentTime() <= 0)
+                if (a.getShield_time() == null || a.getShieldCurrentTime() <= 0)
                     a.setLive(false);
-                else a.setShieldCurrentTime(0);
+                else a.setShield_time(null);
                 b.setLive(false);
             });
 
@@ -143,7 +143,7 @@ public class GameThread extends Thread {
                         a.setBlood(a.getDensity());
                         break;
                     case "2"://护盾
-                        a.setFullShield();
+                        a.setShield_time(new Stopwatch());
                         break;
                     case "3"://弹药箱(可以获得核弹，脉冲弹)
                         int kind = ran.nextInt(8) + 1;
