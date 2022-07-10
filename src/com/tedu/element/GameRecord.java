@@ -28,8 +28,9 @@ public class GameRecord implements Serializable {
 
     @Override
     public String toString() {
-        StringJoiner sj = new StringJoiner(" ");
+        StringJoiner sj = new StringJoiner("\t");
         sj.add("玩家：" + user);
+        sj.add("分数：" + score);
         sj.add("关卡：" + level);
         sj.add("时间：" + date);
         return sj.toString();
@@ -42,16 +43,13 @@ public class GameRecord implements Serializable {
     public static List<GameRecord> getRecords() {
         List<GameRecord> list = null;
         try {
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src/com/tedu/text/record.dat"));//输入流从stu.dat文件中读出
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src/com/tedu/text/record.dat"));
             Object obj = ois.readObject();
-            if (obj == null) {
-                System.out.println("null");
-            }
             list = (List<GameRecord>) obj;
             ois.close();
         } catch (IOException | ClassNotFoundException e) {  //内容为空
             list = new ArrayList<>();
-            return list;
+            throw new RuntimeException(e);
         }
         return list;
     }
@@ -73,4 +71,15 @@ public class GameRecord implements Serializable {
         setRecords(recs);
     }
 
+    public static void showRecord() {
+        List<GameRecord> recs = GameRecord.getRecords();
+        System.out.println(recs.size());
+        for (GameRecord r : recs) {
+            System.out.println(r);
+        }
+    }
+
+    public static void main(String[] args) {
+        GameRecord.showRecord();
+    }
 }
