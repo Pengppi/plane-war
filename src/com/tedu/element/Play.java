@@ -84,7 +84,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         if (this.getBulletTime() > 0) {
             this.setBulletTime(this.getBulletTime() - 1);
             if (this.getBulletKind() > 1) {
-                g.drawString("不准确的子弹时间：" + this.getBulletTime(), 10, 930);
+                g.drawString("不准确的子弹时间：" + this.getBulletTime()/300, 10, 930);
             }
         }
         drawTools(g, 8, 10, 8, 940);

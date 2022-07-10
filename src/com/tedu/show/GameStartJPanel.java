@@ -24,7 +24,7 @@ public class GameStartJPanel extends JPanel {
 
     private void init() {
         this.setLayout(null);
-        String text[] = {"开始游戏", "排行榜", "退出游戏"};
+        String text[] = {"开始游戏", "游戏记录", "退出游戏"};
         gj.loadButton(text, this, 650, 250, 130);
         gj.setjPanel(this);
         gj.start();
@@ -62,13 +62,4 @@ public class GameStartJPanel extends JPanel {
     }
 
 
-//    public static void main(String[] args) {
-//        JFrame jf = new JFrame();
-//        jf.setSize(1920, 1080);
-//        jf.setContentPane(new GameStartJPanel());
-//        jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        jf.setLocationRelativeTo(null);
-//        jf.setUndecorated(true);
-//        jf.setVisible(true);
-//    }
 }
