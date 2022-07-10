@@ -1,4 +1,5 @@
 package com.tedu.element;
+
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import javax.swing.ImageIcon;
@@ -20,12 +21,12 @@ public abstract class ElementObj {
     private int camp = 0;//阵营(1 is play,2 is enemy)
 
     //水平速度与垂直速度
-  	private double moveXNum=0;//水平移动距离
-  	private double moveYNum=0;//垂直移动距离
-      /*
-    /**
-     * 有防御力的对象
-     */
+    private double moveXNum = 0;//水平移动距离
+    private double moveYNum = 0;//垂直移动距离
+    /*
+  /**
+   * 有防御力的对象
+   */
     private int density = 0;//对象的强度
     private int blood = 0;//对象的血量
     private int shield_time = 3000;//护盾的持续时间为10s
@@ -47,6 +48,15 @@ public abstract class ElementObj {
 
     private int score = 0; //分值
 
+    public int getRebornNum() {
+        return rebornNum;
+    }
+
+    public void setRebornNum(int rebornNum) {
+        this.rebornNum = rebornNum;
+    }
+
+    private int rebornNum = 0; //复活币数量
 
     // 可以采用枚举值来定义这个(生存，死亡，隐身，无敌)
 //	注明：当重新定义一个用于判定状态的变量，需要思考：1.初始化 2.值的改变 3.值的判定
@@ -74,14 +84,13 @@ public abstract class ElementObj {
      * @param g 画笔 用于进行绘画
      * @说明 抽象方法，显示元素
      */
-    public void showElement(Graphics g)
-    {
-    	if(this.getIcon().getImage()!=null)
-    	g.drawImage(this.getIcon().getImage(),
-        (int)this.getX(), (int)this.getY(),
-         this.getW(), this.getH(), null);
+    public void showElement(Graphics g) {
+        if (this.getIcon().getImage() != null)
+            g.drawImage(this.getIcon().getImage(),
+                    (int) this.getX(), (int) this.getY(),
+                    this.getW(), this.getH(), null);
     }
-    
+
     /**
      * @param bl  点击的类型  true代表按下，false代表松开
      * @param key 代表触发的键盘的code值
@@ -140,7 +149,7 @@ public abstract class ElementObj {
      */
     public Rectangle getRectangle() {
 //		可以将这个数据进行处理
-        return new Rectangle((int)x, (int)y, w, h);
+        return new Rectangle((int) x, (int) y, w, h);
     }
 
     /**
@@ -240,42 +249,42 @@ public abstract class ElementObj {
     public int getAttack() {
         return attack;
     }
-    
+
     //设置玩家子弹类型
     public void setBulletKind(int bullet_kind) {
-		this.bullet_kind = bullet_kind;
-		this.setBulletTime(bullet_liveTime);
-	}
-    
+        this.bullet_kind = bullet_kind;
+        this.setBulletTime(bullet_liveTime);
+    }
+
     //获得玩家子弹类型
     public int getBulletKind() {
-		return bullet_kind;
-	}
-    
+        return bullet_kind;
+    }
+
     //设置玩家特殊子弹时间
     public void setBulletTime(int bullet_time) {
-		this.bullet_time = bullet_time;
-	}
-    
+        this.bullet_time = bullet_time;
+    }
+
     //获得玩家特殊子弹时间
     public int getBulletTime() {
-		return bullet_time;
-	}
-    
+        return bullet_time;
+    }
+
     //设置玩家攻击方式
     public void setAttackKind(int attack_kind) {
-		this.attack_kind = attack_kind;
-	}
-    
+        this.attack_kind = attack_kind;
+    }
+
     //获得玩家攻击方式
     public int getAttackKind() {
-		return attack_kind;
-	}
-    
-    
-   //***************************************************************************************
-    
-    
+        return attack_kind;
+    }
+
+
+    //***************************************************************************************
+
+
     //****************************************设置防御力*************************************
     //设置血量
     public void setBlood(int blood) {
@@ -295,42 +304,39 @@ public abstract class ElementObj {
     public int getDensity() {
         return density;
     }
-    
+
     //获得护盾时间
     public void setFullShield() {
-		this.shield_currentTime=this.shield_time;
-	}
-    
-    //设置目前护盾剩余时间
-    public void setShieldCurrentTime(int currentTime)
-    {
-    	this.shield_currentTime=currentTime;
+        this.shield_currentTime = this.shield_time;
     }
-    
+
+    //设置目前护盾剩余时间
+    public void setShieldCurrentTime(int currentTime) {
+        this.shield_currentTime = currentTime;
+    }
+
     //获得当前护盾的时间
     public int getShieldCurrentTime() {
-		return shield_currentTime;
-	}
-   //***************************************************************************************
-    
-    
-  //****************************************设置速度********************************************
-    public void setSpeed(double moveXNum,double moveYNum)
-    {
-    	this.moveXNum=moveXNum;
-    	this.moveYNum=moveYNum;
+        return shield_currentTime;
     }
-    
-    public double getXSpeed()
-    {
-    	return this.moveXNum;
+    //***************************************************************************************
+
+
+    //****************************************设置速度********************************************
+    public void setSpeed(double moveXNum, double moveYNum) {
+        this.moveXNum = moveXNum;
+        this.moveYNum = moveYNum;
     }
-    
-    public double getYSpeed()
-    {
-    	return this.moveYNum;
+
+    public double getXSpeed() {
+        return this.moveXNum;
     }
-   //********************************************************************************************
+
+    public double getYSpeed() {
+        return this.moveYNum;
+    }
+
+    //********************************************************************************************
     //设置爆炸信息
     //爆炸参数设置增加范围(爆炸初始直径范围，爆炸扩散长度（直径差）)默认为(20,8)
     public void setExplodeMsg(int explodeOriginRange, int explodeExpandRange, int explodeRelayTime) {
@@ -361,8 +367,7 @@ public abstract class ElementObj {
     public void setScore(int score) {
         this.score = score;
     }
-    
-    
+
 
 }
 

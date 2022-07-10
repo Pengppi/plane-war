@@ -78,6 +78,8 @@ tool3=image/tool/bullet_tool.png
 tool4=image/tool/upgrade_tool.png
 tool5=image/tool/heart_tool.png
 tool6=image/tool/diamond_tool.png
+tool7=image/tool/nuclear_icon.png
+tool8=image/tool/emp_icon.png
 
 shield=image/tool/shield.png
 

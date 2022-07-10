@@ -2,6 +2,7 @@ package com.tedu.element;
 
 import java.awt.*;
 import javax.swing.ImageIcon;
+
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -17,10 +18,12 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     private int ty;
     //子弹种类(1 普通子弹,2 散弹,3 导弹,4 激光,5 等离子球)
     private int shoot_interval = 80;//射击间隔,单发为80
-    
+
     private int rank = 1;//等级，玩家等级会因吃到升级道具而改变
 
-    public Play() {}
+
+    public Play() {
+    }
 
     @Override
     public ElementObj createElement(String str) {
@@ -38,6 +41,8 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.setDensity(10);// 满血值为10,不需要额外设置setblood
         //设置玩家初始等级为1
         this.setRank(1);
+
+        this.setRebornNum(1);
         return this;
     }
 
@@ -53,34 +58,60 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     public void showElement(Graphics g) {
         //绘画图片
         super.showElement(g);
-        g.setFont(new Font("微软雅黑",Font.PLAIN+Font.BOLD,60));
-        g.drawString("当前得分：" + this.getScore(),0,60);
-        
+        g.setFont(new Font("微软雅黑", Font.PLAIN + Font.BOLD, 60));
+        g.drawString("当前得分：" + this.getScore(), 0, 60);
+
         //血条显示
         int bloodBarWidth = this.getW() / 4 * 3;
         int bloodBarHeight = 10;
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.RED);
-        g2.fillRect((int)(this.getX() + this.getW() / 8),(int)(this.getY() + this.getH()), bloodBarWidth * this.getBlood() / this.getDensity(), bloodBarHeight);
+        g2.fillRect((int) (this.getX() + this.getW() / 8), (int) (this.getY() + this.getH()), bloodBarWidth * this.getBlood() / this.getDensity(), bloodBarHeight);
         g2.setStroke(new BasicStroke(2.0f));
         g2.setColor(Color.BLACK);
-        g2.drawRect((int)(this.getX() + this.getW() / 8),(int)(this.getY() + this.getH()), bloodBarWidth, bloodBarHeight);
-        
+        g2.drawRect((int) (this.getX() + this.getW() / 8), (int) (this.getY() + this.getH()), bloodBarWidth, bloodBarHeight);
+        g.setFont(new Font("", Font.BOLD, 40));
         //护盾显示
-        if(this.getShieldCurrentTime()>0)
-        {
+        if (this.getShieldCurrentTime() > 0) {
             g.drawImage(GameLoad.imgMap.get("shield").getImage(),
-             (int)this.getX(), (int)this.getY(),
-               this.getW(), this.getW(), null);
-        	this.setShieldCurrentTime(this.getShieldCurrentTime()-1);
+                    (int) this.getX(), (int) this.getY(),
+                    this.getW(), this.getW(), null);
+            this.setShieldCurrentTime(this.getShieldCurrentTime() - 1);
+            g.drawString("不准确的护盾时间：" + this.getShieldCurrentTime(), 10, 880);
         }
+
         //子弹时间的减少
-        if(this.getBulletTime()>0)this.setBulletTime(this.getBulletTime()-1);
-        
+        if (this.getBulletTime() > 0) {
+            this.setBulletTime(this.getBulletTime() - 1);
+            if (this.getBulletKind() > 1) {
+                g.drawString("不准确的子弹时间：" + this.getBulletTime(), 10, 930);
+            }
+        }
+        drawTools(g, 8, 10, 8, 940);
+        drawTools(g, 7, 10, 10, 990);
+        drawTools(g, 5, this.getRebornNum(), 10, 1040);
+    }
+
+    /**
+     * @description: 在左下角根据道具数量绘制道具图片，目前还核弹与EMP的数量设置还没完全实现
+     * @method: drawTools
+     * @params: [g, order：tool图片序号, num道具数量, x, y]
+     * @return: void
+     * @author: Neo
+     * @date: 2022/7/10/010 15:59:58 下午
+     **/
+    private void drawTools(Graphics g, int order, int num, int x, int y) {
+        Image img = GameLoad.imgMap.get("tool" + order).getImage();
+        int w = 45;
+        int h = 45;
+        int gap = w / 5 + w;
+        for (int i = 0; i < num; i++) {
+            g.drawImage(img, x + i * gap, y, w, h, null);
+        }
     }
 
 
-	/*
+    /*
      * @说明 重写方法： 重写的要求：方法名称 和参数类型序列 必须和父类的方法一样
      * @重点 监听的数据需要改变状态值
      */
@@ -103,12 +134,12 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.tx = x;
         this.ty = y;
     }
-    
+
     //玩家等级会因吃到升级道具而升级,而因等级改变至一定程度又会改变武器种类
     public void RankToAttackKind() {
         if (rank % 5 == 0)
             //因等级上张，而子弹种类会变得更加高级，直到达到最高级的子弹种类后不变
-            this.setAttackKind(this.getAttackKind()==ElementObj.attack_count?this.getAttackKind():this.getAttackKind()+1);
+            this.setAttackKind(this.getAttackKind() == ElementObj.attack_count ? this.getAttackKind() : this.getAttackKind() + 1);
     }
 
     //键盘事件，按f切换武器
@@ -117,8 +148,8 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         if (bl) {
             switch (key) {
                 case 70://切换武器f键
-                	//升级玩家主机的攻击方式
-                	this.setAttackKind(this.getAttackKind()==ElementObj.attack_count?this.getAttackKind():this.getAttackKind()+1);
+                    //升级玩家主机的攻击方式
+                    this.setAttackKind(this.getAttackKind() == ElementObj.attack_count ? this.getAttackKind() : this.getAttackKind() + 1);
                     break;
                 case 90: //闪光道具的使用z键
                     ElementObj obj = GameLoad.getObj("flash");
@@ -140,22 +171,20 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     }
 
     //发射函数(子弹种类,子弹发射的位置,子弹速度,发射间隔)
-  	public void shoot(int bulletKind,double[]pos,double[]speed)
-  	{
-  	    if(bulletKind>1&&this.getBulletTime()<=0)
-  	    {
-  	    	this.setBulletKind(1);
-  	    	return;//特殊子弹使用期限结束
-  	    }
-  		for(int i=0;i<pos.length;i+=2)//pos[i]为横坐标,pos[i+1]为纵坐标,speed[i]为水平速度,speed[i+1]为垂直速度
-  		{
-  			ElementObj obj=GameLoad.getObj("file");
-  			ElementObj element = obj.createElement(//子弹json数据生成
-              GameLoad.getFileString(pos[i],pos[i+1],
-              		speed[i],speed[i+1],this.getCamp(),bulletKind));
-  			ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
-  		}
-  	}
+    public void shoot(int bulletKind, double[] pos, double[] speed) {
+        if (bulletKind > 1 && this.getBulletTime() <= 0) {
+            this.setBulletKind(1);
+            return;//特殊子弹使用期限结束
+        }
+        for (int i = 0; i < pos.length; i += 2)//pos[i]为横坐标,pos[i+1]为纵坐标,speed[i]为水平速度,speed[i+1]为垂直速度
+        {
+            ElementObj obj = GameLoad.getObj("file");
+            ElementObj element = obj.createElement(//子弹json数据生成
+                    GameLoad.getFileString(pos[i], pos[i + 1],
+                            speed[i], speed[i + 1], this.getCamp(), bulletKind));
+            ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
+        }
+    }
 
     //设置发射间隔
     public void setInterval(int shoot_interval) {
@@ -166,87 +195,86 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     public void add(long gameTime) {
         //一定间隔发射子弹
         if ((gameTime + 2) % this.shoot_interval == 0) {
-        	//System.out.println("attackKind:"+this.getAttackKind()+",bulletKind:"+this.getBulletKind());
-        	switch(this.getAttackKind())//(1 is 单发, 2 is 双发, 3 is 机枪, 4 is 双重机枪)
-    		{
-    		case 1:case 3://单发 机枪
-    			setInterval(this.getAttackKind()==1?80:20);
-    			switch(this.getBulletKind())
-    			{
-    			case 1://发射普通子弹
-    			shoot(1, new double[] {this.getX()+this.getW()/2,this.getY()},
-    		    new double[] {0,-3});
-    			break;
-    			case 2://发射散弹
-    			this.shoot(2,
-    		    new double[]{
-    		    this.getX()+this.getW()/2-5,this.getY(),
-    		    this.getX()+this.getW()/2,this.getY(),
-    		    this.getX()+this.getW()/2+5,this.getY()},
-    		    new double[] {-0.5,-3,0,-3,0.5,-3});
-    		    break;
-    			case 3://发射导弹
-    			shoot(3, new double[] {this.getX()+this.getW()/2,this.getY()-10},
-    		    new double[] {0,-7});
-    		    break;
-    			case 4://发射激光
-    			shoot(4,new double[] {this.getX()+this.getW()/2,this.getY()},
-    		    new double[] {0,0});
-    		    break;
-    			case 5://发射等离子球
-    			shoot(6, new double[] {this.getX()+this.getW()/2,this.getY()},
-    		    new double[] {0,-2});
-    		    break;
-    			}
-    			break;
-    		case 2:case 4:
-    			setInterval(this.getAttackKind()==2?80:20);//双发 双重机枪
-    			switch(this.getBulletKind())
-    			{
-    			case 1://发射普通子弹
-    			this.shoot(1,
-    			new double[]{this.getX()+this.getW()/2-10,this.getY(),
-    			this.getX()+this.getW()/2+10,this.getY()},
-    			new double[] {0,-3,0,-3});
-    			break;
-    			case 2://发射散弹
-    			this.shoot(2,
-    		    new double[]{
-    		    this.getX()+this.getW()/2-15,this.getY(),
-    		    this.getX()+this.getW()/2-10,this.getY(),
-    		    this.getX()+this.getW()/2-5,this.getY(),
-    		    this.getX()+this.getW()/2+5,this.getY(),
-    		    this.getX()+this.getW()/2+10,this.getY(),
-    		    this.getX()+this.getW()/2+15,this.getY()},
-    		    new double[] {-0.5,-3,0,-3,0.5,-3,
-    		    -0.5,-3,0,-3,0.5,-3});
-    		    break;
-    			case 3://发射导弹
-                shoot(3, new double[] {this.getX()+this.getW()/2-10,this.getY()-10,
-                this.getX()+this.getW()/2+10,this.getY()-10},
-        		new double[] {0,-7,0,-7});
-        		break;
-    			case 4://发射激光
-        		shoot(4,new double[] {
-        		this.getX()+this.getW()/2-10,this.getY(),
-        		this.getX()+this.getW()/2+10,this.getY()},
-        		new double[] {0,0,0,0});
-        		break;
-    			case 5://发射等离子球
-    			shoot(6, new double[] {
-    			this.getX()+this.getW()/2-10,this.getY(),
-    			this.getX()+this.getW()/2+10,this.getY()},
-    		    new double[] {0,-2,0,-2});
-    		    break;
-    			}
-    		}
+            //System.out.println("attackKind:"+this.getAttackKind()+",bulletKind:"+this.getBulletKind());
+            switch (this.getAttackKind())//(1 is 单发, 2 is 双发, 3 is 机枪, 4 is 双重机枪)
+            {
+                case 1:
+                case 3://单发 机枪
+                    setInterval(this.getAttackKind() == 1 ? 80 : 20);
+                    switch (this.getBulletKind()) {
+                        case 1://发射普通子弹
+                            shoot(1, new double[]{this.getX() + this.getW() / 2, this.getY()},
+                                    new double[]{0, -3});
+                            break;
+                        case 2://发射散弹
+                            this.shoot(2,
+                                    new double[]{
+                                            this.getX() + this.getW() / 2 - 5, this.getY(),
+                                            this.getX() + this.getW() / 2, this.getY(),
+                                            this.getX() + this.getW() / 2 + 5, this.getY()},
+                                    new double[]{-0.5, -3, 0, -3, 0.5, -3});
+                            break;
+                        case 3://发射导弹
+                            shoot(3, new double[]{this.getX() + this.getW() / 2, this.getY() - 10},
+                                    new double[]{0, -7});
+                            break;
+                        case 4://发射激光
+                            shoot(4, new double[]{this.getX() + this.getW() / 2, this.getY()},
+                                    new double[]{0, 0});
+                            break;
+                        case 5://发射等离子球
+                            shoot(6, new double[]{this.getX() + this.getW() / 2, this.getY()},
+                                    new double[]{0, -2});
+                            break;
+                    }
+                    break;
+                case 2:
+                case 4:
+                    setInterval(this.getAttackKind() == 2 ? 80 : 20);//双发 双重机枪
+                    switch (this.getBulletKind()) {
+                        case 1://发射普通子弹
+                            this.shoot(1,
+                                    new double[]{this.getX() + this.getW() / 2 - 10, this.getY(),
+                                            this.getX() + this.getW() / 2 + 10, this.getY()},
+                                    new double[]{0, -3, 0, -3});
+                            break;
+                        case 2://发射散弹
+                            this.shoot(2,
+                                    new double[]{
+                                            this.getX() + this.getW() / 2 - 15, this.getY(),
+                                            this.getX() + this.getW() / 2 - 10, this.getY(),
+                                            this.getX() + this.getW() / 2 - 5, this.getY(),
+                                            this.getX() + this.getW() / 2 + 5, this.getY(),
+                                            this.getX() + this.getW() / 2 + 10, this.getY(),
+                                            this.getX() + this.getW() / 2 + 15, this.getY()},
+                                    new double[]{-0.5, -3, 0, -3, 0.5, -3,
+                                            -0.5, -3, 0, -3, 0.5, -3});
+                            break;
+                        case 3://发射导弹
+                            shoot(3, new double[]{this.getX() + this.getW() / 2 - 10, this.getY() - 10,
+                                            this.getX() + this.getW() / 2 + 10, this.getY() - 10},
+                                    new double[]{0, -7, 0, -7});
+                            break;
+                        case 4://发射激光
+                            shoot(4, new double[]{
+                                            this.getX() + this.getW() / 2 - 10, this.getY(),
+                                            this.getX() + this.getW() / 2 + 10, this.getY()},
+                                    new double[]{0, 0, 0, 0});
+                            break;
+                        case 5://发射等离子球
+                            shoot(6, new double[]{
+                                            this.getX() + this.getW() / 2 - 10, this.getY(),
+                                            this.getX() + this.getW() / 2 + 10, this.getY()},
+                                    new double[]{0, -2, 0, -2});
+                            break;
+                    }
+            }
 
         }
     }
 
     @Override
-    public void setLive(boolean live) 
-    {
+    public void setLive(boolean live) {
         super.setLive(live);
         if (!this.isLive()) {
             this.die();//调用死亡函数(如爆炸)
@@ -255,10 +283,10 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 
     @Override//护盾保护
     public void deductLive(int attack) {
-    	if(this.getShieldCurrentTime()<=0)
-    	super.deductLive(attack);
+        if (this.getShieldCurrentTime() <= 0)
+            super.deductLive(attack);
     }
-    
+
     @Override
     public void die() {
         //爆炸
