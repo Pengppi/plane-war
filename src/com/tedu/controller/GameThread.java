@@ -68,7 +68,7 @@ public class GameThread extends Thread {
         GameLoad.loadImg();//加载图片
         GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机(种类数量，间隔)
-        GameLoad.loadMap(2);
+        GameLoad.loadMap(GameOverJPanel.GameGate);//不同的关卡设置不同的地图
         Play.isRank = new boolean[]{false, false, false, false};//升级初始化
         gameTime = 0L;//时间重启
 //		全部加载完成，游戏启动

@@ -202,6 +202,7 @@ public class GameJFrame extends JFrame {
                 break;
             case "第一关":
                 jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                GameOverJPanel.GameGate = 1;
                 this.jPanel = null;
                 this.setjPanel(jp);
                 isReady = true;
@@ -212,6 +213,7 @@ public class GameJFrame extends JFrame {
                 break;
             case "第二关":
                 jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                GameOverJPanel.GameGate = 2;
                 this.jPanel = null;
                 this.setjPanel(jp);
                 isReady = true;
@@ -222,6 +224,7 @@ public class GameJFrame extends JFrame {
                 break;
             case "第三关":
                 jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                GameOverJPanel.GameGate = 3;
                 this.jPanel = null;
                 this.setjPanel(jp);
                 isReady = true;
@@ -232,6 +235,7 @@ public class GameJFrame extends JFrame {
                 break;
             case "第四关":
                 jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                GameOverJPanel.GameGate = 4;
                 this.jPanel = null;
                 this.setjPanel(jp);
                 isReady = true;
