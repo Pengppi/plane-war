@@ -188,6 +188,7 @@ public class GameJFrame extends JFrame {
                 break;
             case "下一关":
                 jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                GameOverJPanel.GameGate = GameOverJPanel.GameGate == 4? 4 : GameOverJPanel.GameGate + 1;
                 this.jPanel = null;
                 this.setjPanel(jp);
                 isReady = true;
