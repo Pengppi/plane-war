@@ -98,9 +98,9 @@ public class GameThread extends Thread {
             reduceTrapTime(traps);//减少陷阱警告时间
 
             //敌人，道具，boss产生函数
-            hzfCallTool(String.valueOf(ran.nextInt(6)+1), 100, 10000, 700);
+            hzfCallTool(String.valueOf(ran.nextInt(6) + 1), 100, 10000, 700);
             hzfCallBoss(ElementManager.getBossId(), 10100);
-            switch (ElementManager.getBossId()){
+            switch (ElementManager.getBossId()) {
                 case "1":
                     hzfCallEnemy("1", 100, 1200, 250);
                     hzfCallEnemy("4", 800, 10000, 400);
@@ -155,7 +155,7 @@ public class GameThread extends Thread {
             ElementPK(plays, enemies, (a, b) -> {//判断敌机与我方碰撞(双方直接死亡,有护盾则护盾失去)
                 if (a.getShield_time() == null || a.getShieldCurrentTime() <= 0)
                     a.setLive(false);
-                else a.setShield_time(null);
+                else a.setShield_time(null, 0);
                 b.setLive(false);
             });
 
@@ -166,25 +166,25 @@ public class GameThread extends Thread {
             });
 
             ElementPK(plays, tools, (a, b) -> {//判断玩家战机与道具的碰撞
-            	  //不同类型的道具效果不同
+                //不同类型的道具效果不同
                 switch (b.getKind()) {
                     case "1"://医疗包
                         a.setBlood(a.getDensity());
                         break;
                     case "2"://护盾
-                        a.setShield_time(new Stopwatch());
+                        a.setShield_time(new Stopwatch(), 10);
                         break;
                     case "3"://弹药箱(可以获得核弹，脉冲弹)
                         //int kind = ran.nextInt(8) + 1;
-                    	int kind = 8;
-                        if(kind == 6)//获得核弹
-                        Tool.nuclear_count++;
-                        else if(kind == 7)//获得脉冲弹
-                        Tool.emp_count++;
-                        else if(kind == 8)//获得浮游炮
-                        a.setTowerTime();
+                        int kind = 8;
+                        if (kind == 6)//获得核弹
+                            Tool.nuclear_count++;
+                        else if (kind == 7)//获得脉冲弹
+                            Tool.emp_count++;
+                        else if (kind == 8)//获得浮游炮
+                            a.setTowerTime();
                         else
-                        a.setBulletKind(kind);
+                            a.setBulletKind(kind);
                         break;
                     case "4"://升级
                         a.setAttackKind(a.getAttackKind() == ElementObj.attack_count ? a.getAttackKind() : a.getAttackKind() + 1);//攻击方式的升级
@@ -193,8 +193,8 @@ public class GameThread extends Thread {
                         a.setRebornNum(a.getRebornNum() + 1);
                         break;
                     case "6"://宝石
-                    	this.diamondToScore(10);
-                    	break;
+                        this.diamondToScore(10);
+                        break;
                 }
                 b.setLive(false);
             });
@@ -240,27 +240,28 @@ public class GameThread extends Thread {
 
     //	游戏元素自动化方法
     public void moveAndUpdate(Map<GameElement, List<ElementObj>> all, long gameTime) {
-      //GameElement.values();//隐藏方法  返回值是一个数组,数组的顺序就是定义枚举的顺序
+        //GameElement.values();//隐藏方法  返回值是一个数组,数组的顺序就是定义枚举的顺序
         for (GameElement ge : GameElement.values()) {
             List<ElementObj> list = all.get(ge);
             for (int i = list.size() - 1; i >= 0; i--) {
                 ElementObj obj = list.get(i);//读取为基类
                 if (!obj.isLive()) {//如果死亡
-                    obj.die();
                     if (obj instanceof Play) {
-                    	System.out.println("setReborn1:"+obj.getRebornNum());
-                    	if(obj.getRebornNum()>0)//有复活心可以复活
-                    	{
-                    		obj.setRebornNum(obj.getRebornNum()-1);//消耗复活心
-                    		list.remove(i);
-                    		GameLoad.wpploadPlay();//重新加载玩家飞机
-                    		break;//退出循环，不可能退出界面
-                    	}
-                    	else {//没有复活心
-                        on = false;
-                        new GameOverJPanel(gj, false, all.get(GameElement.PLAY).get(0).getScore(), all.get(GameElement.MAPS).get(0).getIcon());
-                    	}
+                        if (obj.getCurrentGodTime() > 0) {
+                            obj.setLive(true);
+                            break;
+                        }
+                        System.out.println("setReborn1:" + obj.getRebornNum());
+                        if (obj.getRebornNum() > 0)//有复活心可以复活
+                        {
+                            obj.reborn();
+                            break;//退出循环，不可能退出界面
+                        } else {//没有复活心
+                            on = false;
+                            new GameOverJPanel(gj, false, all.get(GameElement.PLAY).get(0).getScore(), all.get(GameElement.MAPS).get(0).getIcon());
+                        }
                     }
+                    obj.die();
                     addScore(all, obj);
                     if (obj instanceof Boss) {
                         on = false;
@@ -297,7 +298,7 @@ public class GameThread extends Thread {
      * @date: 2022/7/10
      **/
     private void diamondToScore(int score) {
-    	List<ElementObj>plays=ElementManager.getManager().getElementsByKey(GameElement.PLAY);
+        List<ElementObj> plays = ElementManager.getManager().getElementsByKey(GameElement.PLAY);
         for (ElementObj play : plays) {
             play.setScore(play.getScore() + score);
         }
@@ -341,39 +342,34 @@ public class GameThread extends Thread {
      * @return
      */
     public static void hzfCallEnemy(String kind, int leftTime, int rightTime, int interval) {
-    	      if(GameThread.gameTime>=leftTime&&GameThread.gameTime<rightTime&&GameThread.gameTime%interval==0)
-    	       {
-               ElementObj obj = new Enemy().createElement(kind);
-               em.addElement(obj, GameElement.ENEMY);
-    	       }
+        if (GameThread.gameTime >= leftTime && GameThread.gameTime < rightTime && GameThread.gameTime % interval == 0) {
+            ElementObj obj = new Enemy().createElement(kind);
+            em.addElement(obj, GameElement.ENEMY);
+        }
     }
 
     //产生道具的函数
-    public static void hzfCallTool(String kind, int leftTime, int rightTime, int interval)
-    {
-	      if(GameThread.gameTime>=leftTime&&GameThread.gameTime<rightTime&&GameThread.gameTime%interval==0)
-	       {
-              ElementObj obj = new Tool().createElement(kind);
-              em.addElement(obj, GameElement.TOOL);
-	       }
+    public static void hzfCallTool(String kind, int leftTime, int rightTime, int interval) {
+        if (GameThread.gameTime >= leftTime && GameThread.gameTime < rightTime && GameThread.gameTime % interval == 0) {
+            ElementObj obj = new Tool().createElement(kind);
+            em.addElement(obj, GameElement.TOOL);
+        }
     }
 
-  //产生boss的函数
+    //产生boss的函数
     /*
      * @param bossKind(boss种类) time(boss出现的间隔)
      */
-    public static void hzfCallBoss(String bossKind, int time)
-    {
-	      if(GameThread.gameTime==time)
-	       {
-	    	  ElementObj obj=new Boss().createElement(bossKind);
-	    	  em.addElement(obj, GameElement.BOSS);
-	       }
+    public static void hzfCallBoss(String bossKind, int time) {
+        if (GameThread.gameTime == time) {
+            ElementObj obj = new Boss().createElement(bossKind);
+            em.addElement(obj, GameElement.BOSS);
+        }
     }
 
     //清空游戏时间，开启新关卡
-    public static void clearGameTime(){
-        gameTime=0;
+    public static void clearGameTime() {
+        gameTime = 0;
     }
 
 }

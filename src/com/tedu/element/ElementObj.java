@@ -33,11 +33,22 @@ public abstract class ElementObj {
     private int blood = 0;//对象的血量
     private int shield_liveTime = 10;//护盾的持续时间为10s
 
+    public Stopwatch god_timer = null; //无敌时间控制器
+
+    public int god_time = 2;
+
+    public double getCurrentGodTime() {
+        if (god_timer == null) {
+            return -1;
+        }
+        return god_time - god_timer.currentTime();
+    }
 
     private Stopwatch shield_time = null;
 
-    public void setShield_time(Stopwatch sw) {
+    public void setShield_time(Stopwatch sw, int time) {
         this.shield_time = sw;
+        this.shield_liveTime = time;
     }
 
 
@@ -282,6 +293,9 @@ public abstract class ElementObj {
 
     //获得玩家特殊子弹时间
     public double getBulletTime() {
+        if (this.bullet_time == null) {
+            return -1;
+        }
         return this.bullet_liveTime - this.bullet_time.currentTime();
     }
 
@@ -344,6 +358,9 @@ public abstract class ElementObj {
 
     //获得当前护盾的时间
     public double getShieldCurrentTime() {
+        if (this.shield_time == null) {
+            return -1;
+        }
         return this.shield_liveTime - this.shield_time.currentTime();
     }
     //***************************************************************************************
@@ -404,6 +421,10 @@ public abstract class ElementObj {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public void reborn() {
+
     }
 }
 

@@ -39,7 +39,7 @@ public class GameOverJPanel extends JPanel {
         } else {
             text = new String[]{"重玩关卡", "返回主界面"};
         }
-        gj.loadButton(text, this, 0, 100, 200,90,1);
+        gj.loadButton(text, this, 0, 100, 200,125,1);
         gj.setjPanel(this);
         gj.start();
     }
@@ -49,7 +49,7 @@ public class GameOverJPanel extends JPanel {
         g.drawImage(bg.getImage(), 0, 0, bg.getIconWidth(), bg.getIconHeight(), this);
         showInfo(g, "GameOver!", 460, 260, 200);
         String txt = "您最终的得分是:" + score + "分！";
-        showInfo(g, txt, 620, 420, 90);
+        showInfo(g, txt, 580, 420, 90);
 
     }
 

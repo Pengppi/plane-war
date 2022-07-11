@@ -166,7 +166,7 @@ public class GameJFrame extends JFrame {
             case "开始游戏":
                 this.jPanel.removeAll();
                 String text[] = {"第一关", "第二关", "第三关", "第四关", "返回主界面"};
-                loadButton(text, this.jPanel, 500, 220, 70, 90, 2);
+                loadButton(text, this.jPanel, 490, 220, 70, 95, 2);
                 this.jPanel.repaint();
                 break;
             case "退出游戏":

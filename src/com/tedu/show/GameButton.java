@@ -31,6 +31,7 @@ public class GameButton extends JButton {
 
     private void init() {
         setBorder(roverBorder);
+//        setBorder(emptyBorder);
         setForeground(Color.white);
         this.setContentAreaFilled(false);
         this.setFocusPainted(false);

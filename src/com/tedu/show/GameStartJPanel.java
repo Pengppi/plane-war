@@ -25,7 +25,7 @@ public class GameStartJPanel extends JPanel {
     private void init() {
         this.setLayout(null);
         String text[] = {"开始游戏", "游戏记录", "退出游戏"};
-        gj.loadButton(text, this, 650, 220, 140,100,1);
+        gj.loadButton(text, this, 650, 210, 140,110,1);
         gj.setjPanel(this);
         gj.start();
     }

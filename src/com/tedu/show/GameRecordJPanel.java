@@ -25,7 +25,7 @@ public class GameRecordJPanel extends JPanel {
     private void init() {
         this.setLayout(null);
         String text[] = {"返回主界面"};
-        gj.loadButton(text, this, 0, 520, 140,90,1);
+        gj.loadButton(text, this, 0, 510, 140,120,1);
         gj.setjPanel(this);
         gj.start();
     }

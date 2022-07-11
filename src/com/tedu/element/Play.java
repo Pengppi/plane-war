@@ -3,6 +3,7 @@ package com.tedu.element;
 import java.awt.*;
 import javax.swing.ImageIcon;
 
+import com.tedu.controller.Stopwatch;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -22,12 +23,14 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     private int rank = 1;//等级，玩家等级会因吃到升级道具而改变
 
     public static int useToolInterval = 100;//使用道具的时间间隔,避免重复使用
-    
-    public static int[] rankScore = new int[] {10,30,50,80};//达到相应等级所需要的分数
-    
-    public static int[] rankDensity = new int[] {15,20,25,30};//达到相应等级能获得的防御力
-    
-    public static boolean[] isRank = new boolean[] {false,false,false,false};//统计是否升级
+
+    public static int[] rankScore = new int[]{10, 30, 50, 80};//达到相应等级所需要的分数
+
+    public static int[] rankDensity = new int[]{15, 20, 25, 30};//达到相应等级能获得的防御力
+
+    public static boolean[] isRank = new boolean[]{false, false, false, false};//统计是否升级
+
+    private boolean isShow = true;
 
     public Play() {
     }
@@ -48,6 +51,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.setDensity(10);// 满血值为10,不需要额外设置setblood
         //设置玩家初始等级为1
         this.setRank(1);
+        this.setRebornNum(2);
         return this;
     }
 
@@ -61,15 +65,28 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
      **/
     @Override
     public void showElement(Graphics g) {
-        //绘画图片
-        super.showElement(g);
+        g.setColor(Color.WHITE);
         g.setFont(new Font("微软雅黑", Font.PLAIN + Font.BOLD, 60));
         g.drawString("当前得分：" + this.getScore(), 0, 60);
 
-        showAttribute((Graphics2D) g);
+        if (isShow) {
+            super.showElement(g);
+            showAttribute((Graphics2D) g);
+        } else if (this.getCurrentGodTime() < 0) {
+            isShow = true;
+        }
+        if (this.getCurrentGodTime() > 0) {
+            g.setFont(new Font("微软雅黑", Font.PLAIN + Font.BOLD, 15));
+            g.drawString("无敌时间" + String.format("%.1f", this.getCurrentGodTime()), (int) this.getX() + 10, (int) (this.getY() + this.getH() + 35));
+            if (this.god_timer.sinceLast(0.2)) {
+                isShow = !isShow;
+            }
+        }
+
+
         //护盾显示
         g.setFont(new Font("", Font.BOLD, 40));
-        if (this.getShield_time() != null && this.getShieldCurrentTime() > 0) {
+        if (this.getShieldCurrentTime() > 0) {
             g.drawImage(GameLoad.imgMap.get("shield").getImage(),
                     (int) this.getX(), (int) this.getY(),
                     this.getW(), this.getW(), null);
@@ -87,11 +104,11 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         drawTools(g, 7, Tool.nuclear_count, 10, 990);//显示核弹数目
         drawTools(g, 5, this.getRebornNum(), 10, 1040);//显示复活心的数目
 
-      //检测是否升级
+        //检测是否升级
         this.addRank();
 
         if (this.getBulletKind() > 1) {
-            if (this.getBullet_time() != null && this.getBulletTime() > 0) {
+            if (this.getBulletTime() > 0) {
                 g.drawString("特殊子弹剩余时间：" + String.format("%.1f", this.getBulletTime()) + "s", 10, 930);
             }
         }
@@ -112,7 +129,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
      * @date: 2022/7/11/011 15:11:30 下午
      **/
     private void showAttribute(Graphics2D g2) {
-    	//血条的显示
+        //血条的显示
         int levelBoxWidth = 20;
         int barWidth = this.getW() * 4 / 5 - levelBoxWidth * 11 / 10;
         int barHeight = levelBoxWidth * 3 / 4;
@@ -128,7 +145,8 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 
         g2.setColor(Color.WHITE);
         //Todo 动态控制经验条的变化
-        g2.fillRect(barX, barY + bloodBarHeight, barWidth / 2, expBarHeight);//绘制经验条
+        g2.fillRect(barX, barY + bloodBarHeight, this.getScore() > this.rankScore[this.rank] ? barWidth : barWidth * this.getScore() / this.rankScore[this.rank]
+                , expBarHeight);//绘制经验条
 
         g2.setColor(Color.BLACK);
         g2.setStroke(new BasicStroke(2.0f));
@@ -191,17 +209,16 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     //玩家等级会因吃到升级道具而升级,而因等级改变至一定程度又会改变武器种类
     //玩家等级会因吃到升级道具升级攻击方式,而因分数升级会提升血量和攻击方式
     public void addRank() {
-        for(int i=0;i<isRank.length;i++)
+        for (int i = 0; i < isRank.length; i++)
             //因等级上张，攻击方式也会增加
-        	if(!isRank[i]&&this.getScore()>=rankScore[i])
-        	{
-        	isRank[i]=true;//防止重复升级
-        	//攻击方式的升级
-            this.setAttackKind(this.getAttackKind() == ElementObj.attack_count ? this.getAttackKind() : this.getAttackKind() + 1);
-            this.setDensity(rankDensity[i]);//提升防御力
-            break;
-        	}
-      }
+            if (!isRank[i] && this.getScore() >= rankScore[i]) {
+                isRank[i] = true;//防止重复升级
+                //攻击方式的升级
+                this.setAttackKind(this.getAttackKind() == ElementObj.attack_count ? this.getAttackKind() : this.getAttackKind() + 1);
+                this.setDensity(rankDensity[i]);//提升防御力
+                break;
+            }
+    }
 
     //键盘事件，按f切换武器
     @Override
@@ -379,6 +396,13 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         ElementManager.getManager().addElement(element, GameElement.PLAYFILE);
     }
 
+    public void reborn() {
+        this.setRebornNum(this.getRebornNum() - 1);//消耗复活心
+        this.god_timer = new Stopwatch();//开启无敌时间计时器
+        this.setBlood(this.getDensity());
+        this.isShow = false;
+
+    }
 
     public void setRank(int rank) {
         this.rank = rank;
