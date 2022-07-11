@@ -10,8 +10,7 @@ import com.tedu.element.GameRecord;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.util.StringJoiner;
+
 
 public class GameOverJPanel extends JPanel {
     private GameJFrame gj = null;
@@ -38,7 +37,7 @@ public class GameOverJPanel extends JPanel {
         } else {
             text = new String[]{"重玩关卡", "返回主界面"};
         }
-        gj.loadButton(text, this, 0, 100, 200);
+        gj.loadButton(text, this, 0, 100, 200,90,1);
         gj.setjPanel(this);
         gj.start();
     }

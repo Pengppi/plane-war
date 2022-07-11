@@ -25,7 +25,7 @@ public class GameStartJPanel extends JPanel {
     private void init() {
         this.setLayout(null);
         String text[] = {"开始游戏", "游戏记录", "退出游戏"};
-        gj.loadButton(text, this, 650, 250, 130);
+        gj.loadButton(text, this, 650, 220, 140,100,1);
         gj.setjPanel(this);
         gj.start();
     }
@@ -35,9 +35,9 @@ public class GameStartJPanel extends JPanel {
     public void paintComponent(Graphics g) {
         ImageIcon bg = new ImageIcon("image/bg/bg6.png");
         g.drawImage(bg.getImage(), 0, 0, bg.getIconWidth(), bg.getIconHeight(), this);
-        showInfo(g, GameJFrame.GAMETITLE, 1325, 600, 90);
+        showInfo(g, GameJFrame.GAMETITLE, 1325, 560, 90);
         String txt = "至臻豪华尊享版";
-        showInfo(g, txt, 1440, 655, 45);
+        showInfo(g, txt, 1440, 625, 45);
 
     }
 
