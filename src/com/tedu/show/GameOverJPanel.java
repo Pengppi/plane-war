@@ -15,6 +15,8 @@ import java.util.StringJoiner;
 
 public class GameOverJPanel extends JPanel {
     private GameJFrame gj = null;
+    public static int GameGate = 1;//关卡数
+    public static String[] GameLevel =new String[] {"第一关","第二关","第三关","第四关"};//关卡字符串
     private ImageIcon bg;
     private int score = 0;
 
@@ -23,7 +25,7 @@ public class GameOverJPanel extends JPanel {
         this.bg = icon;
         this.score = score;
         this.setLayout(null);
-        GameRecord.updateRecord(new GameRecord("第一关", score));
+        GameRecord.updateRecord(new GameRecord(GameLevel[GameGate-1], score));
         gj.isReady = false;
         init(isWin);
     }

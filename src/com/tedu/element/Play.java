@@ -294,6 +294,14 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
                             break;
                     }
             }
+            
+            if(this.getTowerCurrentTime()>0)//浮游炮攻击
+            {
+            this.shoot(1,
+            new double[]{this.getX() + this.getW() / 2 - 80, this.getY(),
+            this.getX() + this.getW() / 2 + 80, this.getY()},
+            new double[]{0, -3, 0, -3});
+            }
 
         }
     }

@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import javax.swing.ImageIcon;
+
+import com.tedu.controller.GameThread;
 import com.tedu.element.Boss;
 import com.tedu.element.ElementObj;
 import com.tedu.element.Enemy;
@@ -116,73 +118,6 @@ public class GameLoad {
         em.addElement(obj, GameElement.PLAY);//直接添加
     }
 
-    /**
-     * 测试用的加载方法
-     * 加载敌军飞机
-     *
-     * @param kind(飞机种类编号)(kind:String,count:int,kind2:String,count2:int...)
-     * @return
-     */
-    public static void hzfloadEnemy(String[] kind,int interval) {
-        new Thread(() -> {
-        	System.out.println("kind:length:"+kind.length);
-            for (int i = 0; i < kind.length; i += 2) {
-                try {
-                    Thread.sleep(interval);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                int count = Integer.parseInt(kind[i + 1]);
-                for (int j = 0; j < count; j++) {
-                    try {
-                        Thread.sleep(interval);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    ElementObj obj = new Enemy().createElement(kind[0]);
-                    em.addElement(obj, GameElement.ENEMY);
-                }
-            }
-        }).start();
-    }
-
-    //加载道具的函数
-    public static void hzfloadTool(String[] kind,int interval)
-    {
-    	new Thread(() -> {
-            for (int i = 0; i < kind.length; i += 2) {
-                try {
-                    Thread.sleep(interval);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                int count = Integer.parseInt(kind[i + 1]);
-                for (int j = 0; j < count; j++) {
-                    try {
-                        Thread.sleep(interval);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    ElementObj obj = new Tool().createElement(kind[i]);
-                    em.addElement(obj, GameElement.TOOL);
-                }
-            }
-        }).start();
-    }
-    
-  //加载boss的函数
-    public static void hzfloadBoss(String bossKind)
-    {
-    	new Thread(()->{
-	    		 try {
-					Thread.sleep(50);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-	    	    ElementObj obj=new Boss().createElement(bossKind);
-	    	    em.addElement(obj, GameElement.BOSS);
-    	}).start();	
-    }
 
     /**
      * 测试用的加载方法
@@ -191,26 +126,9 @@ public class GameLoad {
      * @param kind(陷阱编号)(kind:String,count:int,kind2:String,count2:int...)
      * @return
      */
-    public static void zzrloadTrap(String[] kind) {
-        new Thread(() -> {
-            for (int i = 0; i < kind.length; i += 2) {
-                try {
-                    Thread.sleep(2000);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                int count = Integer.parseInt(kind[i + 1]);
-                for (int j = 0; j < count; j++) {
-                    try {
-                        Thread.sleep(10000);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    ElementObj obj = new Trap().createElement(kind[i]);
+    public static void zzrloadTrap(String kind) {
+                    ElementObj obj = new Trap().createElement(kind);
                     em.addElement(obj, GameElement.TRAP);
-                }
-            }
-        }).start();
     }
 
     public static ElementObj getObj(String str) {

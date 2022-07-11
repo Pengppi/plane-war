@@ -6,6 +6,7 @@ import java.util.Random;
 
 import com.tedu.element.Boss;
 import com.tedu.element.ElementObj;
+import com.tedu.element.Enemy;
 import com.tedu.element.Play;
 import com.tedu.element.Tool;
 import com.tedu.manager.ElementManager;
@@ -26,10 +27,11 @@ interface Collide {
 }
 
 public class GameThread extends Thread {
-    private ElementManager em;
+    private static ElementManager em;
     public static Random ran = new Random();//随机生成器
     public boolean on = false;//控制gameRun
     public GameJFrame gj;
+    public static long gameTime = 0L;//游戏运行的时间
 
 
     public GameThread() {
@@ -65,15 +67,7 @@ public class GameThread extends Thread {
         GameLoad.loadImg();//加载图片
         GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机(种类数量，间隔)
-        GameLoad.hzfloadEnemy(new String[]{"1", "4", "2", "4", "3", "4", "4", "4", "5", "4", "6", "4", "7", "4"}, 2000);//加载敌军飞机
-        //GameLoad.hzfloadEnemy(new String[] {"e","3"},2000);
-        //GameLoad.hzfloadBoss("1");
         GameLoad.loadMap(2);
-        //GameLoad.hzfloadBoss("1");
-        GameLoad.hzfloadTool(new String[]{"3", "2", "5", "2"}, 1000);
-        //GameLoad.hzfloadEnemy(new String[] {"e","3"});
-        //GameLoad.hzfloadEnemy(new String[] {"1","4","2","4","3","4","4","4","5","4","6","4","7","4"});//加载敌军飞机
-        //GameLoad.zzrloadTrap(new String[]{"1", "20", "2", "20"});//加载陷阱
 //		全部加载完成，游戏启动
     }
 
@@ -87,7 +81,6 @@ public class GameThread extends Thread {
      */
 
     private void gameRun() {
-        long gameTime = 0L;//给int类型就可以啦
         while (on) {// 预留扩展   true可以变为变量，用于控制管关卡结束等
             //System.out.println("gameRun阶段");
             Map<GameElement, List<ElementObj>> all = em.getGameElements();
@@ -100,7 +93,18 @@ public class GameThread extends Thread {
             List<ElementObj> tools = em.getElementsByKey(GameElement.TOOL);
 
             moveAndUpdate(all, gameTime);//	游戏元素自动化方法
+            
+            
             reduceTrapTime(traps);//减少陷阱警告时间
+            
+            //敌人，道具，boss产生函数
+            hzfCallEnemy("1", 100, 1200, 250);
+            hzfCallTool(String.valueOf(ran.nextInt(6)+1), 100, 10000, 700);
+            
+            hzfCallEnemy("2", 800, 10000, 400);
+            hzfCallEnemy("3", 7000, 10000, 500);
+            
+            //***********************碰撞检测*********************************
             ElementPK(enemies, files, (a, b) -> {//判断我方的子弹与敌人碰撞
                 if (a.getCamp() + b.getCamp() == 3) {
                     a.deductLive(b.getAttack());
@@ -146,8 +150,8 @@ public class GameThread extends Thread {
                         a.setShield_time(new Stopwatch());
                         break;
                     case "3"://弹药箱(可以获得核弹，脉冲弹)
-                        int kind = ran.nextInt(8) + 1;
-                    	//int kind = 8;
+                        //int kind = ran.nextInt(8) + 1;
+                    	int kind = 8;
                         if(kind == 6)//获得核弹
                         Tool.nuclear_count++;
                         else if(kind == 7)//获得脉冲弹
@@ -169,6 +173,7 @@ public class GameThread extends Thread {
                 }
                 b.setLive(false);
             });
+            //*************************************************************************
 
             try {
                 sleep(10);//默认理解为 1秒刷新100次
@@ -301,7 +306,44 @@ public class GameThread extends Thread {
             }
             on = true;//启动gameRun()
         }
+    }
+    
+    /**
+     * 测试用的加载方法
+     * 产生敌军飞机
+     *
+     * @param kind(飞机种类编号) leftTime rightTime(飞机出现的时间区间） interval(飞机出现的间隔)
+     * @return
+     */
+    public static void hzfCallEnemy(String kind, int leftTime, int rightTime, int interval) {
+    	      if(GameThread.gameTime>=leftTime&&GameThread.gameTime<rightTime&&GameThread.gameTime%interval==0)
+    	       {
+               ElementObj obj = new Enemy().createElement(kind);
+               em.addElement(obj, GameElement.ENEMY);
+    	       }
+    }
 
+    //产生道具的函数
+    public static void hzfCallTool(String kind, int leftTime, int rightTime, int interval)
+    {
+	      if(GameThread.gameTime>=leftTime&&GameThread.gameTime<rightTime&&GameThread.gameTime%interval==0)
+	       {
+              ElementObj obj = new Tool().createElement(kind);
+              em.addElement(obj, GameElement.TOOL);
+	       }
+    }
+    
+  //产生boss的函数
+    /*
+     * @param bossKind(boss种类) time(boss出现的间隔)
+     */
+    public static void hzfCallBoss(String bossKind, int time)
+    {
+	      if(GameThread.gameTime==time)
+	       {
+	    	  ElementObj obj=new Boss().createElement(bossKind);
+	    	  em.addElement(obj, GameElement.BOSS);
+	       }
     }
 
 }
