@@ -112,7 +112,8 @@ public abstract class ElementObj {
      * @说明 抽象方法，显示元素
      */
     public void showElement(Graphics g) {
-        if (this.getIcon().getImage() != null)
+    	if(this.getIcon() == null || this.getIcon().getImage() == null)
+    		return;
             g.drawImage(this.getIcon().getImage(),
                     (int) this.getX(), (int) this.getY(),
                     this.getW(), this.getH(), null);

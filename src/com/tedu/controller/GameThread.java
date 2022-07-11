@@ -70,6 +70,7 @@ public class GameThread extends Thread {
         GameLoad.wpploadPlay();//加载玩家飞机(种类数量，间隔)
         GameLoad.loadMap(2);
         Play.isRank = new boolean[]{false, false, false, false};//升级初始化
+        gameTime = 0L;//时间重启
 //		全部加载完成，游戏启动
     }
 
@@ -104,7 +105,7 @@ public class GameThread extends Thread {
             //hzfCallTool(String.valueOf(3), 100, 10000, 700);
             hzfCallBoss(ElementManager.getBossId(), 10100);
             //陷阱
-            zzrCallTrap(ElementManager.getBossId().equals("1")?"1":String.valueOf(ran.nextInt()*2+1),
+            zzrCallTrap(ElementManager.getBossId().equals("1")?"1":String.valueOf(ran.nextInt(2)+1),
             		3500-Integer.parseInt(ElementManager.getBossId())*500,
             		6500+Integer.parseInt(ElementManager.getBossId())*500,
             		1500-Integer.parseInt(ElementManager.getBossId())*100);
