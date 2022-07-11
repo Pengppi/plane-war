@@ -48,7 +48,9 @@ public abstract class ElementObj {
 
     public void setShield_time(Stopwatch sw, int time) {
         this.shield_time = sw;
-        this.shield_liveTime = time;
+        if (time > 0) {
+            this.shield_liveTime = time;
+        }
     }
 
 

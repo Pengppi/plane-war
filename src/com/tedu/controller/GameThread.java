@@ -68,6 +68,7 @@ public class GameThread extends Thread {
         GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机(种类数量，间隔)
         GameLoad.loadMap(2);
+        Play.isRank = new boolean[]{false, false, false, false};
 //		全部加载完成，游戏启动
     }
 
@@ -145,24 +146,30 @@ public class GameThread extends Thread {
             //ElementPK(files, maps, (a,b)->{a.setLive(false); b.setLive(false);});
 
             ElementPK(plays, files, (a, b) -> {//判断敌人的子弹与我方碰撞
-                if (a.getCamp() + b.getCamp() == 3) {
-                    a.deductLive(b.getAttack());
-                    b.setLive(false);
+                if (a.getCurrentGodTime() < 0) {//无敌时间忽略碰撞
+                    if (a.getCamp() + b.getCamp() == 3) {
+                        a.deductLive(b.getAttack());
+                        b.setLive(false);
+                    }
                 }
             });
 
 
             ElementPK(plays, enemies, (a, b) -> {//判断敌机与我方碰撞(双方直接死亡,有护盾则护盾失去)
-                if (a.getShield_time() == null || a.getShieldCurrentTime() <= 0)
-                    a.setLive(false);
-                else a.setShield_time(null, 0);
-                b.setLive(false);
+                if (a.getCurrentGodTime() < 0) {//无敌时间忽略碰撞
+                    if (a.getShieldCurrentTime() <= 0)
+                        a.setLive(false);
+                    else a.setShield_time(null, 0);
+                    b.setLive(false);
+                }
             });
 
 
             ElementPK(plays, boss, (a, b) -> {//判断boss与我方碰撞(我方直接死亡，敌方重创50)
-                a.setLive(false);
-                b.deductLive(50);
+                if (a.getCurrentGodTime() < 0) {//无敌时间忽略碰撞
+                    a.setLive(false);
+                    b.deductLive(50);
+                }
             });
 
             ElementPK(plays, tools, (a, b) -> {//判断玩家战机与道具的碰撞
@@ -172,7 +179,7 @@ public class GameThread extends Thread {
                         a.setBlood(a.getDensity());
                         break;
                     case "2"://护盾
-                        a.setShield_time(new Stopwatch(), 10);
+                        a.setShield_time(new Stopwatch(), 0);
                         break;
                     case "3"://弹药箱(可以获得核弹，脉冲弹)
                         //int kind = ran.nextInt(8) + 1;
@@ -248,6 +255,7 @@ public class GameThread extends Thread {
                 if (!obj.isLive()) {//如果死亡
                     if (obj instanceof Play) {
                         if (obj.getCurrentGodTime() > 0) {
+                            obj.setBlood(obj.getDensity());
                             obj.setLive(true);
                             break;
                         }

@@ -167,8 +167,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
                 needExp = 1;
                 break;
         }
-        g2.fillRect(barX, barY + bloodBarHeight, barWidth * currentExp / needExp
-                , expBarHeight);//绘制经验条
+        g2.fillRect(barX, barY + bloodBarHeight, barWidth * currentExp / needExp, expBarHeight);//绘制经验条
 
         g2.setColor(Color.BLACK);
         g2.setStroke(new BasicStroke(2.0f));
@@ -424,7 +423,6 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.god_timer = new Stopwatch();//开启无敌时间计时器
         this.setBlood(this.getDensity());
         this.isShow = false;
-
     }
 
     public void setRank(int rank) {
