@@ -21,7 +21,13 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 
     private int rank = 1;//等级，玩家等级会因吃到升级道具而改变
 
-    public static int useToolInterval = 100;//使用道具的时间间隔,放置重复使用
+    public static int useToolInterval = 100;//使用道具的时间间隔,避免重复使用
+    
+    public static int[] rankScore = new int[] {10,30,50,80};//达到相应等级所需要的分数
+    
+    public static int[] rankDensity = new int[] {15,20,25,30};//达到相应等级能获得的防御力
+    
+    public static boolean[] isRank = new boolean[] {false,false,false,false};//统计是否升级
 
     public Play() {
     }
@@ -81,6 +87,8 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         drawTools(g, 7, Tool.nuclear_count, 10, 990);//显示核弹数目
         drawTools(g, 5, this.getRebornNum(), 10, 1040);//显示复活心的数目
 
+      //检测是否升级
+        this.addRank();
 
         if (this.getBulletKind() > 1) {
             if (this.getBullet_time() != null && this.getBulletTime() > 0) {
@@ -104,6 +112,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
      * @date: 2022/7/11/011 15:11:30 下午
      **/
     private void showAttribute(Graphics2D g2) {
+    	//血条的显示
         int levelBoxWidth = 20;
         int barWidth = this.getW() * 4 / 5 - levelBoxWidth * 11 / 10;
         int barHeight = levelBoxWidth * 3 / 4;
@@ -180,11 +189,19 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     }
 
     //玩家等级会因吃到升级道具而升级,而因等级改变至一定程度又会改变武器种类
-    public void RankToAttackKind() {
-        if (rank % 5 == 0)
-            //因等级上张，而子弹种类会变得更加高级，直到达到最高级的子弹种类后不变
+    //玩家等级会因吃到升级道具升级攻击方式,而因分数升级会提升血量和攻击方式
+    public void addRank() {
+        for(int i=0;i<isRank.length;i++)
+            //因等级上张，攻击方式也会增加
+        	if(!isRank[i]&&this.getScore()>=rankScore[i])
+        	{
+        	isRank[i]=true;//防止重复升级
+        	//攻击方式的升级
             this.setAttackKind(this.getAttackKind() == ElementObj.attack_count ? this.getAttackKind() : this.getAttackKind() + 1);
-    }
+            this.setDensity(rankDensity[i]);//提升防御力
+            break;
+        	}
+      }
 
     //键盘事件，按f切换武器
     @Override
