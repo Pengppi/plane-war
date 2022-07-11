@@ -331,6 +331,13 @@ public class Boss extends ElementObj {
                             this.getX() + this.getW() / 2 + 120, this.getY() + this.getH(),},
                     new double[]{0, 5, 0, 5, 0, 5, 0, 5});
         });
+        
+        //跟踪弹
+        this.boss_shoot(new int[]{1700}, new int[]{2300}, new int[]{150}, () -> {
+            this.shoot(0, new double[]{this.getX() + this.getW() / 2 - 80, this.getY() + this.getH(),
+                            this.getX() + this.getW() / 2 + 80, this.getY() + this.getH()},
+                    new double[]{0, 5, 0, 5});
+        });
     }
 
 }
