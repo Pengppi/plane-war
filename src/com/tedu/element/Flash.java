@@ -42,7 +42,7 @@ public class Flash extends ElementObj{
         for(ElementObj enemy:enemys)
         {
         	if(this.getKind().equals("1"))enemy.deductLive(nuclear_attack);//核弹轰炸敌人
-        	else if(this.getKind().equals("2"))enemy.deductLive(1);//电磁脉冲敌人，无法运动，无法攻击
+        	else if(this.getKind().equals("2"))enemy.getEMP();//电磁脉冲敌人，无法运动，无法攻击
         }
         //轰炸boss(电磁脉冲对boss没有效果)
         for(ElementObj boss:bosses)

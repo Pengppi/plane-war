@@ -154,21 +154,20 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         switch (idx) {
             case 0:
                 currentExp = this.getScore();
-                needExp = this.rankScore[idx];
+                needExp = rankScore[idx];
                 break;
             case 1:
             case 2:
             case 3:
-                currentExp = this.getScore() - this.rankScore[idx - 1];
-                needExp = this.rankScore[idx] - this.rankScore[idx - 1];
+                currentExp = this.getScore() - rankScore[idx - 1];
+                needExp = rankScore[idx] - rankScore[idx - 1];
                 break;
             default:
                 currentExp = 1;
                 needExp = 1;
                 break;
         }
-        g2.fillRect(barX, barY + bloodBarHeight, barWidth * currentExp / needExp
-                , expBarHeight);//绘制经验条
+        g2.fillRect(barX, barY + bloodBarHeight, barWidth * currentExp / needExp, expBarHeight);//绘制经验条
 
         g2.setColor(Color.BLACK);
         g2.setStroke(new BasicStroke(2.0f));
@@ -424,7 +423,6 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.god_timer = new Stopwatch();//开启无敌时间计时器
         this.setBlood(this.getDensity());
         this.isShow = false;
-
     }
 
     public void setRank(int rank) {

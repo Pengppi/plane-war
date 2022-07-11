@@ -48,7 +48,9 @@ public abstract class ElementObj {
 
     public void setShield_time(Stopwatch sw, int time) {
         this.shield_time = sw;
-        this.shield_liveTime = time;
+        if (time > 0) {
+            this.shield_liveTime = time;
+        }
     }
 
 
@@ -296,7 +298,7 @@ public abstract class ElementObj {
         if (this.bullet_time == null) {
             return -1;
         }
-        return this.bullet_liveTime - this.bullet_time.currentTime();
+        return bullet_liveTime - this.bullet_time.currentTime();
     }
 
     //设置玩家攻击方式
