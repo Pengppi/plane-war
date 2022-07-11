@@ -25,6 +25,7 @@ public class GameOverJPanel extends JPanel {
         this.gj = gj;
         this.bg = icon;
         this.score = score;
+        this.GameGate = Integer.parseInt(ElementManager.getBossId());
         this.setLayout(null);
         GameRecord.updateRecord(new GameRecord(GameLevel[GameGate-1], score));
         gj.isReady = false;
