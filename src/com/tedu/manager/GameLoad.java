@@ -119,17 +119,7 @@ public class GameLoad {
     }
 
 
-    /**
-     * 测试用的加载方法
-     * 加载陷阱
-     *
-     * @param kind(陷阱编号)(kind:String,count:int,kind2:String,count2:int...)
-     * @return
-     */
-    public static void zzrloadTrap(String kind) {
-                    ElementObj obj = new Trap().createElement(kind);
-                    em.addElement(obj, GameElement.TRAP);
-    }
+  
 
     public static ElementObj getObj(String str) {
         try {

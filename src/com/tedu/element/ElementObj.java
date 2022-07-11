@@ -402,7 +402,11 @@ public abstract class ElementObj {
 
     }
 
-
+    //设置警告时间
+    public void setRestTime(int restTime) {
+		this.restTime = restTime;
+	}
+    
     //陷阱时间减少
     public void reduceTime() {
         restTime--;

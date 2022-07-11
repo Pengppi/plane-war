@@ -9,6 +9,7 @@ import com.tedu.element.ElementObj;
 import com.tedu.element.Enemy;
 import com.tedu.element.Play;
 import com.tedu.element.Tool;
+import com.tedu.element.Trap;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -68,6 +69,7 @@ public class GameThread extends Thread {
         GameLoad.loadObj();//加载对象
         GameLoad.wpploadPlay();//加载玩家飞机(种类数量，间隔)
         GameLoad.loadMap(2);
+        Play.isRank = new boolean[]{false, false, false, false};//升级初始化
 //		全部加载完成，游戏启动
     }
 
@@ -97,9 +99,17 @@ public class GameThread extends Thread {
 
             reduceTrapTime(traps);//减少陷阱警告时间
 
-            //敌人，道具，boss产生函数
+            //敌人，道具，boss,陷阱产生函数
             hzfCallTool(String.valueOf(ran.nextInt(6) + 1), 100, 10000, 700);
             hzfCallBoss(ElementManager.getBossId(), 10100);
+            //陷阱
+            zzrCallTrap(ElementManager.getBossId().equals("1")?"1":String.valueOf(ran.nextInt()*2+1),
+            		3500-Integer.parseInt(ElementManager.getBossId())*500,
+            		6500+Integer.parseInt(ElementManager.getBossId())*500,
+            		1500-Integer.parseInt(ElementManager.getBossId())*100);
+            //设置boss预警时间
+            zzrCallTrap("3",10000,10100,30);
+            //zzrCallTrap("3",200,300,30);
             switch (ElementManager.getBossId()) {
                 case "1":
                     hzfCallEnemy("1", 100, 1200, 250);
@@ -175,8 +185,8 @@ public class GameThread extends Thread {
                         a.setShield_time(new Stopwatch(), 10);
                         break;
                     case "3"://弹药箱(可以获得核弹，脉冲弹)
-                        //int kind = ran.nextInt(8) + 1;
-                        int kind = 8;
+                        int kind = ran.nextInt(7) + 2;
+                        //int kind = 8;
                         if (kind == 6)//获得核弹
                             Tool.nuclear_count++;
                         else if (kind == 7)//获得脉冲弹
@@ -207,20 +217,6 @@ public class GameThread extends Thread {
                 e.printStackTrace();
             }
             gameTime++;
-        }
-    }
-
-    // 我方子弹与敌方子弹碰撞都设为死亡
-    public void ElementPK(List<ElementObj> listA, List<ElementObj> listB) {
-        for (int i = 0; i < listA.size(); i++) {
-            ElementObj enemy = listA.get(i);
-            for (int j = i + 1; j < listB.size(); j++) {
-                ElementObj file = listB.get(j);
-                if (enemy.pk(file) && enemy.getCamp() + file.getCamp() == 3) {
-                    enemy.setLive(false);
-                    file.setLive(false);
-                }
-            }
         }
     }
 
@@ -365,6 +361,18 @@ public class GameThread extends Thread {
             ElementObj obj = new Boss().createElement(bossKind);
             em.addElement(obj, GameElement.BOSS);
         }
+    }
+    
+    /**
+     * 产生陷阱
+     * @param kind(陷阱编号)
+     * @return
+     */
+    public static void zzrCallTrap(String kind, int leftTime, int rightTime, int interval) {
+    	if (GameThread.gameTime >= leftTime && GameThread.gameTime < rightTime && GameThread.gameTime % interval == 0) {
+            ElementObj obj = new Trap().createElement(kind);
+            em.addElement(obj, GameElement.TRAP);
+    	}
     }
 
     //清空游戏时间，开启新关卡

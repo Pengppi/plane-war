@@ -96,9 +96,9 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 
         if (this.getBulletKind() > 1 && this.getBulletTime() > 0) {
             if (this.getShieldCurrentTime() > 0) {
-                g.drawString("特殊子弹时间:" + String.format("%.1f", this.getBulletTime()) + "s", (int) this.getX() - 10, (int) (this.getY()) + this.getH() + 40);
-            } else {
                 g.drawString("特殊子弹时间:" + String.format("%.1f", this.getBulletTime()) + "s", (int) this.getX() - 10, (int) (this.getY()) + this.getH() + 60);
+            } else {
+                g.drawString("特殊子弹时间:" + String.format("%.1f", this.getBulletTime()) + "s", (int) this.getX() - 10, (int) (this.getY()) + this.getH() + 40);
             }
         }
 

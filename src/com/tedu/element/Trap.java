@@ -10,26 +10,32 @@ public class Trap extends ElementObj{
 
     private static Random ran=new Random(); //随机生成器
     private boolean haveDie=false;//防止重复警告
-    private int type=1;//陷阱种类，2是激光，1是导弹
+   //kind陷阱种类：1是导弹，2是激光，3是boss预警
     public Trap() { }
 
     @Override
     public ElementObj createElement(String kind_str) {
-
-        int x=ran.nextInt(GameJFrame.GameX-80)+41;//横坐标
+        int x=0;//横坐标
         int y=10;//纵坐标
-        this.setX(x);
-        this.setY(y);
         this.setCamp(2);//设置为陷阱的阵营
-        this.setKind(String.valueOf(ran.nextInt(2)+1));
+        this.setKind(kind_str);
         //敌机种类不同属性初始化
         switch(this.getKind())
         {
-            case "1":case "2"://导弹,
+            case "1":case "2"://导弹,激光
+            	x=ran.nextInt(GameJFrame.GameX-80)+41;//横坐标
                 this.kindToTrap(90, 90);
                 break;
+            case "3"://boss预警
+            	this.kindToTrap(2000,100);
+            	this.setRestTime(20);
+            	break;
         }
+        //设置位置
+        this.setX(x);
+        this.setY(y);
         this.setIcon(GameLoad.imgMap.get("trap"+this.getKind()));
+        System.out.println("kind:"+this.getKind());
         return this;
     }
     
@@ -66,7 +72,7 @@ public class Trap extends ElementObj{
 
     @Override
     protected void updateImage(long time) {
-        this.setIcon(GameLoad.imgMap.get("trap"+this.getType()));
+        this.setIcon(GameLoad.imgMap.get("trap"+this.getKind()));
     }
 
     //发射函数(子弹种类,子弹发射的位置)
@@ -82,6 +88,4 @@ public class Trap extends ElementObj{
         }
     }
 
-    //返回陷阱类型
-    public int getType(){return  this.type;}
 }
