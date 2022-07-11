@@ -4,6 +4,7 @@ import com.tedu.controller.GameListener;
 import com.tedu.controller.GameThread;
 import com.tedu.manager.ElementManager;
 
+import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
@@ -119,28 +120,35 @@ public class GameJFrame extends JFrame {
      * @author: Neo
      * @date: 2022/7/9/009 19:09:36 下午
      **/
-    public void loadButton(String[] text, JPanel jp, int x, int y, int gap) {
-        int btnHeight = 90;
+    public void loadButton(String[] text, JPanel jp, int x, int y, int gapy, int height, int col) {
+        int btnHeight = height;
         int btnY = 450 + y;
-        int btnGap = gap;
+        int gapx = height * 10 / 3;
         GameButton[] btn = new GameButton[text.length];
-        for (int i = 0; i < text.length; i++) {
-            int btnWidth = text[i].length() * btnHeight;
-            int btnX = (GameJFrame.GameX - btnWidth) / 2 + x;
-            btn[i] = new GameButton(text[i], btnX, btnY + btnGap * i, btnWidth, btnHeight);
-            jp.add(btn[i]);
-            btn[i].setFocusable(false);
-            btn[i].addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-//                    System.out.println("click");
-                    if (e.getButton() == 1) {
-                        JButton btn = (JButton) e.getSource();
-                        String txt = btn.getText();
-                        changePanel(txt);
-                    }
+        for (int i = 0; i < text.length; i += col) {
+            int t = i;
+            for (int j = 0; j < col && t < text.length; j++, t++) {
+                int btnWidth = text[i].length() * btnHeight;
+                int btnX = (GameJFrame.GameX - btnWidth) / 2 + x;
+                if (i + col > text.length) {
+                    btnX += btnWidth / 3;
                 }
-            });
+
+                btn[t] = new GameButton(text[t], btnX + j * gapx, btnY + gapy * i, btnWidth, btnHeight);
+                jp.add(btn[t]);
+                btn[t].setFocusable(false);
+                btn[t].addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+//                    System.out.println("click");
+                        if (e.getButton() == 1) {
+                            JButton btn = (JButton) e.getSource();
+                            String txt = btn.getText();
+                            changePanel(txt);
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -156,28 +164,25 @@ public class GameJFrame extends JFrame {
     public void changePanel(String txt) {
         switch (txt) {
             case "开始游戏":
-                GameMainJPanel jp = new GameMainJPanel();//实例化面板，注入到jframe中
-                this.jPanel = null;
-                this.setjPanel(jp);
-                isReady = true;
-                jp.setFocusable(true);
-                ElementManager.setBossId("1");
-                GameThread.clearGameTime();
-                this.start();
+                this.jPanel.removeAll();
+                String text[] = {"第一关", "第二关", "第三关", "第四关", "返回主界面"};
+                loadButton(text, this.jPanel, 500, 220, 70, 90, 2);
+                this.jPanel.repaint();
                 break;
             case "退出游戏":
                 System.exit(0);
                 break;
             case "游戏记录":
+                this.jPanel = null;
                 new GameRecordJPanel(this);
                 break;
             case "重玩关卡":
-                jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                GameMainJPanel jp = new GameMainJPanel();//实例化面板，注入到jframe中
                 this.jPanel = null;
                 this.setjPanel(jp);
                 isReady = true;
                 jp.setFocusable(true);
-                ElementManager.setBossId(Integer.toString(Integer.parseInt(ElementManager.getBossId())));
+                ElementManager.setBossId(ElementManager.getBossId());
                 GameThread.clearGameTime();
                 this.start();
                 break;
@@ -192,8 +197,48 @@ public class GameJFrame extends JFrame {
                 this.start();
                 break;
             case "返回主界面":
-                GameStartJPanel sjp = new GameStartJPanel(this);
                 this.jPanel = null;
+                new GameStartJPanel(this);
+                break;
+            case "第一关":
+                jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                this.jPanel = null;
+                this.setjPanel(jp);
+                isReady = true;
+                jp.setFocusable(true);
+                ElementManager.setBossId("1");
+                GameThread.clearGameTime();
+                this.start();
+                break;
+            case "第二关":
+                jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                this.jPanel = null;
+                this.setjPanel(jp);
+                isReady = true;
+                jp.setFocusable(true);
+                ElementManager.setBossId("2");
+                GameThread.clearGameTime();
+                this.start();
+                break;
+            case "第三关":
+                jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                this.jPanel = null;
+                this.setjPanel(jp);
+                isReady = true;
+                jp.setFocusable(true);
+                ElementManager.setBossId("3");
+                GameThread.clearGameTime();
+                this.start();
+                break;
+            case "第四关":
+                jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                this.jPanel = null;
+                this.setjPanel(jp);
+                isReady = true;
+                jp.setFocusable(true);
+                ElementManager.setBossId("4");
+                GameThread.clearGameTime();
+                this.start();
                 break;
         }
     }
