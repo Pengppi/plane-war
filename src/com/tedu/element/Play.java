@@ -77,7 +77,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         }
         if (this.getCurrentGodTime() > 0) {
             g.setFont(new Font("微软雅黑", Font.PLAIN + Font.BOLD, 15));
-            g.drawString("无敌时间" + String.format("%.1f", this.getCurrentGodTime()), (int) this.getX() + 10, (int) (this.getY() + this.getH() + 35));
+            g.drawString("无敌时间:" + String.format("%.1f", this.getCurrentGodTime()) + "s", (int) this.getX() + 10, (int) (this.getY() + this.getH() + 35));
             if (this.god_timer.sinceLast(0.2)) {
                 isShow = !isShow;
             }
@@ -85,12 +85,21 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 
 
         //护盾显示
-        g.setFont(new Font("", Font.BOLD, 40));
         if (this.getShieldCurrentTime() > 0) {
+            g.setFont(new Font("微软雅黑", Font.PLAIN + Font.BOLD, 15));
             g.drawImage(GameLoad.imgMap.get("shield").getImage(),
                     (int) this.getX(), (int) this.getY(),
                     this.getW(), this.getW(), null);
-            g.drawString("护盾剩余时间：" + String.format("%.1f", this.getShieldCurrentTime()) + "s", 10, 880);
+            g.drawString("护盾时间:" + String.format("%.1f", this.getShieldCurrentTime()) + "s", (int) this.getX() + 10, (int) (this.getY()) + this.getH() + 40);
+        }
+
+
+        if (this.getBulletKind() > 1 && this.getBulletTime() > 0) {
+            if (this.getShieldCurrentTime() > 0) {
+                g.drawString("特殊子弹时间:" + String.format("%.1f", this.getBulletTime()) + "s", (int) this.getX() - 10, (int) (this.getY()) + this.getH() + 40);
+            } else {
+                g.drawString("特殊子弹时间:" + String.format("%.1f", this.getBulletTime()) + "s", (int) this.getX() - 10, (int) (this.getY()) + this.getH() + 60);
+            }
         }
 
         //显示浮游炮
@@ -107,11 +116,6 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         //检测是否升级
         this.addRank();
 
-        if (this.getBulletKind() > 1) {
-            if (this.getBulletTime() > 0) {
-                g.drawString("特殊子弹剩余时间：" + String.format("%.1f", this.getBulletTime()) + "s", 10, 930);
-            }
-        }
 
         //使用道具冷却时间的减少
         if (useToolInterval > 0) useToolInterval--;
@@ -144,8 +148,26 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         g2.fillRect(barX, barY, barWidth * this.getBlood() / this.getDensity(), bloodBarHeight);//绘制血条
 
         g2.setColor(Color.WHITE);
-        //Todo 动态控制经验条的变化
-        g2.fillRect(barX, barY + bloodBarHeight, this.getScore() > this.rankScore[this.rank] ? barWidth : barWidth * this.getScore() / this.rankScore[this.rank]
+        int idx = this.rank - 1;
+        int currentExp = 1;
+        int needExp = 1;
+        switch (idx) {
+            case 0:
+                currentExp = this.getScore();
+                needExp = this.rankScore[idx];
+                break;
+            case 1:
+            case 2:
+            case 3:
+                currentExp = this.getScore() - this.rankScore[idx - 1];
+                needExp = this.rankScore[idx] - this.rankScore[idx - 1];
+                break;
+            default:
+                currentExp = 1;
+                needExp = 1;
+                break;
+        }
+        g2.fillRect(barX, barY + bloodBarHeight, barWidth * currentExp / needExp
                 , expBarHeight);//绘制经验条
 
         g2.setColor(Color.BLACK);
@@ -216,6 +238,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
                 //攻击方式的升级
                 this.setAttackKind(this.getAttackKind() == ElementObj.attack_count ? this.getAttackKind() : this.getAttackKind() + 1);
                 this.setDensity(rankDensity[i]);//提升防御力
+                this.rank++;
                 break;
             }
     }

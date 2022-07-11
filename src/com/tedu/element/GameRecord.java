@@ -43,13 +43,13 @@ public class GameRecord implements Serializable {
     public static List<GameRecord> getRecords() {
         List<GameRecord> list = null;
         try {
+
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src/com/tedu/text/record.dat"));
             Object obj = ois.readObject();
             list = (List<GameRecord>) obj;
             ois.close();
         } catch (IOException | ClassNotFoundException e) {  //内容为空
-            list = new ArrayList<>();
-            throw new RuntimeException(e);
+            return new ArrayList<>();
         }
         return list;
     }
