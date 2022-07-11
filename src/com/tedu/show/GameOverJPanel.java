@@ -7,6 +7,7 @@
 package com.tedu.show;
 
 import com.tedu.element.GameRecord;
+import com.tedu.manager.ElementManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +34,7 @@ public class GameOverJPanel extends JPanel {
 
     private void init(boolean isWin) {
         String text[];
-        if (isWin) {
+        if (isWin&&Integer.parseInt(ElementManager.getBossId())!=4) {
             text = new String[]{"下一关", "返回主界面"};
         } else {
             text = new String[]{"重玩关卡", "返回主界面"};

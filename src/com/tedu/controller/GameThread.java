@@ -93,17 +93,42 @@ public class GameThread extends Thread {
             List<ElementObj> tools = em.getElementsByKey(GameElement.TOOL);
 
             moveAndUpdate(all, gameTime);//	游戏元素自动化方法
-            
-            
+
+
             reduceTrapTime(traps);//减少陷阱警告时间
-            
+
             //敌人，道具，boss产生函数
-            hzfCallEnemy("1", 100, 1200, 250);
             hzfCallTool(String.valueOf(ran.nextInt(6)+1), 100, 10000, 700);
-            
-            hzfCallEnemy("2", 800, 10000, 400);
-            hzfCallEnemy("3", 7000, 10000, 500);
-            
+            hzfCallBoss(ElementManager.getBossId(), 10100);
+            switch (ElementManager.getBossId()){
+                case "1":
+                    hzfCallEnemy("1", 100, 1200, 250);
+                    hzfCallEnemy("4", 800, 10000, 400);
+                    hzfCallEnemy("7", 7000, 10000, 500);
+                    break;
+                case "2":
+                    hzfCallEnemy("2", 100, 1200, 250);
+                    hzfCallEnemy("6", 800, 10000, 400);
+                    hzfCallEnemy("9", 4000, 10000, 500);
+                    hzfCallEnemy("a", 7000, 10000, 500);
+                    break;
+                case "3":
+                    hzfCallEnemy("3", 100, 1200, 250);
+                    hzfCallEnemy("5", 800, 10000, 400);
+                    hzfCallEnemy("0", 4000, 10000, 500);
+                    hzfCallEnemy("b", 7000, 10000, 500);
+                    break;
+                case "4":
+                    hzfCallEnemy("8", 100, 1200, 250);
+                    hzfCallEnemy("c", 800, 10000, 400);
+                    hzfCallEnemy("d", 4000, 10000, 500);
+                    hzfCallEnemy("e", 7000, 10000, 500);
+                    break;
+                default:
+                    break;
+            }
+
+
             //***********************碰撞检测*********************************
             ElementPK(enemies, files, (a, b) -> {//判断我方的子弹与敌人碰撞
                 if (a.getCamp() + b.getCamp() == 3) {
@@ -262,7 +287,7 @@ public class GameThread extends Thread {
             play.setScore(play.getScore() + obj.getScore());
         }
     }
-    
+
     /**
      * @description: 玩家获得宝石加分
      * @method: diamondToScore
@@ -307,7 +332,7 @@ public class GameThread extends Thread {
             on = true;//启动gameRun()
         }
     }
-    
+
     /**
      * 测试用的加载方法
      * 产生敌军飞机
@@ -332,7 +357,7 @@ public class GameThread extends Thread {
               em.addElement(obj, GameElement.TOOL);
 	       }
     }
-    
+
   //产生boss的函数
     /*
      * @param bossKind(boss种类) time(boss出现的间隔)
@@ -344,6 +369,11 @@ public class GameThread extends Thread {
 	    	  ElementObj obj=new Boss().createElement(bossKind);
 	    	  em.addElement(obj, GameElement.BOSS);
 	       }
+    }
+
+    //清空游戏时间，开启新关卡
+    public static void clearGameTime(){
+        gameTime=0;
     }
 
 }

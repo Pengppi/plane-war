@@ -2,6 +2,7 @@ package com.tedu.show;
 
 import com.tedu.controller.GameListener;
 import com.tedu.controller.GameThread;
+import com.tedu.manager.ElementManager;
 
 import java.awt.event.*;
 
@@ -71,7 +72,7 @@ public class GameJFrame extends JFrame {
         }
 //		this.show();
         this.setVisible(true);//显示界面
-//		如果jp 是 runnable的 子类实体对象 
+//		如果jp 是 runnable的 子类实体对象
 //		如果这个判定无法进入就是 instanceof判定为 false 那么 jpanel没有实现runnable接口
         if (this.jPanel instanceof Runnable) {
 //			已经做类型判定，强制类型转换不会出错
@@ -160,6 +161,8 @@ public class GameJFrame extends JFrame {
                 this.setjPanel(jp);
                 isReady = true;
                 jp.setFocusable(true);
+                ElementManager.setBossId("1");
+                GameThread.clearGameTime();
                 this.start();
                 break;
             case "退出游戏":
@@ -169,8 +172,24 @@ public class GameJFrame extends JFrame {
                 new GameRecordJPanel(this);
                 break;
             case "重玩关卡":
+                jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                this.jPanel = null;
+                this.setjPanel(jp);
+                isReady = true;
+                jp.setFocusable(true);
+                ElementManager.setBossId(Integer.toString(Integer.parseInt(ElementManager.getBossId())));
+                GameThread.clearGameTime();
+                this.start();
                 break;
             case "下一关":
+                jp = new GameMainJPanel();//实例化面板，注入到jframe中
+                this.jPanel = null;
+                this.setjPanel(jp);
+                isReady = true;
+                jp.setFocusable(true);
+                ElementManager.setBossId(Integer.toString(Integer.parseInt(ElementManager.getBossId())+1));
+                GameThread.clearGameTime();
+                this.start();
                 break;
             case "返回主界面":
                 GameStartJPanel sjp = new GameStartJPanel(this);
