@@ -12,6 +12,7 @@ import javax.swing.*;
  */
 public abstract class ElementObj {
 
+    public int deleteTime;//子弹消失的时间(只有deleteTime==0与isLive==false时才会消失)
     private double x;
     private double y;
     private int w;
