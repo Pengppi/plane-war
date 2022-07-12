@@ -152,9 +152,11 @@ public class GameThread extends Thread {
                 }
             });
             ElementPK(boss, files, (a, b) -> {//判断我方的子弹与boss碰撞
-                if (a.getCamp() + b.getCamp() == 3) {
-                    a.deductLive(b.getAttack());
-                    b.setLive(false);
+                if (a.getCurrentGodTime() <= 0) {//无敌时间忽略碰撞
+                    if (a.getCamp() + b.getCamp() == 3) {
+                        a.deductLive(b.getAttack());
+                        b.setLive(false);
+                    }
                 }
             });
             //ElementPK(files, maps, (a,b)->{a.setLive(false); b.setLive(false);});
@@ -180,14 +182,13 @@ public class GameThread extends Thread {
 
 
             ElementPK(plays, boss, (a, b) -> {//判断boss与我方碰撞(我方直接死亡，敌方重创50)
-                if (a.getCurrentGodTime() <= 0) {//无敌时间忽略碰撞
+                if (a.getCurrentGodTime() <= 0 && b.getCurrentGodTime() <= 0) {//无敌时间忽略碰撞
                     a.setLive(false);
                     b.deductLive(50);
                 }
             });
 
             ElementPK(plays, tools, (a, b) -> {//判断玩家战机与道具的碰撞
-                if (a.getCurrentGodTime() <= 0) {//无敌时间忽略碰撞
                     //不同类型的道具效果不同
                     switch (b.getKind()) {
                         case "1"://医疗包
@@ -219,7 +220,6 @@ public class GameThread extends Thread {
                             break;
                     }
                     b.setLive(false);
-                }
             });
             //*************************************************************************
 
@@ -261,7 +261,6 @@ public class GameThread extends Thread {
                             obj.setLive(true);
                             break;
                         }
-                        System.out.println("setReborn1:" + obj.getRebornNum());
                         if (obj.getRebornNum() > 0)//有复活心可以复活
                         {
                             obj.reborn();
@@ -271,12 +270,25 @@ public class GameThread extends Thread {
                             new GameOverJPanel(gj, false, all.get(GameElement.PLAY).get(0).getScore(), all.get(GameElement.MAPS).get(0).getIcon(), Play.gameTimer.currentTime());
                         }
                     }
-                    obj.die();
-                    addScore(all, obj);
                     if (obj instanceof Boss) {
-                        on = false;
-                        new GameOverJPanel(gj, true, all.get(GameElement.PLAY).get(0).getScore(), all.get(GameElement.MAPS).get(0).getIcon(), Play.gameTimer.currentTime());
+                        if (obj.getCurrentGodTime() > 0) {
+                            obj.setBlood(obj.getDensity());
+                            obj.setLive(true);
+                            break;
+                        }
+                        if (obj.getRebornNum() > 0)//有复活心可以复活
+                        {
+                            obj.reborn();
+                            break;//退出循环，不可能退出界面
+                        } else {//没有复活心
+                            on = false;
+                            addScore(all, obj);
+                            new GameOverJPanel(gj, true, all.get(GameElement.PLAY).get(0).getScore(), all.get(GameElement.MAPS).get(0).getIcon(), Play.gameTimer.currentTime());
+                        }
+
                     }
+                    addScore(all, obj);
+                    obj.die();
                     list.remove(i);
                     continue;
                 }

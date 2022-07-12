@@ -1,5 +1,6 @@
 package com.tedu.element;
 
+import com.tedu.controller.Stopwatch;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -27,7 +28,18 @@ public class Boss extends ElementObj {
 
     @Override
     public void showElement(Graphics g) {
-        super.showElement(g);
+        if (isShow) {
+            super.showElement(g);
+            showAttribute((Graphics2D) g);
+        } else if (this.getCurrentGodTime() < 0) {
+            isShow = true;
+        }
+        if (this.getCurrentGodTime() > 0 && (this.god_timer.sinceLast(0.2))) {
+            isShow = !isShow;
+        }
+    }
+
+    private void showAttribute(Graphics2D g) {
         int barWidth = this.getW() * 4 / 5;
         int barHeight = 25;
         int barX = (int) (this.getX() + this.getW() / 10);
@@ -45,9 +57,28 @@ public class Boss extends ElementObj {
                 barY += 20;
                 break;
         }
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.RED);
-        g2.fillRect(barX, barY, barWidth * this.getBlood() / this.getDensity(), barHeight);
+        Graphics2D g2 = g;
+        for (int i = 0; i <= this.getRebornNum(); i++) {
+            switch (i) {
+                case 0:
+                    g2.setColor(Color.RED);
+                    break;
+                case 1:
+                    g2.setColor(Color.GREEN);
+                    break;
+                case 2:
+                    g2.setColor(Color.ORANGE);
+                    break;
+                case 3:
+                    g2.setColor(Color.magenta);
+                    break;
+            }
+            if (i == this.getRebornNum()) {
+                g2.fillRect(barX, barY, barWidth * this.getBlood() / this.getDensity(), barHeight);
+            } else {
+                g2.fillRect(barX, barY, barWidth, barHeight);
+            }
+        }
         g2.setColor(Color.BLACK);
         g2.setStroke(new BasicStroke(4.0f));
         g2.drawRect(barX, barY, barWidth, barHeight);
@@ -62,32 +93,34 @@ public class Boss extends ElementObj {
         //敌机种类不同属性初始化
         switch (this.getKind()) {
             case "1"://海妖终结者
-                this.kindToBoss(320, 320, 200, 0, 1, 2400, 80);
+                this.kindToBoss(320, 320, 200, 0, 1, 2400, 80, 0);
                 break;
             case "2"://巨霸魔牛
-                this.kindToBoss(320, 320, 250, 0, 1, 2000, 120);
+                this.kindToBoss(320, 320, 250, 0, 1, 2000, 120, 1);
                 break;
             case "3"://剧毒金蜥
-                this.kindToBoss(320, 320, 300, 0, 1, 2400, 200);
+                this.kindToBoss(320, 320, 300, 0, 1, 2400, 200, 2);
                 break;
             case "4"://紫魔君主
-                this.kindToBoss(320, 320, 400, 0, 1, 2400, 320);
+                this.kindToBoss(320, 320, 400, 0, 1, 2400, 320, 3);
                 break;
         }
         this.setX(GameJFrame.GameX / 2 - this.getW() / 2);//使得boss在正中间出现
         this.setY(0);
         this.setIcon(GameLoad.imgMap.get("boss" + this.getKind()));
+        this.god_time = 1;//boss的无敌时间
         return this;
     }
 
     //boss种类初始化敌机属性函数(敌机大小,血量，运动方式(水平速度，垂直速度),运动周期设置)
-    public void kindToBoss(int width, int height, int density, int moveXNum, int moveYNum, int period, int score) {
+    public void kindToBoss(int width, int height, int density, int moveXNum, int moveYNum, int period, int score, int rebornNum) {
         this.setW(width);
         this.setH(height);
         this.setDensity(density);
         this.setSpeed(moveXNum, moveYNum);
         this.bossMovePeriod = period;
         this.setScore(score);
+        this.setRebornNum(rebornNum);
     }
 
     @Override
@@ -331,7 +364,7 @@ public class Boss extends ElementObj {
                             this.getX() + this.getW() / 2 + 120, this.getY() + this.getH(),},
                     new double[]{0, 5, 0, 5, 0, 5, 0, 5});
         });
-        
+
         //跟踪弹
         this.boss_shoot(new int[]{1700}, new int[]{2300}, new int[]{150}, () -> {
             this.shoot(0, new double[]{this.getX() + this.getW() / 2 - 80, this.getY() + this.getH(),
@@ -340,4 +373,11 @@ public class Boss extends ElementObj {
         });
     }
 
+    @Override
+    public void reborn() {
+//        super.reborn();
+        this.setBlood(this.getDensity());
+        this.setRebornNum(this.getRebornNum() - 1);//消耗复活心
+        this.setLive(true);
+    }
 }

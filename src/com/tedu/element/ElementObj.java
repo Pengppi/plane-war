@@ -36,6 +36,7 @@ public abstract class ElementObj {
     public Stopwatch god_timer = null; //无敌时间控制器
 
     public int god_time = 2;
+    public boolean isShow = true;//是否显示
 
     public double getCurrentGodTime() {
         if (god_timer == null) {
@@ -83,7 +84,7 @@ public abstract class ElementObj {
         rebornNum = reborn;
     }
 
-    public static int rebornNum = 0; //复活币数量
+    public int rebornNum = 0; //复活币数量
 
     // 可以采用枚举值来定义这个(生存，死亡，隐身，无敌)
 //	注明：当重新定义一个用于判定状态的变量，需要思考：1.初始化 2.值的改变 3.值的判定
@@ -432,6 +433,14 @@ public abstract class ElementObj {
     }
 
     public void reborn() {
+        if (this.getRebornNum() <= 0 || this.getCurrentGodTime() > 0) {
+            return;
+        }
+        this.setBlood(this.getDensity());
+        this.god_timer = new Stopwatch();//开启无敌时间计时器
+        this.isShow = false;
+        this.setRebornNum(this.getRebornNum() - 1);//消耗复活心
+        this.setLive(true);
 
     }
 }

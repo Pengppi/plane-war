@@ -30,7 +30,6 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 
     public static boolean[] isRank = new boolean[]{false, false, false, false};//统计是否升级
 
-    private boolean isShow = true;
 
     public static Stopwatch gameTimer = null;
 
@@ -57,7 +56,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.setDensity(10);// 满血值为10,不需要额外设置setblood
         //设置玩家初始等级为1
         this.setRank(1);
-        this.setRebornNum(1);
+        this.setRebornNum(2);
         return this;
     }
 
@@ -86,7 +85,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         }
         if (this.getCurrentGodTime() > 0) {
             g.setFont(new Font("微软雅黑", Font.PLAIN + Font.BOLD, 15));
-            g.drawString("无敌时间:" + String.format("%.1f", this.getCurrentGodTime()) + "s", (int) this.getX() + 10, (int) (this.getY() + this.getH() + 35));
+            g.drawString("无敌时间:" + String.format("%.1f", this.getCurrentGodTime()) + "s", (int) this.getX() + 10, (int) (this.getY() + this.getH() + 40));
             if (this.god_timer.sinceLast(0.2)) {
                 isShow = !isShow;
             }
@@ -99,7 +98,9 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
             g.drawImage(GameLoad.imgMap.get("shield").getImage(),
                     (int) this.getX(), (int) this.getY(),
                     this.getW(), this.getW(), null);
-            g.drawString("护盾时间:" + String.format("%.1f", this.getShieldCurrentTime()) + "s", (int) this.getX() + 10, (int) (this.getY()) + this.getH() + 40);
+            if (this.getCurrentGodTime() < 0) {
+                g.drawString("护盾时间:" + String.format("%.1f", this.getShieldCurrentTime()) + "s", (int) this.getX() + 10, (int) (this.getY()) + this.getH() + 40);
+            }
         }
 
 
@@ -529,10 +530,11 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
     }
 
     public void reborn() {
-        this.setRebornNum(this.getRebornNum() - 1);//消耗复活心
-        this.god_timer = new Stopwatch();//开启无敌时间计时器
-        this.setBlood(this.getDensity());
-        this.isShow = false;
+        if (this.getRebornNum() <= 0 || this.getCurrentGodTime() > 0) {
+            return;
+        }
+        super.reborn();
+
     }
 
     public void setRank(int rank) {
