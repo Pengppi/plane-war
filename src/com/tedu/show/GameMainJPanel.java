@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JPanel;
+
 import com.tedu.element.ElementObj;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;

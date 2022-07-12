@@ -32,6 +32,12 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 
     private boolean isShow = true;
 
+    public static Stopwatch gameTimer = null;
+
+    public static double getTime() {
+        return gameTimer.currentTime();
+    }
+
     public Play() {
     }
 
@@ -51,7 +57,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.setDensity(10);// 满血值为10,不需要额外设置setblood
         //设置玩家初始等级为1
         this.setRank(1);
-        this.setRebornNum(2);
+        this.setRebornNum(1);
         return this;
     }
 
@@ -65,9 +71,12 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
      **/
     @Override
     public void showElement(Graphics g) {
+
         g.setColor(Color.WHITE);
         g.setFont(new Font("微软雅黑", Font.PLAIN + Font.BOLD, 60));
         g.drawString("当前得分：" + this.getScore(), 0, 60);
+//        g.drawString("游戏时间:" + String.format("%.1f", gameTimer.currentTime()) + "s", 0, 120);
+        drawProgressBar(g, 1700, 1010);//显示进度条
 
         if (isShow) {
             super.showElement(g);
@@ -95,7 +104,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
 
 
         if (this.getBulletKind() > 1 && this.getBulletTime() > 0) {
-            if (this.getShieldCurrentTime() > 0) {
+            if (this.getShieldCurrentTime() > 0 || this.getCurrentGodTime() > 0) {
                 g.drawString("特殊子弹时间:" + String.format("%.1f", this.getBulletTime()) + "s", (int) this.getX() - 10, (int) (this.getY()) + this.getH() + 60);
             } else {
                 g.drawString("特殊子弹时间:" + String.format("%.1f", this.getBulletTime()) + "s", (int) this.getX() - 10, (int) (this.getY()) + this.getH() + 40);
@@ -109,19 +118,90 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         }
 
         //道具数目的显示
-        drawTools(g, 8, Tool.emp_count, 8, 940);//显示脉冲弹数目
-        drawTools(g, 7, Tool.nuclear_count, 10, 990);//显示核弹数目
-        drawTools(g, 5, this.getRebornNum(), 10, 1040);//显示复活心的数目
+        drawTools(g, 8, Tool.emp_count, 8, 750);//显示脉冲弹数目
+        drawTools(g, 7, Tool.nuclear_count, 10, 830);//显示核弹数目
+        drawBullet(g, 10, 900);//子弹状态的显示
+        drawWeapons(g, 10, 950);//武器状态的显示
+        drawTools(g, 5, this.getRebornNum(), 10, 1030);//显示复活心的数目
 
         //检测是否升级
         this.addRank();
-
-
         //使用道具冷却时间的减少
         if (useToolInterval > 0) useToolInterval--;
 
         //浮游炮使用时间的减少
         if (this.getTowerCurrentTime() > 0) this.setTowerCurrentTime(this.getTowerCurrentTime() - 1);
+    }
+
+    private void drawBullet(Graphics g, int x, int y) {
+        String name = "当前子弹:";
+        switch (this.getBulletKind()) {
+            case 1:
+                name += "普通子弹";
+                break;
+            case 2:
+                name += "散弹";
+                break;
+            case 3:
+                name += "导弹";
+                break;
+            case 4:
+                name += "激光";
+                break;
+            case 5:
+                name += "等离子球";
+                break;
+        }
+        int size = 30;
+        g.setColor(new Color(246, 173, 143));
+        g.setFont(new Font("", Font.BOLD, size));
+        g.drawString(name, x, y + size * 4 / 3);
+    }
+
+    private void drawProgressBar(Graphics g, int x, int y) {
+
+        Graphics2D g2 = (Graphics2D) g;
+        int barWidth = 150;
+        int barHeight = 25;
+        int tot = 111;
+        double now = gameTimer.currentTime();
+//        double now = 60.0;
+        g2.setColor(Color.BLACK);
+        g2.fillRoundRect(x, y, barWidth, barHeight, 15, 15);
+        g2.setColor(Color.GREEN);
+        g2.fillRoundRect(x, y, now >= tot ? barWidth : (int) (barWidth * now / tot), barHeight, 15, 15);
+        g2.setStroke(new BasicStroke(4));
+        g2.setColor(Color.PINK);
+        g2.drawRoundRect(x, y, barWidth, barHeight, 15, 15);
+        g2.setColor(Color.ORANGE);
+        g2.setFont(new Font("微软雅黑", Font.PLAIN + Font.BOLD, 25));
+        g2.drawString("关卡进度", x + barWidth / 6, y + barHeight * 2);
+    }
+
+    private void drawWeapons(Graphics g, int x, int y) {
+        String name = "当前武器:";
+        switch (this.getAttackKind()) {
+            case 1:
+                name += "单口炮";
+                break;
+            case 2:
+                name += "双口炮";
+                break;
+            case 3:
+                name += "速射炮";
+                break;
+            case 4:
+                name += "双口速射炮";
+                break;
+        }
+        String usage = "武器类型随等级提升而提升";
+        int size = 30;
+        g.setColor(new Color(47, 144, 185));
+        g.setFont(new Font("", Font.BOLD, size));
+        g.drawString(name, x, y + size * 4 / 3);
+        g.setFont(new Font("", Font.BOLD, size / 2));
+        g.drawString(usage, x + 5, y + size * 2 + 3);
+
     }
 
     /**
@@ -193,6 +273,39 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
      * @date: 2022/7/10/010 15:59:58 下午
      **/
     private void drawTools(Graphics g, int order, int num, int x, int y) {
+        if (num <= 0) {
+            return;
+        }
+        String name = "";
+        String usage = "";
+        switch (order) {
+            case 8:
+                name = "脉冲弹:";
+                usage = "使场上Boss以外的所有敌机失去控制，按‘X’键使用";
+                g.setColor(new Color(139, 38, 113));
+                break;
+            case 7:
+                name = "核弹:";
+                usage = "对场上所有敌人造成毁灭性打击，按‘Z’键使用";
+                g.setColor(Color.ORANGE);
+                break;
+            case 5:
+                name = "复活心:";
+                g.setColor(new Color(191, 53, 83));
+                break;
+            default:
+                break;
+        }
+        int size = 30;
+        if (!usage.isEmpty()) {
+            g.setFont(new Font("", Font.BOLD, size / 2));
+            g.drawString(usage, x + 5, y + size * 2);
+        }
+
+
+        g.setFont(new Font("", Font.BOLD, size));
+        g.drawString(name, x, y + size + 3);
+        x += name.length() * size - 10;
         Image img = GameLoad.imgMap.get("tool" + order).getImage();
         int w = 45;
         int h = 45;
@@ -257,7 +370,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
                     ElementObj obj = GameLoad.getObj("flash");
                     ElementObj element = obj.createElement("2");
                     ElementManager.getManager().addElement(element, GameElement.DIE);
-                    Tool.emp_count--;                    
+                    Tool.emp_count--;
                     break;
                 case 90: //核弹道具的使用z键
                     if (useToolInterval > 0 || Tool.nuclear_count <= 0) return;
@@ -277,9 +390,6 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         this.setY(ty);
     }
 
-    protected void updateImage() {
-        this.setIcon(GameLoad.imgMap.get("play" + this.getKind()));
-    }
 
     //发射函数(子弹种类,子弹发射的位置,子弹速度,发射间隔)
     public void shoot(int bulletKind, double[] pos, double[] speed) {

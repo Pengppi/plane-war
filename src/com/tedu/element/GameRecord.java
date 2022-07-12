@@ -17,12 +17,14 @@ public class GameRecord implements Serializable {
     String level;
     public int score;
     String date;
+    public String time;
 
-    public GameRecord(String level, int score) {
+    public GameRecord(String level, int score, String time) {
         super();
         this.user = System.getProperty("user.name");
         this.level = level;
         this.score = score;
+        this.time = time;
         this.date = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(System.currentTimeMillis());
     }
 
@@ -32,7 +34,7 @@ public class GameRecord implements Serializable {
         sj.add("玩家：" + user);
         sj.add("分数：" + score);
         sj.add("关卡：" + level);
-        sj.add("时间：" + date);
+        sj.add("日期：" + date);
         return sj.toString();
     }
 
@@ -49,9 +51,18 @@ public class GameRecord implements Serializable {
             list = (List<GameRecord>) obj;
             ois.close();
         } catch (IOException | ClassNotFoundException e) {  //内容为空
+            GameRecord.clearRecords();
             return new ArrayList<>();
         }
         return list;
+    }
+
+    private static void clearRecords() {
+        try {
+            new File("src/com/tedu/text/record.dat").createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

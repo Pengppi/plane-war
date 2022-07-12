@@ -112,11 +112,12 @@ public abstract class ElementObj {
      * @说明 抽象方法，显示元素
      */
     public void showElement(Graphics g) {
-    	if(this.getIcon() == null || this.getIcon().getImage() == null)
-    		return;
-            g.drawImage(this.getIcon().getImage(),
-                    (int) this.getX(), (int) this.getY(),
-                    this.getW(), this.getH(), null);
+        if (this.getIcon() == null || this.getIcon().getImage() == null) {
+            return;
+        }
+        g.drawImage(this.getIcon().getImage(),
+                (int) this.getX(), (int) this.getY(),
+                this.getW(), this.getH(), null);
     }
 
     /**
@@ -407,9 +408,9 @@ public abstract class ElementObj {
 
     //设置警告时间
     public void setRestTime(int restTime) {
-		this.restTime = restTime;
-	}
-    
+        this.restTime = restTime;
+    }
+
     //陷阱时间减少
     public void reduceTime() {
         restTime--;

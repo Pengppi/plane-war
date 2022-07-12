@@ -25,7 +25,7 @@ public class GameRecordJPanel extends JPanel {
     private void init() {
         this.setLayout(null);
         String text[] = {"返回主界面"};
-        gj.loadButton(text, this, 0, 510, 140,120,1);
+        gj.loadButton(text, this, 0, 510, 140, 120, 1);
         gj.setjPanel(this);
         gj.start();
     }
@@ -57,15 +57,21 @@ public class GameRecordJPanel extends JPanel {
             int iy = y + i * gapy;
             int ix = x - len * 155;
             showString(g, r.score + "", ix, iy, size);
-            String key[] = {"玩家：", "关卡：", "时间："};
+            String key[] = {"玩家:", "关卡:", "游玩日期:"};
             String value[] = r.toStringArray();
             for (int j = 0; j < key.length; j++) {
-                int jy = j * size / 6 + iy - 130;
-                showString(g, key[j], x + 200, jy, size / 6);
-                showString(g, value[j], x + 320, jy, size / 6);
+                int jy = j * size / 5 + iy - 135;
+                showString(g, key[j], x + 170, jy, size / 6);
+                if (j != 2) {
+                    showString(g, value[j], x + 285, jy, size / 6);
+                } else {
+                    showString(g, value[j], x + 385, jy, size / 6);
+                }
+                if (j == 1) {
+                    showString(g, "用时:" + r.time, x + 490, jy, size / 6);
+                }
             }
         }
-
     }
 
     private int getLen(int score) {
