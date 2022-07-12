@@ -11,7 +11,7 @@ public class Tool extends ElementObj {
 	 //private int deleteTime=0;//消失的时间(只有deleteTime==0与isLive==false时才会消失)
     //kind道具种类(1 医疗包,2 护盾, 3 弹药箱(6 核弹, 7 脉冲弹, 8 浮游炮), 4 升级, 5 复活心, 6宝石)
     public Random ran = new Random();
-    public static int nuclear_count = 1;//核弹的数量
+    public static int nuclear_count = 5;//核弹的数量
     public static int emp_count = 0;//电磁脉冲的数量
 
     //道具显示的更新

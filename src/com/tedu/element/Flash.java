@@ -9,7 +9,7 @@ import com.tedu.manager.GameLoad;
 
 public class Flash extends ElementObj{
 	
-	private int deleteTime = 12; //闪光时间
+	private int deleteTime = 35; //闪光时间
 	private int nuclear_attack = 50; //核弹攻击为50
 	private ElementManager em = ElementManager.getManager();
 	//闪光道具的种类kind（1 is 核弹, 2 is 脉冲弹）
@@ -22,16 +22,17 @@ public class Flash extends ElementObj{
 			return;
 		}
 		else {
-			if(deleteTime%2==5) this.setIcon(GameLoad.imgMap.get("flash1"));
-			if(deleteTime%2==4) this.setIcon(GameLoad.imgMap.get("flash2"));
-			if(deleteTime%2==3) this.setIcon(GameLoad.imgMap.get("flash3"));
-			if(deleteTime%2==2) this.setIcon(GameLoad.imgMap.get("flash2"));
-			if(deleteTime%2==1) this.setIcon(GameLoad.imgMap.get("flash1"));
-			if(deleteTime%2==0) {
-				this.setIcon(GameLoad.imgMap.get("flash0"));
-				this.flash_attack();//闪光的攻击
-					
+			if(deleteTime/6==5) this.setIcon(GameLoad.imgMap.get("flash1"));
+			if(deleteTime/6==4) this.setIcon(GameLoad.imgMap.get("flash2"));
+			if(deleteTime/6==3) this.setIcon(GameLoad.imgMap.get("flash3"));
+			if(deleteTime/6==2) this.setIcon(GameLoad.imgMap.get("flash2"));
+			if(deleteTime/6==1) 
+			{
+				this.setIcon(GameLoad.imgMap.get("flash1"));
+				if(deleteTime%6==5)
+					this.flash_attack();//闪光的攻击
 			}
+			if(deleteTime/6==0) this.setIcon(GameLoad.imgMap.get("flash0"));
 		}
 	}
 	
