@@ -57,6 +57,7 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
         //设置玩家初始等级为1
         this.setRank(1);
         this.setRebornNum(2);
+
         return this;
     }
 

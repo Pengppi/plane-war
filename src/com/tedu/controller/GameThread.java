@@ -4,12 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.tedu.element.Boss;
-import com.tedu.element.ElementObj;
-import com.tedu.element.Enemy;
-import com.tedu.element.Play;
-import com.tedu.element.Tool;
-import com.tedu.element.Trap;
+import com.tedu.element.*;
 import com.tedu.manager.ElementManager;
 import com.tedu.manager.GameElement;
 import com.tedu.manager.GameLoad;
@@ -154,6 +149,12 @@ public class GameThread extends Thread {
             ElementPK(boss, files, (a, b) -> {//判断我方的子弹与boss碰撞
                 if (a.getCurrentGodTime() <= 0) {//无敌时间忽略碰撞
                     if (a.getCamp() + b.getCamp() == 3) {
+                        if (b.getKind().equals("6")) {
+                            if (b.deleteTime <= 0) {
+                                return;
+                            }
+                            b.deleteTime -= 1200;
+                        }
                         a.deductLive(b.getAttack());
                         b.setLive(false);
                     }
@@ -189,37 +190,37 @@ public class GameThread extends Thread {
             });
 
             ElementPK(plays, tools, (a, b) -> {//判断玩家战机与道具的碰撞
-                    //不同类型的道具效果不同
-                    switch (b.getKind()) {
-                        case "1"://医疗包
-                            a.setBlood(a.getDensity());
-                            break;
-                        case "2"://护盾
-                            a.setShield_time(new Stopwatch(), 0);
-                            break;
-                        case "3"://弹药箱(可以获得核弹，脉冲弹)
-                            int kind = ran.nextInt(7) + 2;
-                            //int kind = 6;
-                            if (kind == 6)//获得核弹
-                                Tool.nuclear_count++;
-                            else if (kind == 7)//获得脉冲弹
-                                Tool.emp_count++;
-                            else if (kind == 8)//获得浮游炮
-                                a.setTowerTime();
-                            else
-                                a.setBulletKind(kind);
-                            break;
-                        case "4"://升级
-                            a.setAttackKind(a.getAttackKind() == ElementObj.attack_count ? a.getAttackKind() : a.getAttackKind() + 1);//攻击方式的升级
-                            break;
-                        case "5"://复活心
-                            a.setRebornNum(a.getRebornNum() + 1);
-                            break;
-                        case "6"://宝石
-                            this.diamondToScore(5);
-                            break;
-                    }
-                    b.setLive(false);
+                //不同类型的道具效果不同
+                switch (b.getKind()) {
+                    case "1"://医疗包
+                        a.setBlood(a.getDensity());
+                        break;
+                    case "2"://护盾
+                        a.setShield_time(new Stopwatch(), 0);
+                        break;
+                    case "3"://弹药箱(可以获得核弹，脉冲弹)
+                        int kind = ran.nextInt(7) + 2;
+                        //int kind = 6;
+                        if (kind == 6)//获得核弹
+                            Tool.nuclear_count++;
+                        else if (kind == 7)//获得脉冲弹
+                            Tool.emp_count++;
+                        else if (kind == 8)//获得浮游炮
+                            a.setTowerTime();
+                        else
+                            a.setBulletKind(kind);
+                        break;
+                    case "4"://升级
+                        a.setAttackKind(a.getAttackKind() == ElementObj.attack_count ? a.getAttackKind() : a.getAttackKind() + 1);//攻击方式的升级
+                        break;
+                    case "5"://复活心
+                        a.setRebornNum(a.getRebornNum() + 1);
+                        break;
+                    case "6"://宝石
+                        this.diamondToScore(5);
+                        break;
+                }
+                b.setLive(false);
             });
             //*************************************************************************
 
