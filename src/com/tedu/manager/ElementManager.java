@@ -17,13 +17,13 @@ import com.tedu.element.ElementObj;
 public class ElementManager {
 	/*
 	 * String 作为key 匹配所有的元素  play -> List<Object> listPlay
-	 *                             enemy ->List<Object> listEnemy 
+	 *                             enemy ->List<Object> listEnemy
 	 * 枚举类型，当做map的key用来区分不一样的资源，用于获取资源
 	 * List中元素的泛型 应该是 元素 基类
 	 * 所有元素都可以存放到 map集合中，显示模块只需要获取到 这个map就可以
 	 * 显示是有的界面需要显示的元素(调用元素基类的 showElement())
 	 */
-	private Map<GameElement,List<ElementObj>> gameElements;	
+	private Map<GameElement,List<ElementObj>> gameElements;
 //	本方法一定不够用
 	public Map<GameElement, List<ElementObj>> getGameElements() {
 		return gameElements;
@@ -35,17 +35,18 @@ public class ElementManager {
 		gameElements.get(ge).add(obj);//添加对象到集合中，按key值就行存储
 	}
 //	依据key返回 list集合，取出某一类元素
+	private static String bossId="1";
 	public List<ElementObj> getElementsByKey(GameElement ge){
 		String str = new String("abcd");
 //		请问这里产生几个对象？分别是什么对象？分别存储在哪里？
 //		当一块内存没有任何一个引用指向的时候，会被GC回收。
 		return gameElements.get(ge);
-	}	
+	}
 	/**
 	 * 单例模式：内存中有且只有一个实例。
 	 * 饿汉模式-是启动就自动加载实例
 	 * 饱汉模式-是需要使用的时候才加载实例
-	 * 
+	 *
 	 * 编写方式：
 	 * 1.需要一个静态的属性(定义一个常量) 单例的引用
 	 * 2.提供一个静态的方法(返回这个实例) return单例的引用
@@ -59,6 +60,12 @@ public class ElementManager {
 			EM=new ElementManager();
 		}
 		return EM;
+	}
+	public static String getBossId(){
+		return bossId;
+	}
+	public static void setBossId(String newBossId){
+		bossId=newBossId;
 	}
 	private ElementManager() {//私有化构造方法
 		init(); //实例化方法
@@ -82,7 +89,7 @@ public class ElementManager {
 		}
 //		道具，子弹，爆炸效果，死亡效果。。。。
 	}
-	
+
 }
 
 

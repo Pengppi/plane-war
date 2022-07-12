@@ -2,19 +2,21 @@ package com.tedu.manager;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 import javax.swing.ImageIcon;
 
+import com.tedu.controller.GameThread;
+import com.tedu.element.Boss;
 import com.tedu.element.ElementObj;
 import com.tedu.element.Enemy;
 import com.tedu.element.Play;
+import com.tedu.element.Tool;
+import com.tedu.element.Trap;
 
 /**
  * @author renjj
@@ -23,7 +25,6 @@ import com.tedu.element.Play;
 public class GameLoad {
     //	得到资源管理器
     private static ElementManager em = ElementManager.getManager();
-
     //	图片集合  使用map来进行存储     枚举类型配合移动(扩展)
     public static Map<String, ImageIcon> imgMap = new HashMap<>();
 
@@ -57,7 +58,7 @@ public class GameLoad {
 //				这样的迭代都有一个问题：一次迭代一个元素。
                 String key = names.nextElement().toString();
                 System.out.println(pro.getProperty(key));
-//				就可以自动的创建和加载 我们的地图啦 
+//				就可以自动的创建和加载 我们的地图啦
                 String[] arrs = pro.getProperty(key).split(";");
                 for (int i = 0; i < arrs.length; i++) {
                     ElementObj obj = getObj("map");
@@ -74,10 +75,10 @@ public class GameLoad {
 
     //加载背景
     public static void loadMap(int mapId) {
-    	ElementObj obj = new com.tedu.element.Map();
-    	em.addElement(obj, GameElement.MAPS);
+        ElementObj obj = new com.tedu.element.Map().createElement(String.valueOf(mapId));
+        em.addElement(obj, GameElement.MAPS);
     }
-      
+
     /**
      * @说明 加载图片代码
      * 加载图片 代码和图片之间差 一个 路径问题
@@ -94,7 +95,7 @@ public class GameLoad {
             Set<Object> set = pro.keySet();//是一个set集合
             for (Object o : set) {
                 String url = pro.getProperty(o.toString());
-                System.out.println(o.toString());
+                //System.out.println(o.toString());
                 imgMap.put(o.toString(), new ImageIcon(url));
             }
 
@@ -106,46 +107,19 @@ public class GameLoad {
 
     /**
      * 加载玩家
-     */    
+     */
     /**
      * 测试用的加载方法
      * 加载玩家飞机
      */
     public static void wpploadPlay() {
-        ElementObj obj=new Play().createElement("200,200,1");//实例化对象（x,y,玩家飞机种类）
+        ElementObj obj = new Play().createElement("800,450,1");//实例化对象（x,y,玩家飞机种类）
 //		讲对象放入到 元素管理器中
         em.addElement(obj, GameElement.PLAY);//直接添加
     }
-    
-    /**
-     * 测试用的加载方法
-     * 加载敌军飞机
-     * @param 飞机种类编号(kind:String,count:int,kind2:String,count2:int...)
-     * @return
-     */
-    public static void hzfloadEnemey(String []kind) {
-    	new Thread(()->{
-    		for(int i=0;i<kind.length;i+=2)
-	    	{
-	    	 try {
-				Thread.sleep(2000);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-	    	 int count=Integer.parseInt(kind[i+1]);
-	    	 for(int j=0;j<count;j++)
-	    	 {
-	    		 try {
-					Thread.sleep(2000);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-	    	    ElementObj obj=new Enemy().createElement(kind[i]);
-	    	    em.addElement(obj, GameElement.ENEMY);
-	    	 }
-	    	}
-    	}).start();
-    }
+
+
+  
 
     public static ElementObj getObj(String str) {
         try {
@@ -165,12 +139,12 @@ public class GameLoad {
         return null;
     }
 
-        //子弹字符串函数(x:水平位置,y:垂直位置,hv:水平速度,vv:垂直速度,c:[1|2]:1 is play,2 is enemy)
-  		public static String getFileString(int x,int y,int hv,int vv,int camp,int bulletKind)
-  		{
-  			return "x:"+x+",y:"+y+",hv:"+hv+",vv:"+vv+",c:"+camp+",k:"+bulletKind;
-  		}
-  		
+    //子弹字符串函数(x:水平位置,y:垂直位置,hv:水平速度,vv:垂直速度,c:[1|2]:1 is play,2 is enemy)
+    public static String getFileString(double x,double y,double hv,double vv,int camp,int bulletKind)
+	{
+	return "x:"+x+",y:"+y+",hv:"+hv+",vv:"+vv+",c:"+camp+",k:"+bulletKind;
+	}
+
     /**
      * 扩展： 使用配置文件，来实例化对象 通过固定的key(字符串来实例化)
      *
@@ -188,17 +162,16 @@ public class GameLoad {
             Set<Object> set = pro.keySet();//是一个set集合
             for (Object o : set) {
                 String classUrl = pro.getProperty(o.toString());
-               //System.out.println(o.toString());
+                //System.out.println(o.toString());
 //				使用反射的方式直接将 类进行获取
                 Class<?> forName = Class.forName(classUrl);
                 objMap.put(o.toString(), forName);
             }
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
+        } 
+        catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
