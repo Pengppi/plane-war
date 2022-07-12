@@ -9,9 +9,9 @@ import com.tedu.manager.GameLoad;
 
 public class Flash extends ElementObj{
 	
-	private int deleteTime=12; //闪光时间
-	private int nuclear_attack=50; //核弹攻击为50
-	private ElementManager em=ElementManager.getManager();
+	private int deleteTime = 12; //闪光时间
+	private int nuclear_attack = 50; //核弹攻击为50
+	private ElementManager em = ElementManager.getManager();
 	//闪光道具的种类kind（1 is 核弹, 2 is 脉冲弹）
 	
 	@Override
@@ -41,14 +41,17 @@ public class Flash extends ElementObj{
 		List<ElementObj> bosses = em.getElementsByKey(GameElement.BOSS);
         for(ElementObj enemy:enemys)
         {
-        	if(this.getKind().equals("1"))enemy.deductLive(nuclear_attack);//核弹轰炸敌人
+        	if(this.getKind().equals("1"))
+        		enemy.deductLive(nuclear_attack);//核弹轰炸敌人
         	else if(this.getKind().equals("2"))enemy.getEMP();//电磁脉冲敌人，无法运动，无法攻击
         }
         //轰炸boss(电磁脉冲对boss没有效果)
         for(ElementObj boss:bosses)
         {
-        	if(this.getKind().equals("1"))boss.deductLive(nuclear_attack);//核弹轰炸boss
+        	if(this.getKind().equals("1"))
+        		boss.deductLive(nuclear_attack);//核弹轰炸boss
         }
+        this.nuclear_attack = 0;//不能重复攻击
 	}
 	
 	 public Flash() {}

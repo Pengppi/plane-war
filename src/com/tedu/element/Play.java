@@ -252,20 +252,20 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
                     this.setAttackKind(this.getAttackKind() == ElementObj.attack_count ? this.getAttackKind() : this.getAttackKind() + 1);
                     break;
                 case 88://脉冲弹道具的使用x键
-                    if (useToolInterval > 0 || Tool.emp_count <= 0) break;
+                    if (useToolInterval > 0 || Tool.emp_count <= 0) return;
+                    useToolInterval = 100;
                     ElementObj obj = GameLoad.getObj("flash");
                     ElementObj element = obj.createElement("2");
                     ElementManager.getManager().addElement(element, GameElement.DIE);
-                    Tool.emp_count--;
-                    useToolInterval = 100;
+                    Tool.emp_count--;                    
                     break;
                 case 90: //核弹道具的使用z键
-                    if (useToolInterval > 0 || Tool.nuclear_count <= 0) break;
+                    if (useToolInterval > 0 || Tool.nuclear_count <= 0) return;
+                    useToolInterval = 100;
                     ElementObj obj2 = GameLoad.getObj("flash");
                     ElementObj element2 = obj2.createElement("1");
                     ElementManager.getManager().addElement(element2, GameElement.DIE);
                     Tool.nuclear_count--;
-                    useToolInterval = 100;
                     break;
             }
         }
@@ -375,8 +375,8 @@ public class Play extends ElementObj /* implements Comparable<Play>*/ {
                             break;
                         case 5://发射等离子球
                             shoot(6, new double[]{
-                                            this.getX() + this.getW() / 2 - 10, this.getY(),
-                                            this.getX() + this.getW() / 2 + 10, this.getY()},
+                                            this.getX() + this.getW() / 2 - 20, this.getY(),
+                                            this.getX() + this.getW() / 2 + 20, this.getY()},
                                     new double[]{0, -2, 0, -2});
                             break;
                     }

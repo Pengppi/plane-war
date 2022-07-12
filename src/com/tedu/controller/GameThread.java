@@ -111,7 +111,6 @@ public class GameThread extends Thread {
             		1500-Integer.parseInt(ElementManager.getBossId())*100);
             //设置boss预警时间
             zzrCallTrap("3",10000,10100,30);
-            //zzrCallTrap("3",200,300,30);
             switch (ElementManager.getBossId()) {
                 case "1":
                     hzfCallEnemy("1", 100, 1200, 250);
@@ -194,7 +193,7 @@ public class GameThread extends Thread {
                         break;
                     case "3"://弹药箱(可以获得核弹，脉冲弹)
                         int kind = ran.nextInt(7) + 2;
-                        //int kind = 7;
+                        //int kind = 6;
                         if (kind == 6)//获得核弹
                             Tool.nuclear_count++;
                         else if (kind == 7)//获得脉冲弹
