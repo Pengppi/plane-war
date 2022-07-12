@@ -81,7 +81,6 @@ public class GameJFrame extends JFrame {
             Runnable run = (Runnable) this.jPanel;
             Thread th = new Thread(run);
             th.start();//
-            System.out.println("是否启动");
         }
 
     }

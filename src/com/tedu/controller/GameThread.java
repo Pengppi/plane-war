@@ -100,8 +100,7 @@ public class GameThread extends Thread {
             reduceTrapTime(traps);//减少陷阱警告时间
 
             //敌人，道具，boss,陷阱产生函数
-            hzfCallTool(String.valueOf(ran.nextInt(6) + 1), 100, 10000, 700);
-            //hzfCallTool(String.valueOf(3), 100, 10000, 700);
+            wppCallTool(String.valueOf(ran.nextInt(6) + 1), 13);
             hzfCallBoss(ElementManager.getBossId(), 10100);
             //陷阱
             zzrCallTrap(ElementManager.getBossId().equals("1") ? "1" : String.valueOf(ran.nextInt(2) + 1),
@@ -372,8 +371,8 @@ public class GameThread extends Thread {
     }
 
     //产生道具的函数
-    public static void hzfCallTool(String kind, int leftTime, int rightTime, int interval) {
-        if (GameThread.gameTime >= leftTime && GameThread.gameTime < rightTime && GameThread.gameTime % interval == 0) {
+    public static void wppCallTool(String kind, int interval) {
+        if (Play.gameTimer != null && Play.gameTimer.sinceLast(interval)) {
             ElementObj obj = new Tool().createElement(kind);
             em.addElement(obj, GameElement.TOOL);
         }

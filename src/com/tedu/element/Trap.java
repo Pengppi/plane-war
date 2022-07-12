@@ -35,7 +35,6 @@ public class Trap extends ElementObj{
         this.setX(x);
         this.setY(y);
         this.setIcon(GameLoad.imgMap.get("trap"+this.getKind()));
-        System.out.println("kind:"+this.getKind());
         return this;
     }
     
