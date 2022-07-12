@@ -89,8 +89,4 @@ public class GameRecord implements Serializable {
             System.out.println(r);
         }
     }
-
-    public static void main(String[] args) {
-        GameRecord.showRecord();
-    }
 }
